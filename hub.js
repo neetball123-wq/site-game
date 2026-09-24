@@ -1,4 +1,4 @@
-/* ウラガワ — 一覧の表示、進行状況の読み取り、作品を遊ぶ画面 */
+/* ヨリミチ — 一覧の表示、進行状況の読み取り、作品を遊ぶ画面 */
 (() => {
   'use strict';
   const $ = (s, r = document) => r.querySelector(s);
@@ -192,7 +192,7 @@
     try { localStorage.setItem(PLAY_KEY, JSON.stringify(t)); } catch (e) { /* noop */ }
   }, 5000);
 
-  /* ---------- 今夜の行き先（収録作の“場所”を順に出す。押すとその作品へ） ---------- */
+  /* ---------- 今夜の寄り道先（収録作の“場所”を順に出す。押すとその作品へ） ---------- */
   const dest = $('#dest');
   const pool = works.filter(w => w.place);
   let di = Math.floor(Math.random() * Math.max(1, pool.length));
@@ -200,7 +200,7 @@
     if (!dest || !pool.length) return;
     const w = pool[di % pool.length]; di++;
     dest.classList.remove('in'); void dest.offsetWidth;
-    dest.innerHTML = `<span class="dest-k">今夜の行き先</span><a class="dest-v" href="#play/${w.id}" style="--wa:${w.accent}">${esc(w.place)}</a>`;
+    dest.innerHTML = `<span class="dest-k">今夜の寄り道先</span><a class="dest-v" href="#play/${w.id}" style="--wa:${w.accent}">${esc(w.place)}</a>`;
     dest.classList.add('in');
   }
   showDest();
