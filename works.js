@@ -13,6 +13,60 @@
    ========================================================= */
 window.WORKS = [
   {
+    id: 'lastbus',
+    path: 'works/lastbus/index.html',
+    title: '最終バスの車掌',
+    place: '廃止された夜ノ森線の、最終便の車内',
+    added: '2026-09-24',
+    genre: ['不思議', '泣ける', '3D'],
+    minutes: 30,
+    difficulty: 3,
+    accent: '#C8742A',
+    catch: '廃止された夜ノ森線の最終便に、一夜かぎりの車掌として乗る。乗ってくるのは、降りそびれた人たち。話を聞き、持ち物と車内掲示を手がかりに、ひとりずつ正しい停留所で降ろしていく。',
+    features: ['車内と車窓の夜景を3Dで', '運賃表示器・路線図・合図ひも', '窓の外の景色も手がかり', '6人の乗客と、最後のひとり'],
+    storageKey: 'lastbus.v1',
+    progress(s) {
+      if (s.ended) return { pct: 100, label: '終点・車庫前', cleared: true };
+      if (!s.intro) return { pct: s.playMs ? 2 : 0, label: '車掌募集の貼り紙', cleared: false };
+      const n = Object.keys(s.delivered || {}).length;
+      if (n >= 6) return { pct: 90, label: '6枚の整理券', cleared: false };
+      return { pct: 5 + n * 14, label: n ? `${n}人を送りとどけた` : '夜ノ森駅前', cleared: false };
+    },
+    spoilers: [
+      'タクト：くもった窓の絵は「鐘のついた塔」。名札の「夜ノ森小学校」は、車内掲示でいまの「公民館前」。公民館前（3番目）で降ろす',
+      'トメ：「踏切の音 → 橋の音 → そのつぎ」。踏切は商店街と公民館前のあいだ、橋は公民館前と病院前のあいだ。市民病院前（4番目）',
+      'カナ：絵の「夜でも光る金色の木」は大銀杏（5番目）',
+      'ユウコ：トメさんとカナのうしろの窓に、うっすらうつっている。押すと話せる。待ち合わせは0時35分、今夜は5分遅れなので川端（6番目）',
+      'ハヤミ：定期券の10,530円は、車内掲示の定期運賃表で「夜ノ森団地」（7番目）',
+      '源三：魚市場前 → 港市場 → 港。港（8番目）',
+      '最後：整理券のうらを降りた順に並べると「ほしみざかで」。星見坂は港と車庫前のあいだの廃止された停留所。港を出たら、着く前に合図ひもを1回',
+      'ほかにも：路線図の白いシール、合図ひもを3回、運転席のルームミラー、車内の広告……',
+    ],
+    cover: {
+      front: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><linearGradient id="lb-s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#050a18"/><stop offset="1" stop-color="#1d2748"/></linearGradient><radialGradient id="lb-g"><stop offset="0" stop-color="#ffd9a0" stop-opacity=".8"/><stop offset="1" stop-color="#ffd9a0" stop-opacity="0"/></radialGradient></defs>'
+        + '<rect width="400" height="250" fill="#2a2620"/>'
+        + [[20, 60, 110], [140, 60, 110], [260, 60, 120]].map(([x, y, w]) => `<rect x="${x}" y="${y}" width="${w}" height="80" fill="url(#lb-s)"/>`).join('')
+        + [...Array(40)].map((_, i) => `<circle cx="${(i * 97) % 380 + 10}" cy="${60 + (i * 37) % 40}" r="${i % 5 ? 0.8 : 1.4}" fill="#fff" opacity=".8"/>`).join('')
+        + '<rect x="0" y="112" width="400" height="28" fill="#0b1020"/>' + [40, 90, 160, 230, 300, 350].map((x, i) => `<rect x="${x}" y="${104 - (i % 3) * 8}" width="${26 + (i % 2) * 10}" height="${36 + (i % 3) * 8}" fill="#10162a"/><rect x="${x + 5}" y="${110 - (i % 3) * 8}" width="5" height="5" fill="#ffd9a0" opacity=".8"/>`).join('')
+        + [70, 200, 330].map(x => `<circle cx="${x}" cy="80" r="26" fill="url(#lb-g)"/>`).join('')
+        + '<rect x="0" y="0" width="400" height="56" fill="#d8d0bc"/><rect x="0" y="140" width="400" height="110" fill="#8fa39a"/><rect x="0" y="176" width="400" height="74" fill="#2d5a55"/>'
+        + [16, 132, 252, 384].map(x => `<rect x="${x}" y="56" width="8" height="86" fill="#b8bdc2"/>`).join('')
+        + [70, 190, 310].map(x => `<rect x="${x - 1}" y="0" width="3" height="180" fill="#d8a830"/>`).join('')
+        + [40, 100, 160, 220, 280, 340].map(x => `<line x1="${x}" y1="0" x2="${x}" y2="18" stroke="#d8ccb0" stroke-width="2"/><circle cx="${x}" cy="24" r="6" fill="none" stroke="#f2f0e8" stroke-width="2"/>`).join('')
+        + '<g transform="translate(96 150)"><path d="M-22 30 Q-20 0 0 -4 Q20 0 22 30Z" fill="#e8736a"/><circle cx="0" cy="-16" r="12" fill="#f3d2b8"/><path d="M-12 -18 Q0 -34 12 -18Z" fill="#3a2a22"/></g>'
+        + '<g transform="translate(236 146)" opacity=".7"><path d="M-24 34 Q-22 0 0 -6 Q22 0 24 34Z" fill="#4a5a6a"/><circle cx="0" cy="-18" r="13" fill="#c89a78"/><rect x="-13" y="-26" width="26" height="6" rx="3" fill="#f2f0ea"/></g>'
+        + '<g transform="translate(262 88)" opacity=".35"><circle cx="0" cy="-10" r="10" fill="#bcd0f0"/><path d="M-16 28 Q-14 4 0 0 Q14 4 16 28Z" fill="#bcd0f0"/></g>'
+        + '<rect x="100" y="6" width="200" height="34" rx="3" fill="#060606" stroke="#2a2a2a" stroke-width="3"/><text x="200" y="30" text-anchor="middle" font-size="18" fill="#ff8a1a" font-family="DotGothic16, monospace">最終バスの車掌</text></svg>',
+      back: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><linearGradient id="lb-n" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#02050d"/><stop offset=".7" stop-color="#1d2748"/><stop offset="1" stop-color="#3a3450"/></linearGradient></defs>'
+        + '<rect width="400" height="250" fill="url(#lb-n)"/>' + [...Array(120)].map((_, i) => `<circle cx="${(i * 53) % 400}" cy="${(i * 29) % 170}" r="${i % 7 ? 0.7 : 1.5}" fill="#fff" opacity="${0.4 + (i % 5) * 0.12}"/>`).join('')
+        + '<path d="M0 250 L0 196 Q200 170 400 200 L400 250Z" fill="#0c1410"/>'
+        + '<rect x="228" y="120" width="4" height="84" fill="#8a8f96"/><circle cx="230" cy="118" r="16" fill="#e8e6e0" stroke="#8a8f96" stroke-width="3"/><rect x="220" y="112" width="20" height="10" fill="#d8d6ce"/>'
+        + '<rect x="270" y="90" width="3" height="110" fill="#3a3d42"/><rect x="262" y="88" width="16" height="4" fill="#ffe0b0"/><circle cx="270" cy="94" r="30" fill="#ffe0b0" opacity=".15"/>'
+        + '<g transform="translate(254 172)" opacity=".75"><rect x="-8" y="0" width="16" height="30" rx="4" fill="#2a3550"/><circle cx="0" cy="-8" r="7" fill="#ecd4c0"/><path d="M-8 -10 Q0 -20 8 -10Z" fill="#2a3550"/><rect x="6" y="6" width="8" height="7" fill="#5a3a26"/></g>'
+        + '<g transform="translate(60 150)"><rect x="0" y="0" width="120" height="44" rx="6" fill="#dcd6c6"/><rect x="8" y="8" width="104" height="16" fill="#ffd9a0" opacity=".7"/><rect x="0" y="30" width="120" height="4" fill="#2a6a8a"/><circle cx="24" cy="46" r="7" fill="#1a1a1a"/><circle cx="96" cy="46" r="7" fill="#1a1a1a"/></g></svg>'
+    }
+  },
+  {
     id: 'maigo',
     path: 'works/maigo/index.html',
     title: '迷子の天気予報',

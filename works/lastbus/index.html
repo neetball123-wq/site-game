@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>最終バスの車掌</title>
+<meta name="description" content="廃止された夜ノ森線の最終便に、一夜かぎりの車掌として乗る。降りそびれた乗客たちを、正しい停留所へ。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=DotGothic16&family=Zen+Old+Mincho:wght@500;700&family=Yomogi&display=swap">
+<link rel="stylesheet" href="css/bus.css">
+</head>
+<body>
+<div class="bus" id="bus">
+  <section class="view" id="view">
+    <canvas id="cv" aria-label="バスの車内と、窓の外の夜の町"></canvas>
+    <div class="led" id="led" aria-live="polite">
+      <div class="led-main"><span class="led-k" id="led-k">つぎは</span><b class="led-n" id="led-n">夜ノ森駅前</b></div>
+      <div class="led-side"><span class="led-c" id="led-c">0:17</span><span class="led-l">約5分遅れ</span></div>
+      <div class="led-f" id="led-f"></div>
+    </div>
+    <p class="cap" id="cap"></p>
+    <div class="talk" id="talk" hidden></div>
+    <div class="look"><button type="button" id="look-l" aria-label="うしろを見る">◀</button><button type="button" id="look-c" aria-label="まんなか">・</button><button type="button" id="look-r" aria-label="前を見る">▶</button></div>
+    <div class="tip" id="tip" hidden></div>
+    <div class="fade" id="fade"></div>
+  </section>
+
+  <section class="deck">
+    <div class="ctrl">
+      <button type="button" class="cord" id="cord" aria-label="合図ひもを引く"><span class="cord-rope" aria-hidden="true"></span><b>合図ひも</b><small>1回：止めて　2回：発車</small></button>
+      <div class="state" id="state"></div>
+      <div class="ctrl-b"><button type="button" id="fast">早送り：切</button><button type="button" id="snd">音：入</button></div>
+    </div>
+    <div class="seats" id="seats" aria-label="乗客"></div>
+    <div class="tools">
+      <nav class="tabs" id="tabs" aria-label="車掌の道具"></nav>
+      <div class="tabbody" id="tabbody"></div>
+    </div>
+  </section>
+  <footer class="foot">この作品はフィクションです。登場する人物・団体・路線・地名は、実在のものとは関係ありません。</footer>
+</div>
+<div class="modal" id="modal" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script src="js/data.js"></script>
+<script src="js/world.js"></script>
+<script src="js/snd.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
