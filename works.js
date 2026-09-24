@@ -14,6 +14,7 @@
 window.WORKS = [
   {
     id: 'kokuchi',
+    images: { front: 'works/kokuchi/img/room.jpg', back: 'works/kokuchi/img/night.jpg' },
     path: 'works/kokuchi/index.html',
     title: '告知事項あり',
     place: '家賃1.9万円の部屋の、深夜のオンライン内見',
