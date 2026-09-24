@@ -17,7 +17,7 @@
   const fill = (s) => s.replace(/\{NAME\}/g, NAME());
 
   /* ---------- 画面の切り替え ---------- */
-  const scr = (id) => { ['book', 'call', 'page'].forEach(k => { $('#' + k).hidden = k !== id; }); document.body.classList.toggle('in-call', id === 'call'); if (id !== 'call') $('#docs').classList.remove('open'); window.scrollTo(0, 0); };
+  const scr = (id) => { ['book', 'call', 'page'].forEach(k => { $('#' + k).hidden = k !== id; }); document.body.classList.toggle('in-call', id === 'call'); const dk = $('#docs'), home = id === 'call' ? $('.cmain') : document.body; if (dk.parentNode !== home) home.appendChild(dk); if (id !== 'call') $('#docs').classList.remove('open'); window.scrollTo(0, 0); };
 
   /* ---------- 待つ（やり直したら古い処理は止まる） ---------- */
   let gen = 0;

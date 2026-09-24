@@ -25,7 +25,8 @@ window.KD = (() => {
 
   /* 物件チラシの写真（昼間の、明るすぎる写真） */
   const PH = {
-    room: `<svg viewBox="0 0 160 110" aria-label="洋室の写真"><rect width="160" height="110" fill="#F4F1EA"/><path d="M0 110L30 78h100l30 32z" fill="#C9A77E"/><path d="M30 78V14h100v64z" fill="#FBFAF6"/><rect x="48" y="20" width="64" height="52" fill="#DDEBF6" stroke="#B9C2CA" stroke-width="2"/><path d="M80 20v52" stroke="#B9C2CA" stroke-width="2"/><rect x="40" y="18" width="10" height="56" fill="#EDE6D8"/><rect x="110" y="18" width="10" height="56" fill="#EDE6D8"/><ellipse class="ph-face" cx="97" cy="41" rx="3.2" ry="4.2" fill="#E9E4DA" opacity=".55"/><circle cx="96" cy="40.5" r=".7" fill="#555" opacity=".5"/><circle cx="98.2" cy="40.5" r=".7" fill="#555" opacity=".5"/><path d="M0 0l30 14v64L0 110z" fill="#EFEBE3"/><path d="M160 0l-30 14v64l30 32z" fill="#EAE5DB"/><rect x="136" y="30" width="18" height="60" fill="#E2DCCF" stroke="#CFC7B8"/></svg>`,
+    room: `<span class="ph-img"><img src="img/room.jpg" alt="洋室の写真" loading="lazy"><i class="ph-face"></i></span>`,
+    view: `<span class="ph-img"><img src="img/night.jpg" alt="ベランダからの眺め" loading="lazy"></span>`,
     kitchen: `<svg viewBox="0 0 160 110" aria-label="キッチンの写真"><rect width="160" height="110" fill="#F6F3EC"/><rect x="10" y="56" width="140" height="40" fill="#E9E5DC" stroke="#CFC8BA"/><rect x="10" y="50" width="140" height="8" fill="#C8CCD0"/><rect x="26" y="52" width="40" height="4" rx="2" fill="#9EA4AA"/><circle cx="104" cy="54" r="5" fill="#333"/><circle cx="124" cy="54" r="5" fill="#333"/><rect x="10" y="10" width="140" height="26" fill="#EFEBE3" stroke="#D6CFC1"/>${[0, 1, 2].map(i => `<rect x="${16 + i * 46}" y="64" width="40" height="26" fill="#F3F0E9" stroke="#D6CFC1"/><rect x="${31 + i * 46}" y="70" width="10" height="2" fill="#A9A399"/>`).join('')}</svg>`,
     bath: `<svg viewBox="0 0 160 110" aria-label="浴室の写真"><rect width="160" height="110" fill="#EEF1F2"/><rect x="14" y="60" width="132" height="44" rx="8" fill="#FFFFFF" stroke="#CDD5D8"/><rect x="24" y="66" width="112" height="32" rx="6" fill="#E3EAEC"/><rect x="58" y="12" width="44" height="34" fill="#B8C4CA" stroke="#9AA6AC"/><path d="M62 16l12 12" stroke="#DDE6EA" stroke-width="3"/><rect x="74" y="48" width="12" height="6" fill="#A9B3B8"/></svg>`
   };
@@ -35,7 +36,7 @@ window.KD = (() => {
       <p class="fly-cat">賃貸アパート ／ 1K</p>
       <h3 class="fly-t">コーポ柊 <b>204</b><small>号室</small></h3>
       <div class="fly-row"><p class="fly-price"><span>1.9</span>万円<small>管理費込</small></p><p class="fly-burst">敷金0<br>礼金0</p></div>
-      <div class="fly-photos">${Object.entries({ room: '洋室', kitchen: 'キッチン', bath: '浴室' }).map(([k, t]) => `<button type="button" class="fly-ph" data-ph="${k}">${PH[k]}<span>${t}</span></button>`).join('')}</div>
+      <div class="fly-photos">${Object.entries({ room: '洋室', kitchen: 'キッチン', bath: '浴室', view: '眺望' }).map(([k, t]) => `<button type="button" class="fly-ph" data-ph="${k}">${PH[k]}<span>${t}</span></button>`).join('')}</div>
       <table class="fly-tb">
         <tr><th>所在地</th><td>鷺ノ森3丁目</td></tr><tr><th>交通</th><td>鷺ノ森駅 徒歩5分</td></tr>
         <tr><th>間取り</th><td>1K（洋室6.0帖・クローゼット）</td></tr><tr><th>専有面積</th><td>21.06㎡</td></tr>

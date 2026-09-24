@@ -68,6 +68,13 @@ window.KW = (() => {
   function blk(x0, x1, y0, y1, z0, z1, m, parent) { return box(Math.max(.001, x1 - x0), Math.max(.001, y1 - y0), Math.max(.001, z1 - z0), m, (x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2, parent); }
   function plane(w, h, m, x, y, z, ry, rx, parent) { const p = new THREE.Mesh(new THREE.PlaneGeometry(w, h), m); p.position.set(x, y, z); p.rotation.y = ry || 0; p.rotation.x = rx || 0; (parent || S).add(p); return p; }
 
+  /* 写真の壁紙と床（読めなければ描いた模様のまま） */
+  function photoTex() {
+    const L = new THREE.TextureLoader();
+    [['wall', 'img/wall.jpg'], ['wood', 'img/floor.jpg']].forEach(([k, url]) => {
+      L.load(url, (t) => { const old = M[k].map; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.copy(old.repeat); M[k].map = t; M[k].needsUpdate = true; });
+    });
+  }
   function build() {
     M.wall = mat('paper', 3, 2); M.wood = mat('wood', 3, 5); M.tile = mat('tile', 2, 2); M.ceil = mat('ceil', 4, 6);
     M.conc = mat('concrete', 6, 3); M.ub = mat('ub', 3, 2); M.curtain = mat('curtain', 2, 1);
@@ -308,7 +315,7 @@ window.KW = (() => {
       R.setPixelRatio(1); R.setSize(W, H, false);
       S = new THREE.Scene(); S.background = new THREE.Color(0x000000);
       cam = new THREE.PerspectiveCamera(72, W / H, .05, 60);
-      makeImages(); build(); lights(); applyMode();
+      makeImages(); build(); photoTex(); lights(); applyMode();
       go('door_out', { cut: true });
       ok = true;
     } catch (e) { ok = false; if (!noise.length) makeImages(); }
