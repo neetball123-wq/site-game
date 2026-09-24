@@ -13,6 +13,62 @@
    ========================================================= */
 window.WORKS = [
   {
+    id: 'maigo',
+    path: 'works/maigo/index.html',
+    title: '迷子の天気予報',
+    place: '風向きひとつで空が変わる、ひなた町のジオラマ',
+    added: '2026-09-24',
+    genre: ['パズル', 'ほのぼの', '3D'],
+    minutes: 25,
+    difficulty: 3,
+    accent: '#2B7FB8',
+    catch: '入院した天気係のかわりに、一週間だけ町の天気をつくるアルバイト。机の上のジオラマで風を決めると、雲が流れ、雨が降り、虹が出る。予報どおりの空と、町の人のお願いを、ぜんぶかなえられるか。',
+    features: ['机の上のジオラマが3Dで動く', '風向きで雲を流して、雨と虹をつくる', '毎日とどく、町の人のお願い', '風に飛ばされた、日曜の予報'],
+    storageKey: 'maigo.v1',
+    progress(s) {
+      const ids = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+      if (s.ended) return { pct: 100, label: '天気係 ' + (s.name || '（なまえなし）') + (s.xmas && s.xmas.solved ? '／12月24日' : ''), cleared: true };
+      if (!s.intro) return { pct: s.playMs ? 2 : 0, label: '求人のチラシ', cleared: false };
+      const n = ids.filter(k => s.solved && s.solved[k]).length;
+      if (n >= 6) return { pct: 90, label: Object.keys(s.placed || {}).length < 6 ? '日曜：迷子のページ' : '日曜：最後の予報', cleared: false };
+      return { pct: 5 + n * 13, label: '月火水木金土'[n] + '曜日の予報', cleared: false };
+    },
+    spoilers: [
+      '月：朝 西風 → 昼 無風 → 夕 西風 → 夜 東風（夕と夜は「北風→南風」「東風→西風」でもよい）',
+      '火：朝 東風（ミツさんの家の上の雨雲を畑へ）→ 昼 無風 → 夕 西風 → 夜 無風',
+      '水：朝 無風 → 昼 南風（学校と河原の雲を畑で重ね、山にぶつけて雨雲に）→ 夕 無風 → 夜 西風',
+      '木：朝 北風 → 昼 無風（公園に雨）→ 夕 南風（公園に虹）→ 夜 無風',
+      '金：てるてる坊主を D3（駅）に。朝 西風 → 昼 無風 → 夕 南風 → 夜 無風',
+      '土：てるてる坊主を B3（小学校）に。朝 東風 → 昼 南風 → 夕 無風 → 夜 西風',
+      '日：最後の切れ端は、ジオラマの観測所（D2）の屋根の上。並べると「朝 くもり・昼 雨・夕 虹・夜 くもり」。朝 南風 → 昼 無風 → 夕 北風 → 夜 南風',
+      'ほかにも：観測所の屋根を押す、てるてる坊主を押してさかさまに、クリア後の日めくりのめくれた角……',
+    ],
+    cover: {
+      front: (() => {
+        const P = (u, v) => { const l = 160 - 20 * v, r = 360 + 20 * v; return [l + (r - l) * u, 60 + 132 * v]; };
+        const col = ['#7D9A5E', '#7D9A5E', '#6FA05E', '#9CC27A', '#A8C98A', '#63B2DA', '#7D9A5E', '#9A7650', '#A7CF86', '#9FCC84', '#C9C1AD', '#8CC4DC', '#D7BD5A', '#C7B18C', '#CFC6B4', '#B9B3A6', '#8EC070', '#4EA3D0', '#8CC4DC', '#CBBD9C', '#A3CC84', '#A3CC84', '#8FC672', '#63B2DA', '#8CC4DC', '#B8AD96', '#A3CC84', '#B4D49A', '#E6D6A6', '#63B2DA'];
+        let t = '';
+        for (let y = 0; y < 5; y++) for (let x = 0; x < 6; x++) { const q = [P(x / 6, y / 5), P((x + 1) / 6, y / 5), P((x + 1) / 6, (y + 1) / 5), P(x / 6, (y + 1) / 5)]; t += `<polygon points="${q.map(p => p.map(n => n.toFixed(1)).join(',')).join(' ')}" fill="${col[y * 6 + x]}" stroke="#6B4A2A" stroke-width=".8"/>`; }
+        const cl = (x, y, g) => `<g fill="${g ? '#8C95A3' : '#FFFFFF'}"><circle cx="${x - 12}" cy="${y}" r="10"/><circle cx="${x}" cy="${y - 6}" r="13"/><circle cx="${x + 13}" cy="${y}" r="9"/><rect x="${x - 20}" y="${y}" width="40" height="9" rx="4.5"/></g>`;
+        return '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><linearGradient id="mg-w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DAB07A"/><stop offset="1" stop-color="#BE8D56"/></linearGradient></defs>'
+          + '<rect width="400" height="250" fill="url(#mg-w)"/><polygon points="152,52 368,52 392,206 128,206" fill="#8A5A30"/><polygon points="128,206 392,206 392,214 128,214" fill="#6B4424"/>' + t
+          + '<g stroke="#4A8FD8" stroke-width="2" stroke-linecap="round">' + [0, 1, 2, 3].map(i => `<line x1="${214 + i * 7}" y1="${98 + (i % 2) * 5}" x2="${211 + i * 7}" y2="${110 + (i % 2) * 5}"/>`).join('') + '</g>'
+          + cl(218, 84, true) + cl(300, 70) + cl(172, 128)
+          + '<path d="M300 160a26 26 0 0 1 52 0" fill="none" stroke="#E0584A" stroke-width="3"/><path d="M304 160a22 22 0 0 1 44 0" fill="none" stroke="#F2D14E" stroke-width="3"/><path d="M308 160a18 18 0 0 1 36 0" fill="none" stroke="#4AA3D8" stroke-width="3"/>'
+          + '<g transform="rotate(-7 60 140)"><rect x="12" y="70" width="98" height="140" rx="4" fill="#FFFAF0"/><line x1="26" y1="70" x2="26" y2="210" stroke="#E6A09A"/>'
+          + [0, 1, 2, 3, 4, 5].map(i => `<line x1="30" y1="${100 + i * 18}" x2="102" y2="${100 + i * 18}" stroke="#E7DDC8"/>`).join('')
+          + '<text x="32" y="92" font-size="12" font-family="Klee One, serif" fill="#3B3530">10月5日（月）</text><circle cx="42" cy="112" r="6" fill="#A7B0BC"/><circle cx="66" cy="113" r="6" fill="#A7B0BC"/><circle cx="90" cy="113" r="6" fill="#F2A93B"/></g>'
+          + '<text x="200" y="36" text-anchor="middle" font-size="24" font-weight="900" fill="#FFFAF0" stroke="#8A5A30" stroke-width="4" paint-order="stroke" font-family="Zen Maru Gothic, sans-serif">迷子の天気予報</text></svg>';
+      })(),
+      back: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><linearGradient id="mg-s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8A7BC0"/><stop offset=".55" stop-color="#F2A98A"/><stop offset="1" stop-color="#FFD9A8"/></linearGradient></defs>'
+        + '<rect width="400" height="250" fill="url(#mg-s)"/>'
+        + [[110, 190, 70], [230, 200, 90], [330, 186, 56]].map(([x, y, r]) => ['#E0584A', '#F29A3A', '#F2D14E', '#6AC47A', '#4AA3D8', '#6A6AD0'].map((c, i) => `<path d="M${x - r + i * 4} ${y}a${r - i * 4} ${r - i * 4} 0 0 1 ${2 * (r - i * 4)} 0" fill="none" stroke="${c}" stroke-width="4" opacity=".75"/>`).join('')).join('')
+        + '<path d="M0 250 L0 205 Q120 170 230 196 Q320 214 400 196 L400 250Z" fill="#5E8A4E"/><path d="M160 250 Q230 168 300 250Z" fill="#6E9A58"/><rect x="246" y="176" width="4" height="22" fill="#5A3E28"/><circle cx="248" cy="170" r="14" fill="#4F7E44"/>'
+        + '<g transform="translate(226 190)"><rect x="-4" y="-2" width="8" height="12" rx="3" fill="#9B8AC4"/><circle cx="0" cy="-6" r="4" fill="#F2D6BF"/><line x1="6" y1="-2" x2="7" y2="10" stroke="#6A4A3A" stroke-width="1.2"/></g>'
+        + '<g transform="translate(320 48) rotate(18)"><path d="M-22 -16 L20 -18 L24 16 L6 13 L-2 18 L-20 14Z" fill="#FFFDF6"/><text x="0" y="3" text-anchor="middle" font-size="10" fill="#3B3530" font-family="Klee One, serif">日曜</text></g></svg>'
+    }
+  },
+  {
     id: 'tomare',
     images: { front: 'works/tomare/img/front.png', back: 'works/tomare/img/back.png' },
     path: 'works/tomare/index.html',

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>迷子の天気予報</title>
+<meta name="description" content="風向きひとつで、町の空が変わる。入院した天気係のかわりに、一週間だけ町の天気をつくるアルバイト。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Klee+One:wght@400;600&display=swap">
+<link rel="stylesheet" href="css/desk.css">
+</head>
+<body>
+<div class="desk" id="desk">
+  <header class="top">
+    <div class="cal" id="cal">
+      <div class="cal-ring" aria-hidden="true"><i></i><i></i></div>
+      <div class="cal-page" id="cal-page"><span class="cal-m" id="cal-m">10月</span><b class="cal-d" id="cal-d">5</b><span class="cal-w" id="cal-w">月曜日</span></div>
+      <nav class="cal-tabs" id="cal-tabs" aria-label="一週間"></nav>
+      <button type="button" class="cal-ear" id="cal-ear" hidden aria-label="めくれたページ"></button>
+    </div>
+    <div class="head">
+      <h1 class="title">迷子の天気予報</h1>
+      <p class="sub">ひなた町 観測所　天気係（アルバイト）</p>
+    </div>
+    <div class="tools">
+      <button type="button" id="viewbtn">真上から見る</button>
+      <button type="button" id="snd">音：入</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="note" id="note" aria-label="予報ノート">
+      <div class="note-tabs" id="note-tabs">
+        <button type="button" data-nt="fc" class="on">予報</button>
+        <button type="button" data-nt="rules">しくみ</button>
+        <button type="button" data-nt="frag">切れ端</button>
+      </div>
+      <div class="note-page" id="note-page"></div>
+      <div class="fusen" id="fusen" aria-label="付箋"></div>
+    </section>
+
+    <section class="stage" aria-label="ジオラマ">
+      <div class="dio" id="dio">
+        <canvas id="cv" aria-label="ひなた町のジオラマ"></canvas>
+        <p class="cap" id="cap" aria-live="polite"></p>
+        <div class="tip" id="tip" hidden></div>
+        <div class="chips" id="chips" hidden></div>
+      </div>
+      <div class="vanes" id="vanes"></div>
+      <div class="runrow">
+        <button type="button" class="teru-btn" id="teru-btn" hidden>てるてる坊主</button>
+        <button type="button" class="crank" id="run"><span class="crank-i" aria-hidden="true"></span>ハンドルをまわす</button>
+        <button type="button" class="reset" id="reset">夜明けにもどす</button>
+      </div>
+      <div class="result" id="result" hidden></div>
+    </section>
+
+    <section class="cards" id="cards" aria-label="町の人からのはがき"></section>
+  </main>
+
+  <footer class="foot">この作品はフィクションです。登場する人物・団体・町は、実在のものとは関係ありません。</footer>
+</div>
+
+<div class="pop" id="pop" hidden></div>
+<div class="modal" id="modal" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="js/sim.js"></script>
+<script src="js/data.js"></script>
+<script src="js/town.js"></script>
+<script src="js/snd.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
