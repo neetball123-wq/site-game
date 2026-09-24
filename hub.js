@@ -116,7 +116,7 @@
     if (flip) {
       const on = flip.getAttribute('aria-pressed') !== 'true';
       flip.setAttribute('aria-pressed', String(on));
-      flip.textContent = on ? '表にもどす' : '裏を見る';
+      flip.textContent = on ? '表に戻す' : '裏を見る';
       li.querySelector('.cover').classList.toggle('flipped', on);
       return;
     }

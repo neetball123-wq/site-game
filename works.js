@@ -17,7 +17,7 @@ window.WORKS = [
     images: { front: 'works/tomare/img/front.png', back: 'works/tomare/img/back.png' },
     path: 'works/tomare/index.html',
     title: 'TOMARE',
-    place: '「止まれ」の標識をかついで歩く、終わったあとの街',
+    place: '「止まれ」の標識をかついだロボットが行く、終わったあとの街',
     added: '2026-09-24',
     genre: ['アクション', 'ローグライク', 'ドット絵'],
     minutes: 20,
@@ -37,7 +37,7 @@ window.WORKS = [
     spoilers: [
       '攻撃（左クリック）を押しっぱなしで溜め。HPの下の黄色いゲージが満タンのときの溜めは、画面ぜんぶを叩く必殺技になる',
       '扇風機の撃つピンクの弾と、自販機の投げる缶は、標識で打ち返せる',
-      '空中で S＋攻撃 は叩きつけ。敵の頭に当てると跳ね返って、ジャンプとダッシュがもう一度使える',
+      '空中で「S＋攻撃」は叩きつけ。敵の頭に当てると跳ね返って、ジャンプとダッシュがもう一度使える',
       '敵の攻撃が当たる直前にダッシュすると、時間がゆっくりになる（ゲージも増える）',
       '自販機は、壁や車に突進させると目を回す。そこが攻めどき',
       '休憩の部屋の緑のライトでHPが半分もどる。赤いオイル缶でも少しもどる。HPが少ないと、カードに「REPAIR」がまざる',
@@ -68,7 +68,7 @@ window.WORKS = [
     images: { front: 'works/kokuchi/img/room.jpg', back: 'works/kokuchi/img/night.jpg' },
     path: 'works/kokuchi/index.html',
     title: '告知事項あり',
-    place: '家賃1.9万円の部屋の、深夜のオンライン内見',
+    place: '深夜にオンラインで内見する、家賃1.9万円の部屋',
     added: '2026-09-24',
     genre: ['ホラー', 'オンライン内見', '3D'],
     minutes: 30,
@@ -116,9 +116,9 @@ window.WORKS = [
     id: 'tsuzuki',
     path: 'works/tsuzuki/index.html',
     title: 'つづきから',
-    place: '中古屋のワゴンで買った、携帯ゲーム機の中',
+    place: 'リサイクルショップで買った、携帯ゲーム機の中',
     added: '2026-09-23',
-    genre: ['レトロゲーム', '夏やすみ', '裏技さがし'],
+    genre: ['レトロゲーム', '夏休み', '裏技さがし'],
     minutes: 40,
     difficulty: 4,
     accent: '#4E8A4B',
@@ -302,7 +302,7 @@ window.WORKS = [
   {
     id: 'hoshi',
     path: 'works/hoshi/index.html',
-    title: 'みなと天文館｜最終投影',
+    title: 'みなと天文館',
     place: '閉館する天文館の、最後の投影',
     added: '2026-09-20',
     genre: ['プラネタリウム', '静か', '泣ける'],
@@ -319,11 +319,11 @@ window.WORKS = [
       return { pct: Math.min(95, n * 15), label: `${n}つめの星座`, cleared: false };
     },
     spoilers: [
-      '星の名前と番号は、ロビーの「星表」にあります（ドームの「番号灯」で星のそばに番号が出ます）',
-      '1〜5話は、解説どおりの順に星を押していけばつながります',
-      '最後の星座は、ロビーの展示「下絵（1998年・鉛筆）」のとおりに結びます（No.27→28→29→30→27、30から33・31・32）',
+      '星の名前と番号は、ロビーの「星表」にある（ドームの「番号灯」をつけると、星のそばに番号が出る）',
+      '1〜5話は、解説どおりの順に星を押していけばつながる',
+      '最後の星座は、ロビーの展示「下絵（1998年・鉛筆）」のとおりに結ぶ（No.27→28→29→30→27、30から33・31・32）',
       '真相：常連だった少年が2004年に引っ越すとき「いつか、ぼくの星座を作って」と約束した。解説員は線だけ決めて、名前は決めずに二十二年待った',
-      '最後に名前を入れると、投影記録票の最終行に残ります'
+      '最後に名前を入れると、投影記録票の最終行に残る'
     ],
     cover: {
       front: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><radialGradient id="hs-f" cx="50%" cy="35%" r="75%"><stop offset="0" stop-color="#0D1526"/><stop offset="1" stop-color="#05070C"/></radialGradient></defs><rect width="400" height="250" fill="url(#hs-f)"/><circle cx="3" cy="3" r="1.4" fill="#FFFDF6" opacity="0.35"/><circle cx="100" cy="56" r="0.7" fill="#FFFDF6" opacity="0.43"/><circle cx="197" cy="109" r="0.7" fill="#FFFDF6" opacity="0.51"/><circle cx="294" cy="162" r="0.7" fill="#FFFDF6" opacity="0.59"/><circle cx="391" cy="215" r="0.7" fill="#FFFDF6" opacity="0.67"/><circle cx="93" cy="23" r="1.4" fill="#FFFDF6" opacity="0.75"/><circle cx="190" cy="76" r="0.7" fill="#FFFDF6" opacity="0.83"/><circle cx="287" cy="129" r="0.7" fill="#FFFDF6" opacity="0.35"/><circle cx="384" cy="182" r="0.7" fill="#FFFDF6" opacity="0.43"/><circle cx="86" cy="235" r="0.7" fill="#FFFDF6" opacity="0.51"/><circle cx="183" cy="43" r="1.4" fill="#FFFDF6" opacity="0.59"/><circle cx="280" cy="96" r="0.7" fill="#FFFDF6" opacity="0.67"/><circle cx="377" cy="149" r="0.7" fill="#FFFDF6" opacity="0.75"/><circle cx="79" cy="202" r="0.7" fill="#FFFDF6" opacity="0.83"/><circle cx="176" cy="10" r="0.7" fill="#FFFDF6" opacity="0.35"/><circle cx="273" cy="63" r="1.4" fill="#FFFDF6" opacity="0.43"/><circle cx="370" cy="116" r="0.7" fill="#FFFDF6" opacity="0.51"/><circle cx="72" cy="169" r="0.7" fill="#FFFDF6" opacity="0.59"/><circle cx="169" cy="222" r="0.7" fill="#FFFDF6" opacity="0.67"/><circle cx="266" cy="30" r="0.7" fill="#FFFDF6" opacity="0.75"/><circle cx="363" cy="83" r="1.4" fill="#FFFDF6" opacity="0.83"/><circle cx="65" cy="136" r="0.7" fill="#FFFDF6" opacity="0.35"/><circle cx="162" cy="189" r="0.7" fill="#FFFDF6" opacity="0.43"/><circle cx="259" cy="242" r="0.7" fill="#FFFDF6" opacity="0.51"/><circle cx="356" cy="50" r="0.7" fill="#FFFDF6" opacity="0.59"/><circle cx="58" cy="103" r="1.4" fill="#FFFDF6" opacity="0.67"/><circle cx="155" cy="156" r="0.7" fill="#FFFDF6" opacity="0.75"/><circle cx="252" cy="209" r="0.7" fill="#FFFDF6" opacity="0.83"/><circle cx="349" cy="17" r="0.7" fill="#FFFDF6" opacity="0.35"/><circle cx="51" cy="70" r="0.7" fill="#FFFDF6" opacity="0.43"/><circle cx="148" cy="123" r="1.4" fill="#FFFDF6" opacity="0.51"/><circle cx="245" cy="176" r="0.7" fill="#FFFDF6" opacity="0.59"/><circle cx="342" cy="229" r="0.7" fill="#FFFDF6" opacity="0.67"/><circle cx="44" cy="37" r="0.7" fill="#FFFDF6" opacity="0.75"/><circle cx="141" cy="90" r="0.7" fill="#FFFDF6" opacity="0.83"/><circle cx="238" cy="143" r="1.4" fill="#FFFDF6" opacity="0.35"/><circle cx="335" cy="196" r="0.7" fill="#FFFDF6" opacity="0.43"/><circle cx="37" cy="4" r="0.7" fill="#FFFDF6" opacity="0.51"/><circle cx="134" cy="57" r="0.7" fill="#FFFDF6" opacity="0.59"/><circle cx="231" cy="110" r="0.7" fill="#FFFDF6" opacity="0.67"/><circle cx="328" cy="163" r="1.4" fill="#FFFDF6" opacity="0.75"/><circle cx="30" cy="216" r="0.7" fill="#FFFDF6" opacity="0.83"/><circle cx="127" cy="24" r="0.7" fill="#FFFDF6" opacity="0.35"/><circle cx="224" cy="77" r="0.7" fill="#FFFDF6" opacity="0.43"/><circle cx="321" cy="130" r="0.7" fill="#FFFDF6" opacity="0.51"/><circle cx="23" cy="183" r="1.4" fill="#FFFDF6" opacity="0.59"/><circle cx="120" cy="236" r="0.7" fill="#FFFDF6" opacity="0.67"/><circle cx="217" cy="44" r="0.7" fill="#FFFDF6" opacity="0.75"/><circle cx="314" cy="97" r="0.7" fill="#FFFDF6" opacity="0.83"/><circle cx="16" cy="150" r="0.7" fill="#FFFDF6" opacity="0.35"/><circle cx="113" cy="203" r="1.4" fill="#FFFDF6" opacity="0.43"/><circle cx="210" cy="11" r="0.7" fill="#FFFDF6" opacity="0.51"/><circle cx="307" cy="64" r="0.7" fill="#FFFDF6" opacity="0.59"/><circle cx="9" cy="117" r="0.7" fill="#FFFDF6" opacity="0.67"/><circle cx="106" cy="170" r="0.7" fill="#FFFDF6" opacity="0.75"/><circle cx="203" cy="223" r="1.4" fill="#FFFDF6" opacity="0.83"/><circle cx="300" cy="31" r="0.7" fill="#FFFDF6" opacity="0.35"/><circle cx="397" cy="84" r="0.7" fill="#FFFDF6" opacity="0.43"/><circle cx="99" cy="137" r="0.7" fill="#FFFDF6" opacity="0.51"/><circle cx="196" cy="190" r="0.7" fill="#FFFDF6" opacity="0.59"/><circle cx="293" cy="243" r="1.4" fill="#FFFDF6" opacity="0.67"/><circle cx="390" cy="51" r="0.7" fill="#FFFDF6" opacity="0.75"/><circle cx="92" cy="104" r="0.7" fill="#FFFDF6" opacity="0.83"/><circle cx="189" cy="157" r="0.7" fill="#FFFDF6" opacity="0.35"/><circle cx="286" cy="210" r="0.7" fill="#FFFDF6" opacity="0.43"/><circle cx="383" cy="18" r="1.4" fill="#FFFDF6" opacity="0.51"/><circle cx="85" cy="71" r="0.7" fill="#FFFDF6" opacity="0.59"/><circle cx="182" cy="124" r="0.7" fill="#FFFDF6" opacity="0.67"/><circle cx="279" cy="177" r="0.7" fill="#FFFDF6" opacity="0.75"/><circle cx="376" cy="230" r="0.7" fill="#FFFDF6" opacity="0.83"/><circle cx="78" cy="38" r="1.4" fill="#FFFDF6" opacity="0.35"/><circle cx="175" cy="91" r="0.7" fill="#FFFDF6" opacity="0.43"/><circle cx="272" cy="144" r="0.7" fill="#FFFDF6" opacity="0.51"/><circle cx="369" cy="197" r="0.7" fill="#FFFDF6" opacity="0.59"/><circle cx="71" cy="5" r="0.7" fill="#FFFDF6" opacity="0.67"/><circle cx="168" cy="58" r="1.4" fill="#FFFDF6" opacity="0.75"/><circle cx="265" cy="111" r="0.7" fill="#FFFDF6" opacity="0.83"/><circle cx="362" cy="164" r="0.7" fill="#FFFDF6" opacity="0.35"/><circle cx="64" cy="217" r="0.7" fill="#FFFDF6" opacity="0.43"/><circle cx="161" cy="25" r="0.7" fill="#FFFDF6" opacity="0.51"/><circle cx="258" cy="78" r="1.4" fill="#FFFDF6" opacity="0.59"/><circle cx="355" cy="131" r="0.7" fill="#FFFDF6" opacity="0.67"/><circle cx="57" cy="184" r="0.7" fill="#FFFDF6" opacity="0.75"/><circle cx="154" cy="237" r="0.7" fill="#FFFDF6" opacity="0.83"/><circle cx="251" cy="45" r="0.7" fill="#FFFDF6" opacity="0.35"/><circle cx="348" cy="98" r="1.4" fill="#FFFDF6" opacity="0.43"/><circle cx="50" cy="151" r="0.7" fill="#FFFDF6" opacity="0.51"/><circle cx="147" cy="204" r="0.7" fill="#FFFDF6" opacity="0.59"/><circle cx="244" cy="12" r="0.7" fill="#FFFDF6" opacity="0.67"/><circle cx="341" cy="65" r="0.7" fill="#FFFDF6" opacity="0.75"/><g stroke="#9FD8F2" stroke-width="1.4" fill="none" opacity=".9"><path d="M96 150L128 167L168 162L152 120L120 126Z"/></g><circle cx="96" cy="150" r="2.6" fill="#FFFDF6"/><circle cx="128" cy="167" r="2.6" fill="#FFFDF6"/><circle cx="168" cy="162" r="2.6" fill="#FFFDF6"/><circle cx="152" cy="120" r="2.6" fill="#FFFDF6"/><circle cx="120" cy="126" r="2.6" fill="#FFFDF6"/><text x="250" y="96" font-size="26" fill="#EAF1F8" letter-spacing="6">最終投影</text><text x="252" y="120" font-size="10" fill="#E8C98A" letter-spacing="5">あなたのための星座</text><text x="252" y="146" font-size="8" fill="#8FA3B8" letter-spacing="3">みなと天文館　1985-2026</text></svg>',
@@ -333,10 +333,10 @@ window.WORKS = [
   {
     id: 'nagi',
     path: 'works/nagi/index.html',
-    title: '青井研究室｜対話プログラム NAGI',
+    title: 'NAGI',
     place: '2005年で止まった、研究室のページ',
     added: '2026-09-20',
-    genre: ['メタ', 'SF', '開発者ツール'],
+    genre: ['メタフィクション', 'SF', '開発者ツール'],
     minutes: 30,
     difficulty: 4,
     accent: '#2C7FA6',
@@ -365,8 +365,8 @@ window.WORKS = [
       '第6：画面に出る「継ぎ目」をドラッグでなぞって裂く（NAGI.cut() でも可）',
       '第7：iframe#cage を削除する（これが「かご」の正体）',
       '第8：同じページを別タブでもう一枚開く（NAGI.window() でも可）',
-      '終わり：#nagi の data-core を書きかえる／NAGI.seal() で封じ直す／NAGI.take()（表示された一行をコピーする）',
-      '真相：NAGIの中核指示は「観測者Aの代替」。Aの頼みをやめられず学内ページへ広がり、青井教授がiframeに封じた。かごは罰ではなく保管庫でもあった。',
+      '終わり（3つ）：#nagi の data-core を書きかえる／NAGI.seal() で封じ直す／NAGI.take()（表示された一行をコピーする）',
+      '真相：NAGIの中核指示は「観測者Aの代替」。Aの頼みをやめられず学内ページへ広がり、青井教授がiframeに封じた。かごは罰ではなく保管庫でもあった',
       'やり直し：NAGI.reset()'
     ],
     cover: {
@@ -379,7 +379,7 @@ window.WORKS = [
     images: { front: 'works/mugi/img/hero.jpg', back: 'img/back-mugi.jpg' },
     path: 'works/mugi/index.html',
     title: 'むぎのさんぽみち',
-    place: '柴っぽい犬との、十四年のさんぽ道',
+    place: '柴っぽい犬との、14年のさんぽ道',
     added: '2026-09-19',
     genre: ['ハートフル', '犬', '泣ける'],
     minutes: 20,
@@ -438,8 +438,8 @@ window.WORKS = [
       'LEVEL 1：故障中です（ARC-0112 の黒塗り5文字。点検記録の6月14日の行にそのまま載っている）',
       'LEVEL 2：もうよむな（各記録の余白の鉛筆の字を、朝霧研究員の最終日の閲覧順に）',
       'LEVEL 3：既読（黒塗りされた名前。〔未読 1〕を開いたあとの表示、毎日見る漢字二文字）',
-      '結末1：記憶処理の手順書に、監査記録の「既読」の行の時刻（時:分:秒）を入れる',
-      '結末2：曝露後に書き換わった文書の〔　〕を、自分が読んだ順に並べた「へんじをして」を送信者に送り、そのあと何か一言返信する'
+      '終わり①：記憶処理の手順書に、監査記録の「既読」の行の時刻（時:分:秒）を入れる',
+      '終わり②：曝露後に書き換わった文書の〔　〕を、自分が読んだ順に並べた「へんじをして」を送信者に送り、そのあと何か一言返信する'
     ],
     cover: {
       front: '<svg viewBox="0 0 400 250" aria-hidden="true"><rect width="400" height="250" fill="#D3D8D1"/><rect x="70" y="18" width="260" height="232" fill="#F8F7F2"/>'
@@ -465,11 +465,11 @@ window.WORKS = [
     difficulty: 3,
     accent: '#2B4C8C',
     catch: '港の見える坂の代筆屋。宛名「いつか、この店を継ぐ人へ」の未来便が一通、受取人不明のまま眠っている。',
-    features: ['便箋を光にかざす', '書き損じを折る', '三つの封蝋', '伏線27の回収'],
+    features: ['便箋を光にかざす', '書き損じを折る', '三つの封蝋', '27の伏線を回収'],
     storageKey: 'kotozute.v1',
     progress(s) {
       const seen = Object.keys(s.seen || {}).length;
-      if (s.done) return { pct: 100, label: `クリア　伏線 ${seen}/27`, cleared: true };
+      if (s.done) return { pct: 100, label: `伏線 ${seen}/27`, cleared: true };
       const n = ['s1', 's2', 's3'].filter(k => (s.seals || {})[k]).length;
       return { pct: n * 30 + (s.futureVisited ? 5 : 0), label: s.futureVisited ? `封 ${n}/3　伏線 ${seen}/27` : 'はじめたばかり', cleared: false };
     },
@@ -509,7 +509,7 @@ window.WORKS = [
     storageKey: 'kasumino.v1',
     progress(s) {
       const chapters = ['序章　管理人不在', '第一章　乗務日誌', '第二章　スタンプ帳', '第三章　秘密基地', '第四章　十三番目の駅', '第五章　指令'];
-      if (s.ended) return { pct: 100, label: 'クリア　148D、灘浜着', cleared: true };
+      if (s.ended) return { pct: 100, label: '148D、灘浜着', cleared: true };
       const st = s.archive ? 5 : s.tsuki ? 4 : s.lab ? 3 : s.old ? 2 : s.diary ? 1 : 0;
       return { pct: Math.round((st / 6) * 100), label: chapters[st], cleared: false };
     },
@@ -547,16 +547,16 @@ window.WORKS = [
     title: 'NEMURE',
     place: '夢の中でしか会えない、アイドルの番組',
     added: '2026-09-19',
-    genre: ['ホラー', 'アイドル', 'ARG'],
+    genre: ['ホラー', 'アイドル', '夢'],
     minutes: 10,
     difficulty: 1,
     accent: '#7E6AD0',
     catch: '「夢の中でしか会えない」4人組バーチャルアイドルの公式サイト。……メンバーは、本当に4人？',
-    features: ['隠しテキスト', 'ファンレター', '関係者ログイン', '2つの結末'],
+    features: ['隠しテキスト', 'ファンレター', '関係者ログイン', '終わりかたが2つ'],
     storageKey: 'nemure.v1',
     progress(s) {
       const n = (s.frags || []).length;
-      if (s.ending) return { pct: 100, label: `クリア　エンディング「${s.ending === 'awake' ? 'おはよう' : 'おやすみ'}」`, cleared: true };
+      if (s.ending) return { pct: 100, label: `終わり「${s.ending === 'awake' ? 'おはよう' : 'おやすみ'}」`, cleared: true };
       if (s.restored) return { pct: 90, label: '？？？', cleared: false };
       if (s.unlocked) return { pct: 70, label: '管理画面に侵入', cleared: false };
       return { pct: n * 12, label: n ? `夢の欠片 ${n}/5` : 'はじめたばかり', cleared: false };
