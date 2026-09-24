@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>TOMARE</title>
+<style>
+  html,body{margin:0;height:100%;background:#0d0c14;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none}
+  body{display:flex;align-items:center;justify-content:center}
+  #screen{display:block;image-rendering:auto;background:#0d0c14;outline:none}
+  #touch{position:fixed;inset:0;pointer-events:none;display:none}
+  #touch.on{display:block}
+  .tb{position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);
+      font:bold 13px monospace;display:flex;align-items:center;justify-content:center;pointer-events:auto}
+  .tb.dn{background:rgba(255,255,255,.3)}
+  #stick{position:absolute;left:0;top:0;width:45%;height:100%;pointer-events:auto}
+  #knob{position:absolute;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;border:2px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);display:none}
+</style>
+</head>
+<body>
+<canvas id="screen" tabindex="0"></canvas>
+<div id="touch">
+  <div id="stick"></div><div id="knob"></div>
+  <div class="tb" data-a="shot"   style="right:150px;bottom:112px;width:52px;height:52px">SHOT</div>
+  <div class="tb" data-a="dash"   style="right:22px;bottom:128px;width:60px;height:60px">DASH</div>
+  <div class="tb" data-a="attack" style="right:96px;bottom:40px;width:70px;height:70px">ATK</div>
+  <div class="tb" data-a="jump"   style="right:18px;bottom:30px;width:66px;height:66px">JUMP</div>
+</div>
+<script src="js/core.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/art.js"></script>
+<script src="js/world.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/player.js"></script>
+<script src="js/enemies.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>

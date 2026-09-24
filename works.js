@@ -13,6 +13,57 @@
    ========================================================= */
 window.WORKS = [
   {
+    id: 'tomare',
+    images: { front: 'works/tomare/img/front.png', back: 'works/tomare/img/back.png' },
+    path: 'works/tomare/index.html',
+    title: 'TOMARE',
+    place: '「止まれ」の標識をかついで歩く、終わったあとの街',
+    added: '2026-09-24',
+    genre: ['アクション', 'ローグライク', 'ドット絵'],
+    minutes: 20,
+    difficulty: 3,
+    accent: '#E0415A',
+    catch: '「止まれ」の標識をかついだ小さなロボットが、終わったあとの街を進む。目をさました家電たちをなぎ払い、雨の夜の向こうで待つ巨大な解体機のもとへ。',
+    features: ['ドット絵なのに、画面が揺れる・止まる・寄る', '昼・夕暮れ・雨の夜で、街の色が変わる', 'WASD＋マウスで、3連撃・溜め・叩きつけ・必殺技', '部屋もパワーアップも、遊ぶたびに変わる'],
+    storageKey: 'tomare.v1',
+    progress(s) {
+      if (s.clears) return { pct: 100, label: (s.bestLoop || 1) > 1 ? '解体機を' + s.bestLoop + '周たおした' : '解体機をたおした', cleared: true };
+      const b = s.best;
+      if (!b) return { pct: s.playMs ? 2 : 0, label: s.playMs ? 'タイトル画面' : '電源OFF', cleared: false };
+      const i = b.stage * 5 + b.room;
+      const at = ['道路・昼', '街・夕暮れ', '雨の夜'][b.stage] || '道路・昼';
+      return { pct: Math.min(95, 5 + Math.round(i / 14 * 90)), label: at + ' ' + (b.room + 1) + '/5' + (i === 14 ? '（解体機）' : ''), cleared: false };
+    },
+    spoilers: [
+      '攻撃（左クリック）を押しっぱなしで溜め。HPの下の黄色いゲージが満タンのときの溜めは、画面ぜんぶを叩く必殺技になる',
+      '扇風機の撃つピンクの弾と、自販機の投げる缶は、標識で打ち返せる',
+      '空中で S＋攻撃 は叩きつけ。敵の頭に当てると跳ね返って、ジャンプとダッシュがもう一度使える',
+      '敵の攻撃が当たる直前にダッシュすると、時間がゆっくりになる（ゲージも増える）',
+      '自販機は、壁や車に突進させると目を回す。そこが攻めどき',
+      '休憩の部屋の緑のライトでHPが半分もどる。赤いオイル缶でも少しもどる。HPが少ないと、カードに「REPAIR」がまざる',
+      '解体機：アームの叩きつけのあとは、地面を走る衝撃波をジャンプでかわす。運転席の赤い目に当てるとダメージが大きい。半分をこえると、ミサイルと突進も使う'
+    ],
+    cover: {
+      front: '<svg viewBox="0 0 400 250" aria-hidden="true" shape-rendering="crispEdges"><defs><linearGradient id="tm-s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#76A2CC"/><stop offset="1" stop-color="#E7EFF0"/></linearGradient></defs>'
+        + '<rect width="400" height="250" fill="url(#tm-s)"/><circle cx="318" cy="40" r="15" fill="#fff"/>'
+        + [[0, 120, 40], [44, 96, 34], [84, 130, 50], [140, 104, 36], [182, 118, 58], [246, 92, 30], [282, 126, 46], [334, 108, 66]].map(([x, y, w]) => `<rect x="${x}" y="${y}" width="${w}" height="${190 - y}" fill="#A9BECE"/>`).join('')
+        + '<rect y="176" width="400" height="74" fill="#9A917F"/><rect y="170" width="400" height="12" fill="#221F30"/><rect y="171" width="400" height="3" fill="#F4F4EE"/><rect y="174" width="400" height="5" fill="#C7CCD0"/>'
+        + [20, 70, 120, 170, 220, 270, 320, 370].map(x => `<rect x="${x}" y="182" width="6" height="24" fill="#98A2AC"/>`).join('')
+        + '<g transform="translate(270 96)"><path d="M-6 -60l-26 8 18 20z" fill="#FBF7F0" stroke="#221F30" stroke-width="3"/><path d="M-11 -54l-14 4 10 11z" fill="#E0415A"/><rect x="-14" y="-40" width="4" height="46" fill="#A3A9B6"/>'
+        + '<rect x="0" y="12" width="56" height="52" fill="#ECE6D6" stroke="#221F30" stroke-width="4"/><rect x="0" y="-4" width="56" height="22" rx="20" fill="#ECE6D6" stroke="#221F30" stroke-width="4"/><rect x="2" y="12" width="52" height="8" fill="#ECE6D6"/>'
+        + '<circle cx="38" cy="22" r="14" fill="#2D2A3C"/><circle cx="38" cy="22" r="9" fill="#FFD23F"/><circle cx="34" cy="18" r="3" fill="#fff"/><rect x="2" y="48" width="52" height="8" fill="#B3A993"/>'
+        + '<rect x="10" y="64" width="10" height="12" fill="#4B4658"/><rect x="34" y="64" width="10" height="12" fill="#4B4658"/><path d="M0 30l-40 6 6 8 34-4z" fill="#E5486D" stroke="#221F30" stroke-width="2"/><rect x="18" y="-22" width="3" height="18" fill="#6D6577"/><rect x="16" y="-26" width="7" height="6" fill="#FF4D6D"/></g>'
+        + '<text x="24" y="64" font-size="44" font-weight="800" fill="#FBF7F0" stroke="#221F30" stroke-width="6" paint-order="stroke" font-family="\'Dela Gothic One\', monospace">TOMARE</text></svg>',
+      back: '<svg viewBox="0 0 400 250" aria-hidden="true" shape-rendering="crispEdges"><defs><linearGradient id="tm-n" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E1024"/><stop offset="1" stop-color="#43396B"/></linearGradient><radialGradient id="tm-e"><stop offset="0" stop-color="#FF4D5A"/><stop offset="1" stop-color="#FF4D5A" stop-opacity="0"/></radialGradient></defs>'
+        + '<rect width="400" height="250" fill="url(#tm-n)"/><circle cx="80" cy="50" r="18" fill="#DCDCCC"/>'
+        + '<rect y="196" width="400" height="54" fill="#1D2140"/>'
+        + '<g fill="#D8B24A" stroke="#221F30" stroke-width="3"><rect x="210" y="100" width="110" height="80"/><rect x="226" y="72" width="60" height="32"/><path d="M290 90L180 40l-8 12 100 50z"/></g>'
+        + '<rect x="196" y="176" width="140" height="26" rx="12" fill="#474B58" stroke="#221F30" stroke-width="3"/><circle cx="250" cy="88" r="30" fill="url(#tm-e)"/><circle cx="250" cy="88" r="6" fill="#FFE0E0"/>'
+        + '<g transform="translate(96 168)"><rect width="20" height="20" fill="#ECE6D6" stroke="#221F30" stroke-width="2"/><circle cx="14" cy="8" r="4" fill="#FFD23F"/><path d="M-4 -2l-10 -12 12 -2z" fill="#E0415A" stroke="#FBF7F0"/></g>'
+        + [...Array(40)].map((_, i) => `<path d="M${(i * 53) % 400} ${(i * 37) % 250}l-4 14" stroke="#8FA3D9" stroke-width="1.5"/>`).join('') + '</svg>'
+    }
+  },
+  {
     id: 'kokuchi',
     images: { front: 'works/kokuchi/img/room.jpg', back: 'works/kokuchi/img/night.jpg' },
     path: 'works/kokuchi/index.html',
