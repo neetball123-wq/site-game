@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ポスト百景</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Yuji+Syuku&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap">
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body data-view="blog">
+
+<div class="site" id="site">
+  <header class="head">
+    <h1><a href="#/">ポスト百景</a></h1>
+    <p class="lead">全国の 郵便ポストを 撮り歩いています。<small>管理人：中根</small></p>
+    <nav class="nav">
+      <a href="#/">記事一覧</a><a href="#/about">このサイトについて</a>
+      <a href="#/box" id="nav-box" hidden>保存箱</a><a href="#/links" id="nav-links" hidden>リンク集</a>
+    </nav>
+  </header>
+  <main id="main" tabindex="-1"></main>
+  <footer class="foot">
+    <p>© 2003-2019 ポスト百景　このサイトは更新を停止しています。</p>
+    <p class="tiny">※本作はフィクションです。登場する人物・地名・団体・記事はすべて架空のものです。</p>
+    <p class="tiny"><button type="button" id="help-btn">管理人の覚え書き（手引き・答え）</button>　<button type="button" id="snd-btn" aria-pressed="true">音</button></p>
+  </footer>
+</div>
+
+<!-- 手紙（巻紙） -->
+<div class="fumi" id="fumi" hidden>
+  <div class="fumi-in">
+    <div class="paper" id="paper">
+      <p class="fumi-date" id="fumi-date"></p>
+      <div class="fumi-body" id="fumi-body"></div>
+    </div>
+    <div class="fumi-act">
+      <button type="button" id="fumi-close">たたむ</button>
+      <button type="button" id="fumi-reply" class="primary">返事を 書く</button>
+    </div>
+  </div>
+</div>
+
+<!-- 活字棚 -->
+<div class="case" id="case" hidden>
+  <div class="case-in">
+    <header class="case-head">
+      <p class="case-t">活字棚<small id="case-ask"></small></p>
+      <button type="button" id="case-close">やめる</button>
+    </header>
+    <div class="case-grid" id="case-grid"></div>
+    <div class="case-out">
+      <p class="case-lbl">組み上がり</p>
+      <div class="compose" id="compose"></div>
+      <p class="case-msg" id="case-msg" aria-live="polite"></p>
+      <button type="button" class="primary" id="case-send">刷って、入れる</button>
+    </div>
+  </div>
+</div>
+
+<!-- 覚え書き -->
+<aside class="help" id="help" hidden>
+  <header><b>管理人の覚え書き</b><button type="button" id="help-close">閉じる</button></header>
+  <div id="help-body"></div>
+</aside>
+
+<div class="veil" id="veil" hidden></div>
+<div class="endcard" id="end" hidden role="dialog" aria-modal="true"></div>
+
+<script src="js/data.js"></script>
+<script src="js/sound.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

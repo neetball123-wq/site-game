@@ -1,0 +1,168 @@
+/* =========================================================
+   ウラガワ — 体験型サイト集
+   表紙は「表の顔」。めくると「裏側」が見える。
+   ========================================================= */
+:root {
+  --ground: #EFECE6;
+  --surface: #FFFFFF;
+  --ink: #1D1B20;
+  --muted: #69656F;
+  --line: #D8D3CA;
+  --ura: #C8372D;        /* 裏の朱：ロゴの反転と目印 */
+  --on-accent: #FFFFFF;
+  --shadow: 0 1px 0 rgba(29, 27, 32, .06), 0 10px 30px rgba(29, 27, 32, .08);
+  --f-logo: "Dela Gothic One", "Hiragino Kaku Gothic StdN", "Yu Gothic", sans-serif;
+  --f-body: "IBM Plex Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  --f-mono: "IBM Plex Mono", "Consolas", "Menlo", monospace;
+  --gutter: clamp(16px, 4vw, 40px);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #141317; --surface: #1D1C21; --ink: #ECE8E1; --muted: #9D99A3; --line: #2E2C33; --ura: #E4583F;
+    --shadow: 0 1px 0 rgba(0, 0, 0, .3), 0 12px 32px rgba(0, 0, 0, .35); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #141317; --surface: #1D1C21; --ink: #ECE8E1; --muted: #9D99A3; --line: #2E2C33; --ura: #E4583F;
+  --shadow: 0 1px 0 rgba(0, 0, 0, .3), 0 12px 32px rgba(0, 0, 0, .35); color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--ground); color: var(--ink); font: 400 15px/1.8 var(--f-body); overflow-x: hidden; }
+body.playing { overflow: hidden; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--ura); outline-offset: 3px; }
+.small { font-size: 12px; color: var(--muted); }
+
+.hub { max-width: 1120px; margin: 0 auto; padding-inline: var(--gutter); }
+
+/* ---------- 見出し：ロゴは下に裏返しの影を落とす ---------- */
+.hub-head { display: grid; grid-template-columns: auto 1fr; gap: 16px clamp(24px, 5vw, 64px); align-items: end; padding-block: clamp(36px, 7vw, 72px) 28px; border-bottom: 2px solid var(--ink); }
+.logo { position: relative; margin: 0 0 clamp(40px, 6vw, 70px); font: 400 clamp(58px, 11vw, 124px)/1 var(--f-logo); letter-spacing: .02em; }
+.logo-omote { display: block; }
+.logo-ura {
+  position: absolute; left: 0; top: 100%; transform: scaleY(-1); transform-origin: center; color: var(--ura);
+  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, .9), transparent 62%); mask-image: linear-gradient(to top, rgba(0, 0, 0, .9), transparent 62%);
+  pointer-events: none;
+}
+.head-side { display: grid; gap: 10px; padding-bottom: 8px; }
+.tagline { margin: 0; font: 700 clamp(18px, 2.4vw, 22px)/1.5 var(--f-body); }
+.intro { margin: 0; color: var(--muted); max-width: 34em; }
+.dest { margin: 2px 0 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; min-height: 1.9em; }
+.dest-k { font: 500 11px/1 var(--f-mono); letter-spacing: .18em; color: var(--muted); }
+.dest-v { font: 700 clamp(15px, 1.9vw, 18px)/1.5 var(--f-body); color: var(--ink); text-decoration: none; border-bottom: 2px solid var(--wa, var(--ura)); }
+.dest-v:hover, .dest-v:focus-visible { color: var(--wa, var(--ura)); }
+.dest.in .dest-v { animation: destin .7s ease both; }
+@keyframes destin { from { opacity: 0; transform: translateY(6px); filter: blur(4px); } }
+@media (prefers-reduced-motion: reduce) { .dest.in .dest-v { animation: none; } }
+.stats { display: flex; flex-wrap: wrap; gap: 6px 28px; margin: 6px 0 0; }
+.stats div { display: grid; }
+.stats dt { font-size: 11px; letter-spacing: .14em; color: var(--muted); }
+.stats dd { margin: 0; font: 500 22px/1.2 var(--f-mono); font-variant-numeric: tabular-nums; }
+
+/* ---------- 遊び方・絞り込み ---------- */
+.hub-main { padding-block: 24px 64px; }
+.howto { list-style: none; margin: 0 0 28px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 13px; color: var(--muted); }
+.howto li::before { content: "▸"; color: var(--ura); margin-right: 6px; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.filters button { border: 1px solid var(--line); background: var(--surface); border-radius: 99px; padding: 5px 14px; font-size: 13px; cursor: pointer; }
+.filters button[aria-pressed="true"] { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+
+/* ---------- 作品カード ---------- */
+.works { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: clamp(20px, 3vw, 36px); }
+.work { --wa: var(--ura); display: grid; grid-template-rows: auto 1fr; background: var(--surface); box-shadow: var(--shadow); }
+
+.cover { position: relative; aspect-ratio: 8 / 5; max-width: 100%; overflow: hidden; background: #000; }
+.face { position: absolute; inset: 0; }
+.face svg { display: block; width: 100%; height: 100%; }
+.face img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.face.back { clip-path: circle(0% at 100% 100%); transition: clip-path .75s cubic-bezier(.65, 0, .35, 1); }
+.cover.flipped .face.back { clip-path: circle(150% at 100% 100%); }
+.cover::after {  /* めくれる角 */
+  content: ""; position: absolute; right: 0; bottom: 0; width: 34px; height: 34px;
+  background: linear-gradient(135deg, transparent 50%, rgba(0, 0, 0, .55) 50%); transition: opacity .3s; pointer-events: none;
+}
+.cover.flipped::after { opacity: 0; }
+.badges { position: absolute; top: 12px; left: 12px; display: flex; gap: 6px; z-index: 1; }
+.badge { font: 500 11px/1 var(--f-mono); letter-spacing: .1em; padding: 5px 8px; background: var(--ura); color: #fff; }
+.badge.clear { background: #111; color: #F2EFE8; border: 1px solid #F2EFE8; }
+.flip {
+  position: absolute; right: 44px; bottom: 10px; z-index: 1; border: 1px solid rgba(255, 255, 255, .7); background: rgba(0, 0, 0, .45); color: #fff;
+  border-radius: 99px; padding: 3px 12px; font-size: 12px; cursor: pointer; backdrop-filter: blur(4px);
+}
+
+.work-body { display: grid; align-content: start; gap: 12px; padding: 20px clamp(18px, 3vw, 26px) 22px; }
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin: 0; font-size: 12px; color: var(--muted); }
+.tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.tag { border: 1px solid var(--line); padding: 1px 8px; border-radius: 99px; }
+.mins, .diff { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.diff i { font-style: normal; color: var(--wa); letter-spacing: 1px; }
+.diff i.off { color: var(--line); }
+.work-title { margin: 0; font: 400 clamp(24px, 3vw, 30px)/1.25 var(--f-logo); text-wrap: balance; }
+.catch { margin: 0; max-width: 34em; }
+.features { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--muted); }
+.features li::before { content: "◇ "; color: var(--wa); }
+
+.prog { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px 12px; padding-top: 12px; border-top: 1px dashed var(--line); }
+.bar { grid-column: 1 / -1; height: 4px; background: var(--line); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--wa); transition: width .6s ease; }
+.prog-label { font: 500 13px/1.5 var(--f-mono); }
+.prog-pct { font: 400 12px/1.5 var(--f-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.play {
+  border: 0; background: var(--wa); color: var(--on-accent); padding: 11px 26px; cursor: pointer;
+  font: 700 15px/1 var(--f-body); letter-spacing: .08em; transition: transform .12s, filter .2s;
+}
+.play:hover { filter: brightness(1.08); }
+.play:active { transform: translateY(1px); }
+.sub-link { font-size: 13px; color: var(--muted); }
+.reset { margin-left: auto; background: none; border: 0; padding: 0; font-size: 12px; color: var(--muted); text-decoration: underline; cursor: pointer; }
+.reset.armed { color: var(--ura); }
+
+.spoiler { font-size: 13px; border-top: 1px dashed var(--line); padding-top: 10px; }
+.spoiler summary { cursor: pointer; color: var(--muted); }
+.spoiler ol { margin: 8px 0 0; padding-left: 1.4em; }
+.spoiler li { margin-bottom: 4px; }
+
+.hub-foot { border-top: 2px solid var(--ink); padding-block: 20px calc(40px + env(safe-area-inset-bottom, 0px)); font-size: 13px; }
+.hub-foot p { margin: 0 0 4px; }
+
+/* ---------- 作品を遊ぶ画面 ---------- */
+.player { position: fixed; inset: 0; z-index: 100; display: flex; flex-direction: column; background: var(--ground); }
+.player-bar {
+  display: flex; align-items: center; gap: 12px; padding: calc(8px + env(safe-area-inset-top, 0px)) 12px 8px;
+  background: var(--ink); color: var(--ground); font-size: 13px;
+}
+.player-back { flex: none; border: 1px solid currentColor; background: none; padding: 5px 12px; cursor: pointer; font-size: 13px; }
+.player-title { flex: 1; min-width: 0; margin: 0; display: flex; gap: 12px; align-items: baseline; overflow: hidden; white-space: nowrap; }
+.player-title b { font: 400 15px/1.2 var(--f-logo); overflow: hidden; text-overflow: ellipsis; }
+.player-title span { font: 400 12px/1.2 var(--f-mono); opacity: .7; overflow: hidden; text-overflow: ellipsis; }
+.player-newtab { flex: none; font-size: 12px; opacity: .8; }
+.player-frame { flex: 1; width: 100%; border: 0; background: #fff; }
+
+@media (max-width: 720px) {
+  .hub-head { grid-template-columns: 1fr; align-items: start; }
+  .logo { margin-bottom: 44px; }
+  .player-title span { display: none; }
+  .player-newtab { font-size: 11px; white-space: nowrap; }
+  /* ジャンルの札は一列にして、横にすべらせる（縦に長く積もらないように） */
+  .filters { flex-wrap: nowrap; overflow-x: auto; margin: 0 calc(var(--gutter) * -1) 20px; padding: 0 var(--gutter) 6px; scrollbar-width: none; -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent); mask-image: linear-gradient(90deg, #000 88%, transparent); }
+  .filters::-webkit-scrollbar { display: none; }
+  .filters button { flex: none; white-space: nowrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .face.back, .bar i, .play { transition: none; }
+}
+
+/* ---------- 見てしまったあと（作品からの干渉） ---------- */
+body.haunted .tagline { color: var(--ura); animation: hjit 4s steps(1) infinite; }
+@keyframes hjit { 0%, 92%, 96% { transform: none; } 94% { transform: translateX(-2px); } 98% { transform: translateX(2px); } }
+.haunt-mark { position: absolute; left: 12px; bottom: 10px; z-index: 1; padding: 2px 8px; background: rgba(179, 38, 30, .88); color: #fff; font: 500 11px/1.5 var(--f-mono); letter-spacing: .1em; }
+@media (prefers-reduced-motion: reduce) { body.haunted .tagline { animation: none; } }
+.spoiler summary small { margin-left: 8px; font-size: 11px; opacity: .6; }
+.spoil-note { margin: 8px 0 4px; font-size: 12px; color: var(--muted); }
+.spoiler li.locked { color: var(--muted); opacity: .75; }

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ナクシタ堂｜あなたがなくしたもの、ぜんぶあります。</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Mochiy+Pop+One&display=swap">
+<link rel="stylesheet" href="css/shop.css">
+</head>
+<body>
+
+<div class="site" id="site">
+  <div class="topbar">
+    <p class="hello">ようこそ <b id="hello">ゲスト</b> 様</p>
+    <nav class="toplinks">
+      <a href="#/mypage">マイページ</a>
+      <a href="#/join" id="nav-join">会員登録（無料）</a>
+      <a href="#/faq">よくあるご質問</a>
+      <a href="#/cart" class="cartlink">カート<b id="cart-n">0</b></a>
+    </nav>
+  </div>
+
+  <header class="hd">
+    <a class="logo" href="#/" id="logo" aria-label="ナクシタ堂 トップへ"><span>ナ</span><span>ク</span><span>シ</span><span>タ</span><span>堂</span></a>
+    <div class="hd-c">
+      <p class="catch">あなたがなくしたもの、ぜんぶあります。</p>
+      <p class="hd-sub">うせもの通販　<span id="weather">今日の天気：くもり</span>　<span id="viewers">只今の閲覧者：2人</span></p>
+    </div>
+    <div class="badges" aria-hidden="true">
+      <span class="burst">送料<br>無料</span>
+      <span class="burst b2">ポイント<br><b>∞</b>倍</span>
+    </div>
+  </header>
+
+  <div class="sale" id="sale">
+    <span class="sale-l">⚡タイムセール終了まで</span>
+    <b class="timer" id="timer">00:00:10.0</b>
+    <button type="button" class="stopbtn" id="stop" hidden>■ 止める</button>
+  </div>
+  <div class="ticker" aria-hidden="true"><div class="ticker-in" id="ticker"></div></div>
+
+  <div class="wrap">
+    <aside class="side" id="side"></aside>
+    <main class="main" id="main" tabindex="-1"></main>
+  </div>
+
+  <footer class="ft" id="ft">
+    <nav class="ft-links">
+      <a href="#/law">特定商取引法に基づく表記</a>
+      <a href="#/diary">店長日記</a>
+      <a href="#/reviews">みんなのレビュー</a>
+      <a href="#/faq">よくあるご質問</a>
+      <a href="#/contact">お問い合わせ</a>
+      <a href="#/ura" id="uraguchi" class="uraguchi" hidden>裏口</a>
+    </nav>
+    <p class="copy">© ナクシタ堂　あなたのなくしもの、ぜんぶあります。</p>
+    <p class="tiny">※本作はフィクションです。登場する人物・団体・商品はすべて架空のものです。お支払いいただいたものは、このブラウザの中でだけ失われます。</p>
+    <p class="tiny"><button type="button" id="snd" class="mini">音：入</button></p>
+  </footer>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<div class="modal" id="modal" hidden></div>
+<div class="fall" id="fall" aria-hidden="true"></div>
+<div class="endcard" id="end" hidden role="dialog" aria-modal="true"></div>
+
+<script src="js/data.js"></script>
+<script src="js/sound.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

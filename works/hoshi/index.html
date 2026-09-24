@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>みなと天文館｜最終投影</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Shippori+Mincho:wght@400;600&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="css/dome.css">
+</head>
+<body data-scene="title">
+
+<div class="dome" id="dome">
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div class="milky" aria-hidden="true"></div>
+  <svg class="chart" id="chart" viewBox="0 0 1000 620" preserveAspectRatio="xMidYMid slice" aria-label="星図">
+    <g id="lines"></g><g id="figure"></g><g id="stars"></g>
+  </svg>
+  <div class="beam" aria-hidden="true"></div>
+  <div class="dust" aria-hidden="true"></div>
+  <div class="vig" aria-hidden="true"></div>
+  <div class="seam" aria-hidden="true"></div>
+  <div class="seats" aria-hidden="true"></div>
+  <p class="figname" id="figname" aria-live="polite"></p>
+</div>
+
+<div class="curtain" id="curtain" aria-hidden="true"><i></i><i></i></div>
+
+<section class="title" id="title">
+  <div class="t-in">
+    <p class="t-sup">港区立　みなと天文館</p>
+    <h1 class="t-main"><span>最</span><span>終</span><span>投</span><span>影</span></h1>
+    <p class="t-sub">あなたのための星座</p>
+    <p class="t-info">上映時間 約20分／解説 高梨<br>本日は 一回のみの 投影です</p>
+    <button type="button" class="t-btn" id="start">席につく</button>
+    <p class="t-note">※音が小さく出ます（解説は字幕です）。音は投影卓の「音」で消せます。<br>※本作はフィクションです。</p>
+  </div>
+</section>
+
+<section class="sub" id="sub" hidden>
+  <p class="sub-line" id="sub-line"></p>
+  <button type="button" class="sub-next" id="sub-next" aria-label="次へ">▼</button>
+</section>
+
+<nav class="console" id="console" hidden aria-label="投影卓">
+  <p class="c-year"><span id="c-year">1985</span><small id="c-title">みなと</small></p>
+  <div class="c-btns">
+    <button type="button" id="b-snd" aria-pressed="true">音</button><button type="button" id="b-num" aria-pressed="false">番号灯</button>
+    <button type="button" id="b-hint">補助字幕</button>
+    <button type="button" id="b-lobby">ロビー</button>
+  </div>
+  <p class="c-msg" id="c-msg" aria-live="polite"></p>
+</nav>
+
+<section class="lobby" id="lobby" hidden aria-label="ロビー">
+  <div class="lb-in">
+    <header class="lb-head"><h2>ロビー</h2><button type="button" id="lb-close">ドームへ戻る</button></header>
+    <nav class="lb-tabs" id="lb-tabs"></nav>
+    <div class="lb-body" id="lb-body"></div>
+  </div>
+</section>
+
+<section class="ask" id="ask" hidden>
+  <form class="ask-in" id="ask-form">
+    <p>この星座に、名前を。</p>
+    <input id="ask-name" maxlength="14" autocomplete="off" placeholder="　　　　　　">
+    <button type="submit">つける</button>
+  </form>
+</section>
+
+<div class="lights" id="lights" aria-hidden="true"></div>
+<div class="endcard" id="end" hidden role="dialog" aria-modal="true"></div>
+
+<script src="js/data.js"></script>
+<script src="js/sky.js"></script>
+<script src="js/sound.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

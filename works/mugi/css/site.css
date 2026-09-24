@@ -1,0 +1,212 @@
+/* むぎのさんぽみち — 土台・トップ・地図・なふだ・年めくり・むぎ */
+:root {
+  --paper: #F7F1E5; --paper2: #EFE5D1; --card: #FFFCF6; --ink: #4B3A2C; --muted: #8C7A66; --line: #E3D6BF;
+  --wheat: #E2B46E; --wheat-d: #B97F3C; --fur: #D9A05A; --fur-d: #B97F3C; --cream: #FFF7EA; --red: #C8553D;
+  --grass: #7E9B5F; --land: #EFE6CF; --sea: #BFD8E3; --river: #A9CCDD; --eve: #E0806C;
+  --f-ui: "Kiwi Maru", "Hiragino Maru Gothic ProN", sans-serif; --f-kid: "Hachi Maru Pop", var(--f-ui);
+  --f-mom: "Yusei Magic", var(--f-ui); --f-letter: "Hina Mincho", serif;
+  --ease: cubic-bezier(.22, 1, .36, 1); --ease2: cubic-bezier(.77, 0, .18, 1);
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; color: var(--ink); font: 400 16px/1.95 var(--f-ui); letter-spacing: .03em;
+  background: var(--paper);
+  padding-bottom: 120px; overflow-x: hidden; -webkit-font-smoothing: antialiased;
+}
+a { color: var(--red); text-underline-offset: 3px; }
+h1, h2 { font-weight: 500; line-height: 1.4; }
+img { max-width: 100%; }
+p, dd, li { word-break: keep-all; overflow-wrap: anywhere; }
+button, input, textarea { font: inherit; color: inherit; }
+main:focus { outline: none; }
+.small { font-size: 13px; color: var(--muted); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+.btn { display: inline-block; border: 0; border-radius: 99px; padding: 10px 24px; background: var(--ink); color: var(--paper); text-decoration: none; cursor: pointer; transition: transform .3s var(--ease), background .3s; }
+.btn:hover { transform: translateY(-2px); background: var(--red); }
+.btn.ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
+.btn.ghost:hover { background: var(--ink); color: var(--paper); }
+.chip { display: inline-block; padding: 0 10px; border-radius: 99px; background: var(--paper2); color: var(--ink); font-size: 12px; text-decoration: none; }
+.chip:hover { background: var(--wheat); }
+
+/* ふわっと */
+.rv { opacity: 0; transform: translateY(18px); filter: blur(6px); transition: opacity .9s var(--ease), transform .9s var(--ease), filter .9s var(--ease); }
+.rv.in { opacity: 1; transform: none; filter: none; }
+
+/* ---------- 写真 ---------- */
+.ph { margin: 0; position: relative; overflow: hidden; background: var(--paper2); }
+.ph img, .ph > svg { display: block; width: 100%; height: 100%; object-fit: cover; }
+.polaroid { background: #fff; padding: 10px 10px 30px; box-shadow: 0 10px 24px rgba(75, 58, 44, .16); transform: rotate(-2deg); max-width: 300px; aspect-ratio: 4 / 4.4; }
+.polaroid img, .polaroid > svg { height: calc(100% - 0px); aspect-ratio: 1; }
+
+/* ---------- むぎ（SVG）：色と動きは変数で ---------- */
+.leg { transform-box: fill-box; transform-origin: 50% 0; animation: mg-step var(--step, 0s) ease-in-out infinite alternate; animation-play-state: var(--play, paused); }
+.leg.l2 { animation-direction: alternate-reverse; }
+.tail { transform-origin: 34px 44px; animation: mg-wag var(--wag, 1.4s) ease-in-out infinite alternate; }
+.head { transform-origin: 84px 40px; animation: mg-sniff var(--sniff, 0s) ease-in-out 3; }
+@keyframes mg-step { from { transform: rotate(-16deg); } to { transform: rotate(16deg); } }
+@keyframes mg-wag { from { transform: rotate(-10deg); } to { transform: rotate(14deg); } }
+@keyframes mg-sniff { 50% { transform: translateY(5px) rotate(8deg); } }
+.adult { --fur: #D9A05A; }
+.puppy { --fur: #E2AE68; }
+.senior { --fur: #D6AE7C; --fur-d: #BC9564; --cream: #FBF9F4; }
+.mapdog { --step: .22s; --play: running; --wag: .35s; }
+.mapdog.senior { --step: .5s; --wag: 1.1s; }
+.mapdog.puppy use { transform: scale(.72); transform-origin: 50% 100%; transform-box: fill-box; }
+
+/* ---------- なふだ（メニュー） ---------- */
+.collar { position: fixed; top: 0; left: clamp(12px, 3vw, 32px); z-index: 50; border: 0; background: none; padding: 0; cursor: pointer; width: 96px; height: 120px; }
+.collar-band { position: absolute; left: 0; top: 0; width: 96px; height: 18px; background: var(--red); border-radius: 0 0 10px 10px; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .15); }
+.collar-band::after { content: ""; position: absolute; left: 12px; right: 12px; top: 7px; border-top: 2px dashed rgba(255, 255, 255, .5); }
+.tag { position: absolute; left: 16px; top: 22px; width: 64px; height: 64px; border-radius: 50%; display: grid; place-content: center; text-align: center;
+  background: radial-gradient(circle at 35% 30%, #FBE7B0, #E0B45E 60%, #B98A3A); color: #6B4A1F; box-shadow: 0 6px 14px rgba(75, 58, 44, .3), inset 0 0 0 3px rgba(255, 255, 255, .35);
+  transform-origin: 50% -8px; animation: mg-swing 3.2s ease-in-out infinite; }
+.tag b { font: 400 17px/1 var(--f-kid); letter-spacing: .08em; }
+.tag small { font-size: 9px; line-height: 1.4; margin-top: 2px; }
+.tag-ring { position: absolute; left: 50%; top: -14px; width: 14px; height: 16px; margin-left: -7px; border: 3px solid #B98A3A; border-radius: 50%; }
+.collar:hover .tag, .menu-open .tag { animation-duration: .9s; }
+@keyframes mg-swing { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+.menu { position: fixed; z-index: 49; top: 96px; left: clamp(12px, 3vw, 32px); width: min(300px, calc(100vw - 24px)); padding: 22px 26px 18px; border-radius: 28px;
+  background: radial-gradient(circle at 30% 20%, #FCEFC8, #EDCB85 70%); color: #5A3F1A; box-shadow: 0 18px 40px rgba(75, 58, 44, .28); animation: mg-drop .5s var(--ease); }
+@keyframes mg-drop { from { opacity: 0; transform: translateY(-14px) rotate(-3deg); } }
+.menu-head { margin: 0 0 6px; font-size: 12px; letter-spacing: .2em; opacity: .7; }
+.menu ul { list-style: none; margin: 0; padding: 0; }
+.menu a { display: block; padding: 6px 0; color: inherit; text-decoration: none; font-size: 18px; border-bottom: 1px dashed rgba(90, 63, 26, .25); }
+.menu a:hover { color: var(--red); padding-left: 6px; transition: padding .3s var(--ease); }
+.menu-foot { margin: 10px 0 0; font-size: 11px; opacity: .7; line-height: 1.6; }
+
+/* ---------- 年めくり ---------- */
+.dial { position: fixed; z-index: 40; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; gap: 4px; padding: 22px 10px calc(8px + env(safe-area-inset-bottom));
+  background: rgba(247, 241, 229, .94); backdrop-filter: blur(8px); border-top: 1px solid var(--line); }
+.dial-now { position: absolute; top: 0; left: 50%; transform: translateX(-50%); margin: 0; font-size: 13px; white-space: nowrap; color: var(--muted); }
+.dial-now b { color: var(--ink); font-size: 15px; }
+.dial-track { display: flex; gap: 4px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 4px 40%; mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent); }
+.dial-track::-webkit-scrollbar { display: none; }
+.dial-track button { flex: 0 0 auto; scroll-snap-align: center; border: 0; background: none; padding: 6px 10px; cursor: pointer; color: var(--muted); font-size: 15px; transition: color .3s, transform .4s var(--ease); }
+.dial-track button[aria-pressed="true"] { color: var(--ink); transform: scale(1.35); font-weight: 500; }
+.dial-track button[aria-pressed="true"] span { border-bottom: 2px solid var(--red); }
+.dial-btn { border: 0; background: var(--card); width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 2px 8px rgba(75, 58, 44, .15); cursor: pointer; font-size: 20px; }
+body[data-page="himitsu"] .dial, body[data-page="rusuban"] .dial, body[data-page="tsuzuki"] .dial, body[data-page="end"] .dial, body[data-page="mugi"] .dial, body[data-page="notes"] .dial { display: none; }
+body[data-page="himitsu"], body[data-page="rusuban"], body[data-page="tsuzuki"], body[data-page="end"], body[data-page="mugi"], body[data-page="notes"] { padding-bottom: 60px; }
+
+/* ---------- むぎ（ヒント） ---------- */
+.buddy { position: fixed; z-index: 45; right: 14px; bottom: 84px; width: 92px; height: 70px; border: 0; background: none; padding: 0; cursor: pointer; --wag: .9s; filter: drop-shadow(0 4px 6px rgba(75, 58, 44, .2)); }
+.buddy svg { width: 100%; height: 100%; }
+.buddy:hover { --wag: .25s; }
+.buddy.sniff { --sniff: .7s; }
+body[data-page="himitsu"] .buddy, body[data-page="rusuban"] .buddy, body[data-page="tsuzuki"] .buddy, body[data-page="end"] .buddy, body[data-page="mugi"] .buddy, body[data-page="notes"] .buddy { bottom: 16px; }
+.buddy-say { position: fixed; z-index: 46; right: 16px; bottom: 164px; width: min(320px, calc(100vw - 32px)); padding: 16px 18px 12px; border-radius: 18px 18px 4px 18px; background: var(--card); box-shadow: 0 12px 30px rgba(75, 58, 44, .22); animation: mg-drop .4s var(--ease); font-size: 14px; line-height: 1.8; }
+body[data-page="himitsu"] .buddy-say, body[data-page="rusuban"] .buddy-say, body[data-page="tsuzuki"] .buddy-say, body[data-page="end"] .buddy-say, body[data-page="mugi"] .buddy-say, body[data-page="notes"] .buddy-say { bottom: 96px; }
+.buddy-say p { margin: 0 0 8px; }
+.kun { display: block; font-family: var(--f-kid); color: var(--wheat-d); }
+.buddy-btns { display: flex; gap: 8px; justify-content: flex-end; }
+.buddy-btns button { border: 0; background: var(--paper2); border-radius: 99px; padding: 3px 12px; font-size: 13px; cursor: pointer; }
+
+/* ---------- トップ ---------- */
+.hero { position: relative; height: min(88vh, 760px); min-height: 460px; }
+.hero-ph { position: absolute; inset: 0; }
+.hero-ph img, .hero-ph > svg { animation: mg-zoom 18s ease-out both; }
+@keyframes mg-zoom { from { transform: scale(1.08); } }
+.hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0, 0, 0, .05) 40%, rgba(60, 40, 20, .55)); pointer-events: none; }
+.hero-txt { position: absolute; z-index: 1; left: clamp(20px, 6vw, 72px); bottom: clamp(70px, 12vh, 120px); color: #FFFCF6; text-shadow: 0 2px 16px rgba(60, 40, 20, .45); }
+.since { margin: 0; font-size: 13px; letter-spacing: .3em; }
+.title { margin: 4px 0 8px; font: 400 clamp(44px, 9vw, 104px)/1.08 var(--f-kid); }
+.title span { display: block; clip-path: inset(0 0 100% 0); animation: mg-mask 1.2s var(--ease2) forwards; }
+.title span + span { animation-delay: .25s; }
+@keyframes mg-mask { to { clip-path: inset(0 0 -10% 0); } }
+.count { margin: 0; font-size: 15px; }
+.count b { font-size: 26px; font-weight: 500; margin: 0 4px; }
+
+.notice { position: relative; z-index: 2; width: min(640px, calc(100% - 32px)); margin: -56px auto 40px; padding: 30px clamp(20px, 5vw, 44px) 24px; background: var(--card); box-shadow: 0 16px 40px rgba(75, 58, 44, .14); transform: rotate(-.6deg); }
+.notice.rv.in { transform: rotate(-.6deg); }
+.notice.last { background: #FFF3EC; transform: rotate(.5deg); margin-top: -56px; }
+.notice.last + .notice { margin-top: 0; }
+.tape { position: absolute; top: -12px; left: 50%; width: 110px; height: 26px; margin-left: -55px; background: rgba(226, 180, 110, .55); transform: rotate(-3deg); }
+.n-date { margin: 0 0 6px; font-size: 13px; color: var(--muted); letter-spacing: .1em; }
+.notice p { margin: 0 0 10px; }
+.n-link { text-align: center; margin-top: 16px !important; }
+
+.mapsec, .recent { width: min(1000px, calc(100% - 32px)); margin: 56px auto; }
+.recent { width: min(720px, calc(100% - 32px)); }
+.mapsec h2, .recent h2, .profile h2 { display: flex; align-items: baseline; gap: 14px; font-size: clamp(22px, 3.4vw, 30px); margin: 0 0 8px; }
+.mapsec h2 small { font-size: 15px; color: var(--muted); }
+.lead { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
+.map-wrap { border-radius: 22px; overflow: hidden; box-shadow: 0 14px 40px rgba(75, 58, 44, .14); background: var(--land); }
+.map { display: block; width: 100%; height: auto; }
+.map-cap { margin: 12px 0 4px; font-size: 14px; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 18px; list-style: none; margin: 0; padding: 0; font-size: 13px; color: var(--muted); }
+.lg { display: inline-block; width: 26px; height: 0; margin-right: 6px; vertical-align: middle; border-top: 4px dotted var(--wheat-d); }
+.lg.bday { border-top: 3px dashed #E7A0A0; }
+.lg.eve { border-top: 4px dotted var(--eve); }
+
+/* 地図の中 */
+.route { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.route.main { stroke: var(--wheat-d); stroke-width: 7; stroke-dasharray: .1 15; }
+.route.bday { stroke: #E7A0A0; stroke-width: 4; stroke-dasharray: 10 9; }
+.route.eve { stroke: var(--eve); stroke-width: 7; stroke-dasharray: .1 12; animation: mg-march 1.2s linear infinite; }
+.route.final { stroke: var(--red); stroke-width: 6; }
+.draw { animation: mg-draw 1.8s var(--ease) both; }
+@keyframes mg-draw { from { stroke-dashoffset: var(--len); } to { stroke-dashoffset: 0; } }
+@keyframes mg-march { to { stroke-dashoffset: -24; } }
+.spot { cursor: pointer; transition: opacity .6s; }
+.spot .ring { fill: #FFFBF3; stroke: var(--ink); stroke-width: 2.5; transition: fill .3s; }
+.spot .ico { stroke: var(--ink); fill: var(--ink); }
+.spot .ico path[fill="none"], .spot .ico circle[fill="none"], .spot .ico rect[fill="none"] { fill: none; }
+.spot .lbl { font: 500 18px var(--f-ui); fill: var(--ink); paint-order: stroke; stroke: #FFFBF3; stroke-width: 6px; stroke-linejoin: round; }
+.spot.far { opacity: .35; }
+.spot:hover .ring, .spot:focus-visible .ring { fill: var(--wheat); }
+.spot:focus-visible { outline: none; }
+.spot:focus-visible .ring { stroke: var(--red); stroke-width: 4; }
+
+.entries { display: grid; gap: 18px; }
+.entry { background: var(--card); border-radius: 16px; padding: 18px 22px 16px; box-shadow: 0 6px 18px rgba(75, 58, 44, .08); }
+.entry header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.entry time { font-size: 14px; color: var(--muted); }
+.entry p { margin: 0; }
+.entry.kid p { font: 400 17px/2 var(--f-kid); }
+.entry.adult p { font-weight: 300; }
+.entry .polaroid { float: right; width: 42%; max-width: 220px; margin: 0 0 10px 16px; }
+.entry::after { content: ""; display: block; clear: both; }
+.entry.last { box-shadow: inset 4px 0 0 var(--red), 0 6px 18px rgba(75, 58, 44, .08); }
+.entry.blank p { font-size: 26px; color: var(--muted); }
+.entry.blank p::after { content: ""; display: inline-block; width: 2px; height: 1em; margin-left: 4px; vertical-align: -3px; background: var(--muted); animation: mg-blink 1.1s steps(1) infinite; }
+@keyframes mg-blink { 50% { opacity: 0; } }
+.entry-lock { display: inline-block; margin-top: 10px; font-family: var(--f-kid); }
+
+.foot { text-align: center; margin: 80px auto 0; font-size: 12px; color: var(--muted); }
+.foot p { margin: 0; }
+.toast { position: fixed; z-index: 90; top: 18px; left: 50%; transform: translate(-50%, -80px); margin: 0; padding: 8px 20px; border-radius: 99px; background: var(--ink); color: var(--paper); font-size: 14px; transition: transform .5s var(--ease); }
+.toast.on { animation: mg-toast 3s var(--ease) forwards; }
+@keyframes mg-toast { 10%, 85% { transform: translate(-50%, 0); } 100% { transform: translate(-50%, -80px); } }
+
+@media (max-width: 640px) {
+  body { font-size: 15px; }
+  .collar { transform: scale(.85); transform-origin: 0 0; }
+  .entry .polaroid { float: none; width: 70%; margin: 4px auto 12px; }
+  .spot .lbl { font-size: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .rv { opacity: 1; transform: none; filter: none; }
+  .title span { clip-path: none; }
+}
+
+/* スマホ：縦長の画面でも、むぎが写真の外に出ないように */
+@media (max-width: 700px) {
+  .hero-ph img { object-position: 70% 50%; }
+  .hero::after { background: linear-gradient(180deg, rgba(0, 0, 0, 0) 28%, rgba(45, 28, 12, .38) 52%, rgba(45, 28, 12, .8)); }
+  .hero-txt { text-shadow: 0 1px 3px rgba(40, 24, 10, .7), 0 4px 24px rgba(40, 24, 10, .75); }
+}
+
+/* スマホ：地図は縮めすぎず、横にスクロールして見る */
+@media (max-width: 560px) {
+  .map-wrap { overflow-x: auto; overscroll-behavior-x: contain; }
+  .map-wrap .map { width: 640px; max-width: none; }
+}
+
+/* スマホ：入力欄の文字が16px未満だと、iPhoneでは入力するたびに画面が拡大されてしまう */
+@media (max-width: 760px), (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), textarea, select { font-size: 16px !important; }
+}

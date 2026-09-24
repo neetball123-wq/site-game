@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>六夜の賭場</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kaisei+Tokumin:wght@400;500;700;800&family=Zen+Old+Mincho:wght@400;500;700;900&family=Dela+Gothic+One&display=swap">
+<link rel="stylesheet" href="css/toba.css">
+</head>
+<body data-scene="gate">
+
+<canvas id="smoke" aria-hidden="true"></canvas>
+<div class="lamp" aria-hidden="true"><span class="cord"></span><span class="bulb"></span><span class="pool"></span></div>
+
+<main id="stage" tabindex="-1"></main>
+
+<!-- 下の帯（懐・手数・目標） -->
+<div class="obi" id="obi" hidden>
+  <div class="obi-l">
+    <span class="obi-k">懐</span><b id="o-koma">0</b><span class="obi-u">駒</span>
+  </div>
+  <div class="obi-c">
+    <span class="obi-k">目標</span><b id="o-goal">—</b>
+    <span class="obi-sep"></span>
+    <span class="obi-k">手数</span><b id="o-hands">—</b>
+  </div>
+  <div class="obi-r">
+    <button type="button" id="btn-fucho">符牒帳</button>
+    <button type="button" id="btn-redo">この夜をやり直す</button>
+  </div>
+</div>
+
+<!-- 符牒帳（帳面・ヒント・記録） -->
+<aside class="fucho" id="fucho" hidden aria-label="符牒帳">
+  <header class="fucho-h">
+    <b>符牒帳</b><small id="fucho-sub"></small>
+    <button type="button" id="fucho-close">閉じる</button>
+  </header>
+  <nav class="fucho-tab" id="fucho-tab"></nav>
+  <div class="fucho-b" id="fucho-b"></div>
+</aside>
+
+<!-- 夜の転換幕 -->
+<div class="maku" id="maku" aria-hidden="true"><span class="maku-t" id="maku-t"></span></div>
+
+<!-- 確認 -->
+<div class="ask" id="ask" hidden role="alertdialog" aria-modal="true" aria-labelledby="ask-t">
+  <div class="ask-in">
+    <p class="ask-t" id="ask-t"></p>
+    <div class="ask-b"><button type="button" class="btn shu" id="ask-ok">はい</button><button type="button" class="btn ghost" id="ask-no">やめておく</button></div>
+  </div>
+</div>
+
+<div class="veil" id="veil" hidden></div>
+<div class="endcard" id="end" hidden role="dialog" aria-modal="true"></div>
+
+<footer class="foot">
+  <span>※本作はフィクションです。登場する人物・地名・団体・賭博はすべて架空のものです。実在の賭博行為を推奨するものではありません。</span>
+  <button type="button" id="btn-snd" aria-pressed="true">音：入</button>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/sound.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/games.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

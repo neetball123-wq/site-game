@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>つづきから</title>
+<meta name="description" content="中古屋で買った携帯ゲーム機に、前の持ち主のセーブデータが残っていた。1999年の夏やすみの、つづきから。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Kosugi+Maru&family=M+PLUS+1p:wght@400;700;800&family=RocknRoll+One&family=Stick&family=Zen+Kurenaido&display=swap">
+<link rel="stylesheet" href="css/desk.css">
+</head>
+<body>
+<div class="room">
+  <div class="sun" aria-hidden="true"></div>
+  <div class="furin" aria-hidden="true"><i></i><b></b><span></span></div>
+
+  <main class="desk">
+    <!-- 左：レシートと、机の上のもの -->
+    <section class="side" aria-label="机の上">
+      <div class="receipt" id="receipt">
+        <p class="rc-shop">リサイクル ハナマル<br>潮見店</p>
+        <p class="rc-date" id="rc-date"></p>
+        <p class="rc-line">ジャンク 携帯ゲーム機<br>（ソフト・説明書つき）<span>¥500</span></p>
+        <p class="rc-sum">合計<span>¥500</span></p>
+        <p class="rc-note">※ジャンク品のため返品不可</p>
+        <p class="rc-hand">電池を入れたら、まだ動いた。</p>
+      </div>
+      <div class="items" id="items" role="list">
+        <button type="button" class="item it-manual" data-doc="manual" role="listitem"><span class="i-art"></span><span class="i-lb">せつめいしょ</span></button>
+        <button type="button" class="item it-mag" data-doc="mag" role="listitem"><span class="i-art"></span><span class="i-lb">ピコマガの きりぬき</span></button>
+        <button type="button" class="item it-memo" data-doc="memo" role="listitem"><span class="i-art"></span><span class="i-lb">ユウの メモ</span></button>
+        <button type="button" class="item it-fuku" data-doc="fuku" role="listitem"><span class="i-art"></span><span class="i-lb">ふくろとじ</span><span class="i-badge" id="fuku-badge" hidden></span></button>
+        <button type="button" class="item it-box" data-doc="box" role="listitem"><span class="i-art"></span><span class="i-lb">はこ</span></button>
+        <button type="button" class="item it-pen" data-doc="pen" role="listitem" hidden><span class="i-art"></span><span class="i-lb">あかペン</span></button>
+      </div>
+    </section>
+
+    <!-- まんなか：ゲーム機 -->
+    <section class="center" aria-label="携帯ゲーム機">
+      <div class="cwrap" id="cwrap">
+        <div class="cart" id="cart" tabindex="0" role="slider" aria-label="カセット（上に引くと抜ける）" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="cart-in">
+            <div class="cart-front"><span class="cart-grip"></span><span class="cart-label"><b>とこなつ島</b><i>POKEPICO</i></span></div>
+            <div class="cart-back"><span class="cart-grip"></span><span class="cart-yu">ユウ</span></div>
+          </div>
+        </div>
+        <div class="console" id="console">
+          <div class="c-face c-front">
+            <div class="c-top">
+              <button type="button" class="pwr" id="pwr" aria-pressed="false" aria-label="電源"><span class="pwr-k"></span><span class="pwr-t">OFF<i>◂▸</i>ON</span></button>
+            </div>
+            <div class="bezel">
+              <p class="bz-t"><span class="led" id="led"></span>BATTERY</p>
+              <div class="lcd off" id="lcd">
+                <canvas id="cv" width="160" height="144" aria-label="ゲームの画面"></canvas>
+                <div class="ov" id="ov"></div>
+              </div>
+              <p class="bz-b">PICO DOT MATRIX <span>WITH TINY SOUND</span></p>
+            </div>
+            <p class="brand">HIBARI <b>ポケピコ</b></p>
+            <div class="pad">
+              <div class="dpad" id="dpad" aria-label="十字ボタン"><span class="dp-h"></span><span class="dp-v"></span><span class="dp-c"></span></div>
+              <div class="ab"><button type="button" class="bt bt-b" data-b="b" aria-label="Bボタン"><span>B</span></button><button type="button" class="bt bt-a" data-b="a" aria-label="Aボタン"><span>A</span></button></div>
+              <div class="ss"><button type="button" class="pill" data-b="select" aria-label="SELECT"><span>SELECT</span></button><button type="button" class="pill" data-b="start" aria-label="START"><span>START</span></button></div>
+              <div class="spk" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+            <span class="edge-lb eb-l" id="lb-con" aria-hidden="true">CONTRAST</span><span class="edge-lb eb-r" id="lb-vol" aria-hidden="true">VOL</span>
+            <div class="wheel w-con" id="w-con" tabindex="0" role="slider" aria-label="コントラスト" aria-valuemin="0" aria-valuemax="10"><span class="wh-r"></span></div>
+            <div class="wheel w-vol" id="w-vol" tabindex="0" role="slider" aria-label="ボリューム" aria-valuemin="0" aria-valuemax="10"><span class="wh-r"></span></div>
+          </div>
+          <div class="c-face c-back" aria-hidden="true">
+            <div class="bk-top"></div>
+            <p class="bk-yu">ユウ</p>
+            <p class="bk-serial">MODEL PP-01<br>S/N 0832-19990801<br>MADE IN JAPAN</p>
+            <div class="bk-bay" id="bk-bay">
+              <div class="bk-inside">
+                <span class="aa aa1"><b>ヒバリ</b>単3</span><span class="aa aa2"><b>ヒバリ</b>単3</span><span class="aa aa3 odd"><b>パワー</b>単3</span><span class="aa aa4"><b>ヒバリ</b>単3</span>
+                <button type="button" class="bk-note" id="bk-note" aria-label="たたんだ紙"><span>たたんだ<br>紙</span></button>
+              </div>
+              <button type="button" class="bk-cover" id="bk-cover" aria-label="電池ぶた"><span>OPEN ▸</span></button>
+            </div>
+          </div>
+        </div>
+        <div class="c-tools">
+          <button type="button" class="tool" id="flip">本体を うらがえす</button>
+          <button type="button" class="tool" id="cart-btn" hidden>カセットを さしこむ</button>
+          <button type="button" class="tool" id="cart-flip" hidden>カセットの うら</button>
+        </div>
+        <p class="keys" id="keys">十字ボタン＝矢印キー　A＝Z　B＝X　START＝Enter　SELECT＝Shift</p>
+      </div>
+    </section>
+
+    <!-- 右：読んでいるもの -->
+    <aside class="reader" id="reader" aria-label="読んでいるもの">
+      <div class="rd-empty" id="rd-empty"><p>机の上のものを、ひとつ手にとってみる。</p><p class="rd-small">ゲーム機の電源は、本体の上の スイッチ。</p></div>
+      <div class="rd-doc" id="rd-doc" hidden>
+        <div class="rd-bar"><p class="rd-t" id="rd-t"></p><button type="button" class="rd-x" id="rd-x" aria-label="とじる">とじる</button></div>
+        <div class="rd-body" id="rd-body"></div>
+      </div>
+    </aside>
+  </main>
+  <p class="fiction">この作品はフィクションです。登場する人物・会社・製品・雑誌・地名は、実在のものとは関係ありません。</p>
+</div>
+
+<div class="dlg" id="dlg" hidden><div class="dlg-b" role="alertdialog" aria-modal="true" aria-labelledby="dlg-t"><p id="dlg-t"></p><div class="dlg-f"><button type="button" id="dlg-no">やめておく</button><button type="button" id="dlg-ok">はい</button></div></div></div>
+
+<script src="js/data.js"></script>
+<script src="js/pix.js"></script>
+<script src="js/snd.js"></script>
+<script src="js/story.js"></script>
+<script src="js/game.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

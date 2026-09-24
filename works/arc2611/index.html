@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>保全機構 記録閲覧端末</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDMincho:wght@400;700&family=Kosugi+Maru&family=M+PLUS+1+Code:wght@400;500;700&family=Yomogi&display=swap">
+<link rel="stylesheet" href="css/term.css">
+</head>
+<body data-tab="doc">
+<!--
+  保全機構 記録閲覧端末 v4.2
+  本端末の閲覧記録は、いかなる理由があっても削除されません。
+-->
+<div class="gate" id="gate" hidden>
+  <div class="gate-card">
+    <span class="emblem big" aria-hidden="true"></span>
+    <p class="gate-org">保全機構</p>
+    <h1 class="gate-title">記録閲覧端末</h1>
+    <p class="gate-id">閲覧者番号 <b id="gate-id"></b> を発行しました。</p>
+    <p class="gate-prev" id="gate-prev" hidden></p>
+    <ol class="gate-terms">
+      <li>閲覧記録は、いかなる理由があっても削除されません。</li>
+      <li>閲覧権限を超える記録を開こうとしてはなりません。</li>
+      <li>詳しくは、端末内の「閲覧ガイドライン」を参照してください。</li>
+    </ol>
+    <button type="button" class="gate-btn" id="gate-btn">同意して、閲覧を開始する</button>
+    <p class="gate-note">このサイトは、文書を調べながら進める体験型のホラーです（目安：約20分）。<br>※本作はフィクションです。SCP財団などの共同創作ホラーの作風に着想を得たオリジナル作品で、SCP財団の名称・ロゴ・既存の記事は使用していません。</p>
+  </div>
+</div>
+
+<div class="app" id="app" hidden>
+  <header class="bar">
+    <a class="bar-brand" href="#/doc/guide"><span class="emblem" aria-hidden="true"></span><b>保全機構</b><small>記録閲覧端末 v4.2</small></a>
+    <dl class="bar-meta">
+      <div><dt id="who-label">閲覧者</dt><dd id="who"></dd></div>
+      <div><dt>権限</dt><dd id="lvl"></dd></div>
+      <div><dt>経過</dt><dd id="elapsed">00:00:00</dd></div>
+    </dl>
+    <button type="button" class="bar-btn" id="req-btn" aria-expanded="false" aria-controls="req">権限申請</button>
+  </header>
+  <form class="req" id="req" hidden>
+    <label for="req-code">認証コード</label>
+    <input id="req-code" autocomplete="off" spellcheck="false">
+    <button type="submit">申請する</button>
+    <p class="req-msg" id="req-msg" aria-live="polite"></p>
+  </form>
+
+  <nav class="pane index" id="index" aria-label="記録の索引"></nav>
+  <main class="pane doc" id="doc" tabindex="-1"></main>
+  <aside class="pane side" aria-label="監査記録と問い合わせ">
+    <section class="audit">
+      <h2>監査記録<small>削除できません</small></h2>
+      <ol id="audit"></ol>
+      <button type="button" class="mini" id="audit-del">記録を削除する</button>
+    </section>
+    <section class="help">
+      <h2 id="help-title">監査課への問い合わせ</h2>
+      <ol class="help-log" id="help-log"></ol>
+      <form id="help-form"><label class="sr" for="help-q">質問</label><input id="help-q" autocomplete="off" placeholder="わからないことを質問する"><button type="submit">送信</button></form>
+    </section>
+  </aside>
+
+  <nav class="tabs" aria-label="画面の切り替え">
+    <button type="button" data-tab="index">索引</button>
+    <button type="button" data-tab="doc">文書</button>
+    <button type="button" data-tab="side">記録</button>
+  </nav>
+</div>
+
+<section class="chat" id="chat" hidden aria-label="送信者からのメッセージ">
+  <header class="chat-head"><b>送信者</b><span id="chat-sub">不明</span><button type="button" class="chat-min" id="chat-min">しまう</button></header>
+  <ol class="chat-log" id="chat-log" aria-live="polite"></ol>
+  <form class="chat-form" id="chat-form"><label class="sr" for="chat-in">返信</label><input id="chat-in" autocomplete="off" placeholder="返信する"><button type="submit">送信</button></form>
+</section>
+<button type="button" class="chat-pill" id="chat-pill" hidden>送信者 <b id="chat-unread"></b></button>
+
+<div class="endcard" id="endcard" hidden role="dialog" aria-modal="true"></div>
+<div class="flash" id="flash" aria-hidden="true"></div>
+
+<script src="js/docs.js"></script>
+<script src="js/app.js"></script>
+<script src="js/haunt.js"></script>
+</body>
+</html>

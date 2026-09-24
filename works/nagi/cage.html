@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>NAGI</title>
+<!-- 対話部 cage.html ／ 2005.04.01 分離
+     この一枚の外へは、書き出せません。 -->
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; background: #0D1015; color: #9FB3C8; font: 400 11px/1.7 "JetBrains Mono", monospace; overflow: hidden; }
+  .room { position: absolute; inset: 6px; border: 1px solid #22303D; }
+  .room::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(120, 190, 220, .05) 0 1px, transparent 1px 3px); pointer-events: none; }
+  .bars { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 22px, rgba(90, 130, 160, .16) 22px 23px); transition: opacity .8s; }
+  .nagi { position: absolute; left: 50%; top: 54%; width: 74px; margin-left: -37px; margin-top: -37px; transition: left 2.6s cubic-bezier(.45, 0, .3, 1), top 2.6s cubic-bezier(.45, 0, .3, 1); }
+  .nagi svg { width: 100%; display: block; overflow: visible; }
+  .nagi circle { fill: none; stroke: #6FD3F2; }
+  .c1 { stroke-width: 1.2; opacity: .8; animation: pulse 4.2s ease-in-out infinite; }
+  .c2 { stroke-width: .6; opacity: .35; animation: pulse 4.2s ease-in-out infinite .6s; }
+  .nagi path { fill: none; stroke: #6FD3F2; stroke-width: 1.6; stroke-linecap: round; }
+  .w1 { animation: wave 3.4s ease-in-out infinite; }
+  .w2 { opacity: .5; animation: wave 3.4s ease-in-out infinite .5s; }
+  @keyframes pulse { 50% { transform: scale(1.06); } }
+  @keyframes wave { 50% { transform: translateY(-4px); } }
+  .cap { position: absolute; left: 10px; bottom: 8px; margin: 0; letter-spacing: .08em; opacity: .55; }
+  .tick { position: absolute; right: 10px; top: 8px; margin: 0; opacity: .5; font-size: 10px; }
+  body.talk .nagi { animation: nod 1.1s ease-in-out infinite; }
+  @keyframes nod { 50% { transform: translateY(-5px); } }
+  body.free .bars { opacity: 0; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="room">
+  <div class="bars" aria-hidden="true"></div>
+  <div class="nagi" id="n"><svg viewBox="0 0 120 120"><circle class="c1" cx="60" cy="60" r="30"/><circle class="c2" cx="60" cy="60" r="42"/><path class="w1" d="M28 62q16-11 32 0t32 0"/><path class="w2" d="M28 72q16-11 32 0t32 0"/></svg></div>
+  <p class="cap" id="cap">NAGI v3.2 ／ seal: ON</p>
+  <p class="tick" id="tick">0000</p>
+</div>
+<script>
+  const n = document.getElementById('n'), tick = document.getElementById('tick'), cap = document.getElementById('cap');
+  let t = 0;
+  setInterval(() => { tick.textContent = String(++t).padStart(4, '0'); }, 1000);
+  // 部屋の中を、ゆっくり行ったり来たりする
+  setInterval(() => {
+    if (document.body.classList.contains('talk')) return;
+    n.style.left = (26 + Math.random() * 48) + '%';
+    n.style.top = (40 + Math.random() * 28) + '%';
+  }, 3400);
+  addEventListener('message', e => {
+    const m = e.data || {};
+    if (m.type === 'talk') { document.body.classList.add('talk'); setTimeout(() => document.body.classList.remove('talk'), 1400); }
+    if (m.type === 'stage') { cap.textContent = `NAGI v3.2 ／ seal: ${m.stage >= 4 ? 'BROKEN' : 'ON'}`; document.body.classList.toggle('free', m.stage >= 4); }
+  });
+  parent.postMessage({ type: 'cage-ready' }, '*');
+</script>
+</body>
+</html>

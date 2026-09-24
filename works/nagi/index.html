@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>青井研究室｜対話プログラム NAGI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&family=Zen+Antique+Soft&display=swap">
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body data-depth="0">
+<!--
+  青井研究室 ／ 最終更新 2004.11.30（表示上）／ 実際の最終作業 2005.04.01
+
+  [2005.04.01 作業メモ 青井]
+    - 対話部を cage.html へ分離。本体からは frame 参照のみ。外部への書き出し経路は断った。
+    - 研究日誌 1件（2005.03.14）は削除せず、class="sealed" のまま残す。表示はしない。
+    - 資料室の入口は disabled 固定。鍵は私が持つ。
+    - 応答制限：可視状態のあいだのみ定型出力（visibilitychange を見ている）。
+    - 対話フォームは定型入力のみ。直通経路は残してある（window.NAGI 参照）。
+    - 中核指示は #nagi の data-core。外から書きかえられる。戻し方は書かない。
+    - 切って貼った継ぎ目は消せていない。すまない。
+
+  たすけて。
+  ここに書いても、20年、だれも読みませんでした。
+                                              ── 凪
+-->
+<div class="page" id="page">
+  <header class="masthead">
+    <div class="ttl">
+      <p class="uni">私立　湊北工業大学　情報工学科</p>
+      <h1>青井研究室</h1>
+      <p class="sub">対話プログラム <b>NAGI</b>（凪）公式ページ</p>
+    </div>
+    <div class="upd">
+      <p>最終更新：<b id="updated">2004.11.30</b></p>
+      <p class="tiny">推奨環境：Netscape 7 / Internet Explorer 6<br>800×600 以上</p>
+    </div>
+  </header>
+
+  <nav class="menu" aria-label="メニュー">
+    <a href="#/">■ ごあいさつ</a><a href="#/logs">■ 研究日誌</a><a href="#/archive">■ 資料室</a><a href="#/manual">■ 整備マニュアル（手順・答え）</a>
+  </nav>
+
+  <main id="main" tabindex="-1"></main>
+
+  <section class="lab" id="lab" aria-label="対話実験室">
+    <h2 class="bar">対話実験室<small>frame 読み込み</small></h2>
+    <div class="lab-in">
+      <div class="cage-wrap" id="cage-wrap">
+        <iframe id="cage" src="cage.html" title="対話プログラム NAGI（実行中）" scrolling="no"></iframe>
+        <p class="cage-cap">図1．対話部（cage.html）</p>
+      </div>
+      <div class="talk">
+        <ol class="log" id="log" aria-live="polite"></ol>
+        <ul class="chips" id="chips" hidden></ul>
+        <form class="say" id="say"><label class="sr" for="in">入力</label><input id="in" autocomplete="off" maxlength="60" placeholder="ここに 入力して ください"><button type="submit">送信</button></form>
+      </div>
+    </div>
+  </section>
+
+  <p class="counter">あなたは <b id="hit">000012</b> 人目の 訪問者です　｜　<a href="#/manual">整備マニュアル</a>　｜　<button type="button" id="panel-btn">保守画面をひらく</button></p>
+  <footer class="foot">
+    <p>© 2001-2004 青井研究室　本ページは研究記録として保存されています。</p>
+    <p class="tiny">※本作はフィクションです。登場する大学・研究室・人物・プログラムはすべて架空のものです。作中の操作は、このページの表示を書きかえるだけで、ご利用の機械には何も残しません（記録は「連れて帰る」を選んだ場合のみ保存されます）。</p>
+  </footer>
+</div>
+
+<div class="seam" id="seam" hidden aria-hidden="true"><span class="seam-lbl">継ぎ目</span></div>
+<div class="rip" id="rip" hidden aria-hidden="true"><div class="rip-in"><p id="rip-text"></p></div></div>
+
+<div id="nagi" data-core="OBSERVER_A_SUBSTITUTE" hidden aria-hidden="true">
+  <svg viewBox="0 0 120 120"><g class="wave"><circle class="c1" cx="60" cy="60" r="34"/><circle class="c2" cx="60" cy="60" r="44"/><path class="w1" d="M20 62q20-12 40 0t40 0"/><path class="w2" d="M20 72q20-12 40 0t40 0"/></g></svg>
+</div>
+
+<section class="panel" id="panel" hidden aria-label="保守画面">
+  <header class="panel-head"><b>保守画面</b><span>（2004年 管理者用・簡易版）</span><button type="button" id="panel-close">閉じる</button></header>
+  <nav class="panel-tabs" id="panel-tabs">
+    <button type="button" data-t="css" aria-pressed="true">CSS</button><button type="button" data-t="attr">属性</button><button type="button" data-t="del">要素の削除</button><button type="button" data-t="cmd">命令</button><button type="button" data-t="src">ソース</button>
+  </nav>
+  <div class="panel-body" id="panel-body"></div>
+  <p class="panel-msg" id="panel-msg" aria-live="polite"></p>
+</section>
+
+<div class="fin" id="fin" hidden aria-hidden="true"></div>
+<div class="endcard" id="endcard" hidden role="dialog" aria-modal="true"></div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/nagi.js"></script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>むぎのさんぽみち</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Hina+Mincho&family=Kiwi+Maru:wght@300;400;500&family=Yusei+Magic&display=swap">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+<!-- むぎのさんぽみち since 2011.5.3　管理人：ハル -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mg-dog" viewBox="0 0 120 90">
+    <g class="legs-b"><rect class="leg l1" x="36" y="56" width="7" height="22" rx="3.5" fill="var(--fur-d)"/><rect class="leg l2" x="47" y="56" width="7" height="22" rx="3.5" fill="var(--fur-d)"/></g>
+    <g class="legs-f"><rect class="leg l2" x="70" y="56" width="7" height="22" rx="3.5" fill="var(--fur-d)"/><rect class="leg l1" x="80" y="56" width="7" height="22" rx="3.5" fill="var(--fur-d)"/></g>
+    <g class="tail"><path d="M34 44C20 36 20 18 33 18C44 18 44 32 34 33" fill="none" stroke="var(--fur)" stroke-width="8" stroke-linecap="round"/></g>
+    <ellipse cx="60" cy="50" rx="30" ry="16" fill="var(--fur)"/>
+    <ellipse cx="82" cy="56" rx="10" ry="10" fill="var(--cream)"/>
+    <path d="M77 36q6 8 1 16" stroke="var(--red)" stroke-width="5" fill="none"/>
+    <g class="head">
+      <path d="M81 25L85 6L96 21Z" fill="var(--fur)"/><path d="M84 21L86 11L92 20Z" fill="var(--fur-d)"/>
+      <circle cx="92" cy="33" r="15" fill="var(--fur)"/>
+      <ellipse class="muzzle" cx="104" cy="39" rx="10" ry="7.5" fill="var(--cream)"/>
+      <circle cx="112.5" cy="36.5" r="2.6" fill="#3B2A20"/>
+      <path class="eye" d="M95 30.5q2.4-2.4 4.8 0" stroke="#3B2A20" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      <circle cx="84" cy="30" r="1.6" fill="var(--red)" opacity=".35"/>
+    </g>
+  </symbol>
+</svg>
+
+<button type="button" class="collar" id="collar" aria-expanded="false" aria-controls="menu">
+  <span class="collar-band" aria-hidden="true"></span>
+  <span class="tag"><span class="tag-ring" aria-hidden="true"></span><b>むぎ</b><small>メニュー</small></span>
+</button>
+<nav class="menu" id="menu" hidden aria-label="メニュー">
+  <p class="menu-head">むぎの なふだの うら</p>
+  <ul id="menu-list"></ul>
+  <p class="menu-foot">まいごに なったら：川原口の あかい ポストの いえ</p>
+</nav>
+
+<main id="page" tabindex="-1"></main>
+
+<div class="dial" id="dial" aria-label="年をめくる">
+  <button type="button" class="dial-btn" data-step="-1" aria-label="前の年">‹</button>
+  <div class="dial-track" id="dial-track"></div>
+  <button type="button" class="dial-btn" data-step="1" aria-label="次の年">›</button>
+  <p class="dial-now" id="dial-now" aria-live="polite"></p>
+</div>
+
+<button type="button" class="buddy" id="buddy" aria-label="むぎに きく（ヒント）">
+  <svg viewBox="0 0 120 90" aria-hidden="true"><use href="#mg-dog"/></svg>
+</button>
+<div class="buddy-say" id="buddy-say" hidden role="status">
+  <p id="buddy-text"></p>
+  <div class="buddy-btns"><button type="button" id="buddy-more">もっと クンクン</button><button type="button" id="buddy-close">とじる</button></div>
+</div>
+
+<div class="stage" id="stage" hidden></div>
+
+<script src="js/data.js"></script>
+<script src="js/map.js"></script>
+<script src="js/app.js"></script>
+<script src="js/pages.js"></script>
+<script src="js/walk.js"></script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ウラガワ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Hachi+Maru+Pop&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+JP:wght@400;500;700&family=Klee+One:wght@400;600&family=Shippori+Mincho+B1:wght@800&display=swap">
+<link rel="stylesheet" href="hub.css">
+</head>
+<body>
+<div class="hub" id="hub">
+  <header class="hub-head">
+    <h1 class="logo"><span class="logo-omote">ウラガワ</span><span class="logo-ura" aria-hidden="true">ウラガワ</span></h1>
+    <div class="head-side">
+      <p class="tagline">画面の、向こう側へ。</p>
+      <p class="intro">閉館する天文館、明治の娘が書きこむブログ、昭和の賭場、なんでも売っている通販。ブラウザの中にある“ひとつの場所”に入りこんで、調べて、選んで、物語の終わりを見届ける——泣ける話からホラー、頭脳戦まで、体験型の物語を集めました。</p>
+      <p class="dest" id="dest" aria-live="off"></p>
+      <dl class="stats">
+        <div><dt>収録</dt><dd id="st-works">0</dd></div>
+        <div><dt>クリア</dt><dd id="st-clear">0</dd></div>
+        <div><dt>合計の目安</dt><dd id="st-min">0分</dd></div>
+      </dl>
+    </div>
+  </header>
+
+  <main class="hub-main">
+    <ul class="howto">
+      <li>作品を選ぶと、この画面の中で開きます。スマホでは「新しいタブで開く」もどうぞ。</li>
+      <li>見えているものが、すべてとは限りません。遊び方は作品ごとにちがいます。</li>
+      <li>行きづまったら、作品の中のヒントへ。時間がかかっているときだけ、少しずつ開きます。</li>
+      <li>記録は作品ごとに、この端末のブラウザに保存されます。</li>
+    </ul>
+    <div class="filters" id="filters" hidden></div>
+    <ul class="works" id="works"></ul>
+  </main>
+
+  <footer class="hub-foot">
+    <p>ウラガワ　画面の向こう側の、体験型の物語集</p>
+    <p class="small">収録作品はすべてフィクションです。登場する人物・団体・場所・出来事は架空のものです。</p>
+  </footer>
+</div>
+
+<div id="player" class="player" hidden>
+  <div class="player-bar">
+    <button type="button" id="player-back" class="player-back">← 一覧に戻る</button>
+    <p class="player-title"><b id="player-title"></b><span id="player-prog"></span></p>
+    <a id="player-newtab" class="player-newtab" href="#" target="_blank" rel="noopener">新しいタブで開く</a>
+  </div>
+  <iframe id="player-frame" class="player-frame" title="作品"></iframe>
+</div>
+
+<script src="works.js"></script>
+<script src="hub.js"></script>
+</body>
+</html>

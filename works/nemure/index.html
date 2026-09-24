@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NEMURE ネムレ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Italiana&family=Kaisei+Decol:wght@400;700&family=M+PLUS+Rounded+1c:wght@500;800&family=Yomogi&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!--
+  ============================================================
+   NEMURE official site / 夢見坂プロダクション
+   build 2026.09.09 (rel_4members)
+  ============================================================
+   スタッフ各位
+   ・旧5人体制のデータはすべて削除済みです。
+   ・ゴミ箱の中身は、絶対に復元しないでください。
+   ・管理画面の認証は「夜の手順」どおりに。欠片は5つ。
+                                          producer_02
+-->
+<div class="noise" id="noise" aria-hidden="true"></div>
+
+<!-- ===================== 公式サイト ===================== -->
+<div id="view-site" class="view">
+  <header class="osd">
+    <p class="onair" id="onair"><i></i><span>STANDBY</span></p>
+    <a class="osd-logo" href="#top" aria-label="NEMURE トップへ">NEMURE<small>夢見坂TV　ch.25</small></a>
+    <p class="osd-clock"><span>NOW</span><b id="clock">--:--</b></p>
+  </header>
+
+  <section class="screen-wrap" id="top">
+    <div class="screen" id="screen">
+      <canvas id="sky" aria-hidden="true"></canvas>
+      <div class="scan" aria-hidden="true"></div>
+      <p class="bug" aria-hidden="true">ch.25</p>
+      <div class="hero-inner">
+        <p class="hero-eyebrow">YUMEMIZAKA TV presents</p>
+        <h1 class="hero-logo" id="hero-logo">NEMURE</h1>
+        <p class="hero-copy">眠れない夜は、わたしたちが迎えにいく。</p>
+        <ul class="hero-lineup" id="hero-lineup" aria-label="出演者"></ul>
+      </div>
+      <p class="lower-third"><b>毎晩 25:00〜</b><span>眠れない夜の、夢チャンネル</span></p>
+    </div>
+    <div class="ticker" aria-label="ニュース速報"><span class="ticker-label">速報</span><div class="ticker-view"><div class="ticker-track" id="ticker"></div></div></div>
+  </section>
+
+  <main>
+    <section id="about" class="sec about">
+      <h2 class="sec-title"><span class="ch">1</span><span class="st-ja">番組紹介</span><small>ABOUT</small></h2>
+      <div class="about-grid">
+        <p class="about-vertical">夢の中でしか、<br>会えないアイドル。</p>
+        <div class="about-body">
+          <p>NEMURE（ネムレ）は、夢見坂プロダクションがおくる<span id="about-count">4人組</span>バーチャルアイドルです。</p>
+          <p>放送は、毎晩25:00から。眠れない夜、なかなか閉じてくれないまぶたの裏側に、メンバーがそっと迎えにいきます。</p>
+          <p>歌と、おしゃべりと、ちょっとだけ怖い話。朝が来るまでの数時間を、いっしょに過ごしましょう。</p>
+          <p class="secret-line" id="secret-night" tabindex="-1">——だから、もう起きなくていいよ。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="news" class="sec news">
+      <h2 class="sec-title"><span class="ch">2</span><span class="st-ja">お知らせ</span><small>NEWS</small></h2>
+      <ul class="news-list" id="news-list"></ul>
+    </section>
+
+    <section id="member" class="sec member">
+      <h2 class="sec-title"><span class="ch">3</span><span class="st-ja">出演者</span><small>MEMBER</small></h2>
+      <div class="member-tabs" id="member-tabs" role="tablist" aria-label="出演者をえらぶ"></div>
+      <div class="member-dots" id="member-dots"></div>
+      <article class="member-card" id="member-card" role="tabpanel" aria-live="polite"></article>
+    </section>
+
+    <section id="schedule" class="sec schedule">
+      <h2 class="sec-title"><span class="ch">4</span><span class="st-ja">番組表</span><small>PROGRAM</small></h2>
+      <div class="guide-wrap"><ol class="sched" id="sched"></ol></div>
+      <p class="note">※放送時刻はすべて日本時間です。25:00は翌日の午前1:00を指します。</p>
+    </section>
+
+    <section id="letter" class="sec letter">
+      <h2 class="sec-title"><span class="ch">5</span><span class="st-ja">おたより</span><small>LETTER</small></h2>
+      <div class="letter-wrap">
+        <form id="letter-form" class="letter-form" autocomplete="off">
+          <p class="pc-head">おたより募集中　<span>番組で読まれるかも</span></p>
+          <div class="field">
+            <label for="letter-to">宛先</label>
+            <select id="letter-to"></select>
+          </div>
+          <div class="field">
+            <label for="letter-name">ラジオネーム</label>
+            <input id="letter-name" maxlength="20" placeholder="例：ひつじ3号">
+          </div>
+          <div class="field field-wide">
+            <label for="letter-body">本文</label>
+            <textarea id="letter-body" maxlength="400" rows="5" placeholder="放送の感想や、最近見た夢のことなど" required></textarea>
+          </div>
+          <div class="letter-foot">
+            <button class="btn-primary" type="submit">おたよりを送る</button>
+            <p class="form-note">※このフォームは演出です。入力内容はどこにも送信されません。</p>
+          </div>
+        </form>
+        <div id="letter-reply" class="letter-reply" hidden aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="endcard">
+    <div class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <p class="end-msg">本日の放送は、終了しました。</p>
+    <p class="end-sub">また今夜、25時に。</p>
+    <p class="fiction">© 2026 夢見坂プロダクション　※本サイトはフィクションです。登場する人物・団体・出来事はすべて架空のものです。</p>
+    <div class="footer-links">
+      <button id="btn-reset" class="linklike" type="button">観測記録をリセット</button>
+      <a href="#/staff" class="staff-link">staff</a>
+    </div>
+  </footer>
+
+  <nav class="remote" id="remote" aria-label="チャンネル">
+    <a href="#about" data-ch="about"><b>1</b><span>番組</span></a>
+    <a href="#news" data-ch="news"><b>2</b><span>お知らせ</span></a>
+    <a href="#member" data-ch="member"><b>3</b><span>出演者</span></a>
+    <a href="#schedule" data-ch="schedule"><b>4</b><span>番組表</span></a>
+    <a href="#letter" data-ch="letter"><b>5</b><span>おたより</span></a>
+    <span class="remote-sep" aria-hidden="true"></span>
+    <button id="btn-music" class="icon-btn" type="button" aria-pressed="false" title="オルゴールを鳴らす">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>
+      <span class="sr">オルゴール</span>
+    </button>
+    <button id="btn-night" class="icon-btn" type="button" aria-pressed="false" title="おやすみモード">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>
+      <span class="sr">おやすみモード</span>
+    </button>
+  </nav>
+
+  <div id="news-modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="news-modal-title">
+    <div class="modal-card">
+      <button class="modal-close" id="news-close" type="button" aria-label="閉じる">×</button>
+      <p class="modal-meta" id="news-modal-meta"></p>
+      <h3 id="news-modal-title"></h3>
+      <div class="modal-body" id="news-modal-body"></div>
+      <a class="modal-back" href="#news">お知らせの一覧へ</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 関係者ログイン ===================== -->
+<div id="view-staff" class="view" hidden>
+  <div class="staff-bg">
+    <a class="staff-home" href="#top">Public Site Home</a>
+    <div class="auth-box">
+      <h1>AUTHENTICATION SYSTEM</h1>
+      <p>夢見坂プロダクション 関係者専用ページです。<br>指定のシーケンスを入力してください：</p>
+      <form id="auth-form">
+        <div class="auth-selects" id="auth-selects"></div>
+        <button type="submit" class="win-btn">ENTER</button>
+      </form>
+      <p id="auth-msg" class="auth-msg" aria-live="polite"></p>
+      <p class="auth-warn"><b>WARNING:</b> 関係者以外のアクセスは固く禁じられています。<br>IPアドレスおよび操作ログは記録されています。</p>
+      <a href="#top" class="auth-back">⇒キャンセルして戻る</a>
+    </div>
+    <p class="auth-ver">System Version 1.0.3 (Rel_2019)</p>
+  </div>
+</div>
+
+<!-- ===================== 管理画面 ===================== -->
+<div id="view-admin" class="view" hidden>
+  <div class="adm-bg">
+    <div class="adm" role="application" aria-label="タレント管理システム">
+      <div class="adm-titlebar">
+        <span>夢見坂プロダクション タレント管理システム - [producer_02]</span>
+        <a class="adm-x" href="#top" aria-label="ログアウトして閉じる">×</a>
+      </div>
+      <div class="adm-menubar"><span>ファイル(F)</span><span>編集(E)</span><span>表示(V)</span><span>ヘルプ(H)</span></div>
+      <div class="adm-body">
+        <nav class="adm-side" id="adm-side" aria-label="管理メニュー"></nav>
+        <div class="adm-main" id="adm-main"></div>
+      </div>
+      <div class="adm-status">
+        <span>接続先: yumemizaka-db01</span>
+        <span>閲覧者: <b id="adm-observer"></b></span>
+        <span id="adm-time"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== ？？？ ===================== -->
+<div id="view-wake" class="view" hidden>
+  <canvas id="water" aria-hidden="true"></canvas>
+  <div class="wake-inner">
+    <div class="wake-text" id="wake-text" aria-live="polite"></div>
+    <div class="wake-choices" id="wake-choices" hidden>
+      <button id="choice-wake" type="button">起こす</button>
+      <button id="choice-sleep" type="button">まだ、眠らせておく</button>
+    </div>
+  </div>
+</div>
+
+<!-- 夢の欠片 -->
+<button id="frag-pill" class="frag-pill" type="button" hidden aria-controls="frag-panel" aria-expanded="false">
+  <span class="frag-gems" id="frag-gems"></span><span id="frag-count">0/5</span>
+</button>
+<div id="frag-panel" class="frag-panel" hidden role="dialog" aria-label="夢の欠片">
+  <p class="frag-head">夢の欠片</p>
+  <ol id="frag-list"></ol>
+  <div id="frag-door" class="frag-door"></div>
+</div>
+
+<div id="whisper" class="whisper" hidden aria-live="polite"></div>
+<div id="flash" class="flash" aria-hidden="true"></div>
+
+<!-- わたしのなまえを、てがみにかいて。 -->
+<script src="story.js"></script>
+<script src="app.js"></script>
+<script src="arg.js"></script>
+<script src="tv.js"></script>
+</body>
+</html>

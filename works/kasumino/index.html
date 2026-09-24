@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>霞野線アーカイブ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=DotGothic16&family=Klee+One:wght@400;600&family=Murecho:wght@400;500;700&family=Zen+Antique&family=Zen+Maru+Gothic:wght@500;700;900&display=swap">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/extra.css">
+</head>
+<body>
+<!--
+  霞野線を語り継ぐ会 ／ 管理人：ミナト
+  ※資料室（会員専用）には、会員IDのほか乗務員番号でもログインできます。
+-->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="ink" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4"/>
+    </filter>
+  </defs>
+</svg>
+
+<!-- ===== 霞野線を語り継ぐ会 ===== -->
+<div id="v-site" class="view">
+  <header class="bk-head">
+    <button type="button" class="bk-menu" id="bk-menu" aria-controls="gnav" aria-expanded="false"><span></span>目次</button>
+    <a class="bk-title" href="#/">霞野線<small>海から、霧の高原まで</small></a>
+    <span class="bk-folio" id="bk-folio"></span>
+  </header>
+  <nav class="toc" id="gnav" aria-label="目次" hidden></nav>
+  <nav class="rail" id="rail" aria-label="路線のしおり"></nav>
+  <main id="page" class="page"></main>
+  <footer class="colophon">
+    <div class="colo-box">
+      <p class="colo-title">霞野線<small>海から、霧の高原まで</small></p>
+      <dl>
+        <div><dt>編者</dt><dd>霞野線を語り継ぐ会</dd></div>
+        <div><dt>編集</dt><dd>ミナト</dd></div>
+        <div><dt>初版</dt><dd>2014年4月1日</dd></div>
+        <div><dt>最新刷</dt><dd id="colo-rev">2026年9月5日　第十二刷</dd></div>
+        <div><dt>発行所</dt><dd>北灘郡灘浜町　旧灘浜駅舎内</dd></div>
+      </dl>
+      <p class="colo-links"><a href="#/archive">資料室（会員専用）</a>　／　<a href="#/links">リンク</a></p>
+      <p class="colo-note">※本サイトはフィクションです。登場する人物・団体・鉄道路線はすべて架空のものです。</p>
+    </div>
+  </footer>
+</div>
+
+<div id="v-old" class="view" hidden></div>
+<div id="v-tms" class="view" hidden></div>
+<div id="v-end" class="view" hidden></div>
+
+<button id="note-btn" class="note-btn" type="button" aria-controls="note-panel" aria-expanded="false">調査ノート<span id="note-count">0</span></button>
+<aside id="note-panel" class="note-panel" hidden aria-label="調査ノート"></aside>
+
+<div id="modal" class="modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true">
+    <button id="modal-x" class="modal-x" type="button" aria-label="閉じる">×</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+<div id="toasts" class="toasts" aria-live="polite"></div>
+
+<script src="js/data.js"></script>
+<script src="js/core.js"></script>
+<script src="js/art.js"></script>
+<script src="js/site.js"></script>
+<script src="js/site2.js"></script>
+<script src="js/book.js"></script>
+<script src="js/old.js"></script>
+<script src="js/term.js"></script>
+<script src="js/end.js"></script>
+</body>
+</html>
