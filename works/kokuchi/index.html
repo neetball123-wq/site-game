@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>告知事項あり</title>
+<meta name="description" content="家賃1.9万円、告知事項あり。深夜のオンライン内見。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700&family=Share+Tech+Mono&display=swap">
+<link rel="stylesheet" href="css/call.css">
+</head>
+<body>
+
+<!-- 予約の確認 -->
+<section class="scr book" id="book">
+  <header class="bk-h"><span class="logo"><i></i>ひいらぎ不動産</span><span class="bk-s">オンライン内見</span></header>
+  <div class="bk-in">
+    <div class="bk-new" id="bk-new" hidden><b>新着</b>コーポ柊 204号室（リフォーム済み）家賃1.9万円　<em>告知事項あり</em></div>
+    <h1 class="bk-t">ご予約ありがとうございます</h1>
+    <div class="bk-card">
+      <div class="bk-ph" aria-hidden="true"><span></span></div>
+      <div class="bk-info">
+        <p class="bk-name">コーポ柊 204号室</p>
+        <p class="bk-rent"><b>1.9</b>万円 <small>管理費込</small></p>
+        <p class="bk-meta">1K ／ 21.06㎡ ／ 2階・角部屋 ／ 鷺ノ森駅 徒歩5分</p>
+        <p class="bk-k">告知事項あり</p>
+      </div>
+      <dl class="bk-dl"><dt>内見</dt><dd id="bk-date"></dd><dt>方法</dt><dd>オンライン（ビデオ通話）</dd><dt>担当</dt><dd>真壁 ミナ</dd></dl>
+      <p class="bk-other">同じ建物の空室：204（この部屋）　<button type="button" id="bk-205">205（募集停止）</button></p>
+    </div>
+    <label class="bk-f">ご予約のお名前<input id="bk-name" maxlength="10" autocomplete="off" placeholder="ひらがな・カタカナ"></label>
+    <div class="bk-warn">
+      <p><b>ご注意</b>　この作品には、暗い画面・大きな音・驚かせる演出・遺体をほのめかす描写があります。イヤホンを使うと、より怖くなります。</p>
+      <label class="bk-chk"><input type="checkbox" id="bk-weak"> 驚かす演出を弱める</label>
+    </div>
+    <button type="button" class="bk-go" id="bk-go">内見をはじめる</button>
+    <button type="button" class="bk-restart" id="bk-restart" hidden>最初からはじめる</button>
+    <p class="bk-foot">この作品はフィクションです。登場する人物・会社・建物・地名は、実在のものとは関係ありません。</p>
+  </div>
+</section>
+
+<!-- 内見の通話 -->
+<section class="scr call" id="call" hidden>
+  <header class="cbar">
+    <span class="logo"><i></i>ひいらぎ不動産</span>
+    <span class="live"><i></i>オンライン内見</span>
+    <span class="ctime" id="ctime">通話 00:00</span>
+    <span class="cbtns"><button type="button" id="fast">文字：ふつう</button><button type="button" id="snd">音：入</button><button type="button" id="docs-btn">資料</button></span>
+  </header>
+  <main class="cmain">
+    <div class="feed">
+      <canvas id="cv" width="324" height="576" aria-label="担当者のスマホカメラの映像"></canvas>
+      <div class="hud"><span class="rec"><i></i>REC</span><span id="h-time">23:10:00</span><span class="batt" id="h-batt">41%</span></div>
+      <p class="tag">真壁 ミナ<small>ひいらぎ不動産</small></p>
+      <p class="cap" id="cap"></p>
+      <p class="timer" id="timer" hidden></p>
+      <p class="nofeed" id="nofeed" hidden>映像を表示できません（この端末ではWebGLが使えないようです）。<br>チャットで内見を続けられます。</p>
+    </div>
+    <section class="chat" aria-label="チャット">
+      <div class="log" id="log" aria-live="polite"></div>
+      <div class="tellrow"><button type="button" id="tell" hidden>気づいたことを伝える</button></div>
+      <div class="acts" id="acts"></div>
+    </section>
+  </main>
+</section>
+
+<!-- 物件ページ（最後） -->
+<section class="scr page" id="page" hidden></section>
+
+<!-- 資料 -->
+<aside class="docs" id="docs" aria-label="資料">
+  <div class="dhead"><p>資料</p><button type="button" id="docs-x">とじる</button></div>
+  <div class="dtabs" id="dtabs"></div>
+  <div class="dbody" id="dbody"></div>
+</aside>
+
+<div class="modal" id="modal" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/world.js"></script>
+<script src="js/snd.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

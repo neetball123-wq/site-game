@@ -13,6 +13,54 @@
    ========================================================= */
 window.WORKS = [
   {
+    id: 'kokuchi',
+    path: 'works/kokuchi/index.html',
+    title: '告知事項あり',
+    place: '家賃1.9万円の部屋の、深夜のオンライン内見',
+    added: '2026-09-24',
+    genre: ['ホラー', 'オンライン内見', '3D'],
+    minutes: 30,
+    difficulty: 3,
+    accent: '#8A1C1C',
+    catch: '家賃1.9万円、駅徒歩5分、告知事項あり。深夜23時10分、担当の真壁さんとオンラインで内見がはじまる。——マイクの調子が悪いので、今日はチャットで。',
+    features: ['担当者のスマホ映像が3Dで動く', '指示を出して、部屋を測る・叩く・開ける', '図面・黒塗り・台帳を読み解く', '驚かす演出を弱める設定あり'],
+    storageKey: 'kokuchi.v1',
+    progress(s) {
+      if (s.ending === 'true') return { pct: 100, label: 'TRUE END「告知」', cleared: true };
+      const n = s.stage || 0;
+      const L = ['予約済み', '内見中', '黒塗りの書類', '四十九日', '停電', '0時まで', '告知'];
+      return { pct: n ? Math.min(95, 8 + n * 14) : 0, label: L[n] || '予約済み', cleared: false };
+    },
+    haunt(s) { return s.ending === 'true' ? { tagline: 'コン、コン、コン。', mark: '告' } : null; },
+    spoilers: [
+      '洋室のクローゼットで「奥行」を測ると455ミリ（図面は910）。「気づいたことを伝える」→ クローゼットの奥行・455',
+      '重要事項説明書の黒塗りは、なぞる（選択する）と読める。大家の娘の名前「ナナエ」を伝える',
+      'キッチンの引き出しに入居者台帳。全員が入居49日目に消えている。久住サキは今夜で49日目 →「49」',
+      '停電のあと、ナイトモードでクローゼットの壁を見る。手形の指の本数の順にネジを外す：左下（1本）→ 右上（2本）→ 左上（3本）→ 右下（4本）',
+      '玄関には「何か」が立っている。バルコニーへ → 避難ハッチ（仕切り板は開かない）。20秒以内',
+      '告知の訂正：柊 ナナエ ／ クローゼットの奥の壁の中 ／ 平成11年 ／ 4人 → TRUE END',
+      'ほかにも：チラシの「申し込む」、浴室の鏡、ナイトモードで「うしろを照らして」、205号室、夜中0〜4時の内見、チラシの洋室写真の窓……'
+    ],
+    cover: {
+      front: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><linearGradient id="kk-f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a1d22"/><stop offset="1" stop-color="#050607"/></linearGradient><radialGradient id="kk-l" cx=".5" cy=".45" r=".6"><stop offset="0" stop-color="#6d6456" stop-opacity=".9"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient></defs>'
+        + '<rect width="400" height="250" fill="#F4F6F5"/><rect x="14" y="14" width="372" height="222" rx="10" fill="#fff" stroke="#E3E6EA"/>'
+        + '<g transform="translate(26 28)"><rect width="150" height="196" rx="8" fill="url(#kk-f)"/><rect width="150" height="196" rx="8" fill="url(#kk-l)"/>'
+        + '<path d="M30 40h90v130H30z" fill="#3a3630"/><path d="M34 44h40v122H34z" fill="#2b2824"/><path d="M78 44h38v122H78z" fill="#11100f"/><path d="M74 44h4v122h-4z" fill="#000"/>'
+        + '<ellipse cx="97" cy="88" rx="8" ry="10" fill="#cfc9bd" opacity=".85"/><rect x="88" y="78" width="18" height="6" fill="#050505"/><rect x="90" y="80" width="3" height="26" fill="#050505"/><circle cx="94" cy="89" r="1.4" fill="#000"/><circle cx="100" cy="89" r="1.4" fill="#000"/>'
+        + '<circle cx="12" cy="12" r="3" fill="#ff3b30"/><text x="20" y="15" font-size="8" fill="#ff6b62" font-family="monospace">REC 23:10</text><text x="75" y="186" text-anchor="middle" font-size="8" fill="#9AA1AB">真壁 ミナ</text></g>'
+        + '<text x="192" y="52" font-size="12" font-weight="700" fill="#2F7D4F">ひいらぎ不動産 ／ オンライン内見</text>'
+        + '<text x="192" y="82" font-size="18" font-weight="700" fill="#1F2328">コーポ柊 204号室</text>'
+        + '<text x="192" y="122" font-size="34" font-weight="800" fill="#C0392B">1.9<tspan font-size="14">万円</tspan></text>'
+        + '<text x="192" y="142" font-size="10" fill="#6B7280">1K ／ 21.06㎡ ／ 駅徒歩5分</text>'
+        + '<g transform="translate(290 186) rotate(-8)"><rect x="-58" y="-18" width="116" height="36" rx="4" fill="none" stroke="#C0392B" stroke-width="3"/><text x="0" y="6" text-anchor="middle" font-size="15" font-weight="800" fill="#C0392B">告知事項あり</text></g></svg>',
+      back: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><radialGradient id="kk-n" cx=".5" cy=".5" r=".7"><stop offset="0" stop-color="#5cff8a"/><stop offset="1" stop-color="#0b2a14"/></radialGradient></defs>'
+        + '<rect width="400" height="250" fill="url(#kk-n)"/><rect width="400" height="250" fill="#000" opacity=".35"/>'
+        + [[110, 70, 3, -.4], [290, 70, 2, .4], [110, 180, 1, -.3], [290, 180, 4, .3]].map(([x, y, n, r]) => `<g transform="translate(${x} ${y}) rotate(${r * 57})" fill="#051208" opacity=".85"><ellipse rx="17" ry="20"/>${[...Array(n)].map((_, i) => `<ellipse rx="5" ry="11" transform="rotate(${(-.5 + i * .33) * 57}) translate(0 -29)"/>`).join('')}</g>`).join('')
+        + '<text x="200" y="126" text-anchor="middle" font-size="34" font-weight="800" fill="#051208" font-family="serif">ナナエ</text><text x="200" y="156" text-anchor="middle" font-size="18" fill="#051208" font-family="serif">ここ</text>'
+        + '<text x="16" y="24" font-size="11" fill="#d8ffe4" font-family="monospace">NIGHT MODE  23:48</text></svg>'
+    }
+  },
+  {
     id: 'tsuzuki',
     path: 'works/tsuzuki/index.html',
     title: 'つづきから',
