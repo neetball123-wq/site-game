@@ -13,6 +13,60 @@
    ========================================================= */
 window.WORKS = [
   {
+    id: 'tomaredeck',
+    images: { front: 'works/tomaredeck/img/front.png', back: 'works/tomaredeck/img/back.png' },
+    path: 'works/tomaredeck/index.html',
+    title: 'TOMARE DECK',
+    place: '道路標識のカードで進む、終わったあとの国道',
+    added: '2026-09-25',
+    genre: ['カードゲーム', 'ローグライク', 'ドット絵'],
+    minutes: 40,
+    difficulty: 3,
+    accent: '#2F9A58',
+    catch: '「止まれ」の標識をかついだロボットが、こんどはカードで戦う。落石注意、踏切あり、一方通行。道路標識のカードを組み合わせて、昼の国道から雨の夜の解体機まで進む。',
+    features: ['「止まれ」で敵の次の行動を止める', '落石・シカ・踏切の標識を置いて、数ターン後にドカン', '負けても経験値で、カード・パーツ・キットが増える', '道も敵も毎回変わる。途中でやめても続きから'],
+    storageKey: 'tomaredeck.v1',
+    progress(s) {
+      const m = s.meta || {}, acts = ['昼の国道', '夕暮れの商店街', '雨の夜の高架下'];
+      if (m.wins) return { pct: 100, label: m.wins > 1 ? '解体機を' + m.wins + '回たおした' : '解体機をたおした', cleared: true };
+      const at = (a, f) => 'ACT' + (a + 1) + ' ' + acts[a] + ' ' + f + '/7';
+      if (s.run && s.run.act != null) { const a = Math.min(2, s.run.act), f = s.run.floor || 0; return { pct: Math.min(95, 5 + Math.round((a * 7 + f) / 21 * 90)), label: at(a, f), cleared: false }; }
+      const b = m.bestFloor || 0;
+      if (b) { const a = Math.min(2, Math.floor((b - 1) / 7)), f = b - a * 7; return { pct: Math.min(95, 5 + Math.round(b / 21 * 90)), label: 'いちばん遠く：' + at(a, f), cleared: false }; }
+      return { pct: s.playMs ? 2 : 0, label: s.playMs ? 'タイトル画面' : '電源OFF', cleared: false };
+    },
+    spoilers: [
+      '「止まれ」は敵1体の次の行動を止める。ふつうの敵は1回、強敵は2回、ボスは3回で止まる。回数はターンをまたいでたまるので、大技の前のターンに合わせて重ねる',
+      '落石注意・動物注意・踏切ありは、置いてから数ターン後に発動する。踏切ありは敵全体に40ダメージ。合流注意と路面凍結で、発動までのターンを縮められる',
+      'ドラム缶は倒されると爆発して、敵にもこちらにもダメージ。3つ並んでいるときは、先にブロックしてから1つ倒すと連鎖する',
+      'ロードローラー：エンジンをふかした次のターンに「ぺしゃんこ」（大ダメージ）。穴ぼこのカードは引くたびにHPが減るので、ショップや休憩所で取り除く',
+      '信号機ロボ：赤信号のあいだに攻撃カードを使うとHPが減る。赤のターンは守りと準備、黄色で全員の馬力が上がり、青で連続攻撃',
+      '解体機：アームを振り上げた次のターンに叩きつけ（大ダメージ）。横なぎはブロックを壊してから当ててくる。半分を切るとドラム缶を落としてくる',
+      'レベル5で工事キット、レベル8で高速キットが使える。クリアすると警戒レベルが上がり、次からは敵が強くなる'
+    ],
+    cover: {
+      front: '<svg viewBox="0 0 400 250" aria-hidden="true" shape-rendering="crispEdges"><defs><linearGradient id="td-s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#76A2CC"/><stop offset="1" stop-color="#E7EFF0"/></linearGradient></defs>'
+        + '<rect width="400" height="250" fill="url(#td-s)"/>'
+        + [[0, 110, 50], [60, 90, 40], [110, 120, 60], [190, 100, 44], [250, 116, 70], [330, 96, 70]].map(([x, y, w]) => `<rect x="${x}" y="${y}" width="${w}" height="${176 - y}" fill="#A9BECE"/>`).join('')
+        + '<rect y="170" width="400" height="80" fill="#8E7A62"/><rect y="164" width="400" height="10" fill="#C7CCD0"/>'
+        + [['#D8363F', 40, 150], ['#2F9A58', 96, 136], ['#3F78C2', 152, 150]].map(([c, x, y]) => `<g transform="translate(${x} ${y})"><rect width="64" height="90" fill="#FBF7F0" stroke="#221F30" stroke-width="3"/><rect x="4" y="4" width="56" height="14" fill="${c}"/><rect x="4" y="20" width="56" height="38" fill="#F2E6E0"/><circle cx="6" cy="6" r="8" fill="#FFD23F" stroke="#221F30" stroke-width="2"/></g>`).join('')
+        + '<path d="M116 164l12 22 12-22z" fill="#E0415A" stroke="#221F30" stroke-width="2"/>'
+        + '<g transform="translate(262 76)"><path d="M58 -40l40 -10 -12 30z" fill="#E0415A" stroke="#221F30" stroke-width="3"/><rect x="56" y="-24" width="4" height="40" fill="#A3A9B6"/>'
+        + '<rect x="0" y="12" width="64" height="62" fill="#ECE6D6" stroke="#221F30" stroke-width="4"/><rect x="0" y="-6" width="64" height="26" rx="22" fill="#ECE6D6" stroke="#221F30" stroke-width="4"/><rect x="2" y="12" width="60" height="8" fill="#ECE6D6"/>'
+        + '<circle cx="24" cy="24" r="16" fill="#2D2A3C"/><circle cx="24" cy="24" r="10" fill="#FFD23F"/><circle cx="20" cy="20" r="3" fill="#fff"/><rect x="10" y="74" width="12" height="14" fill="#4B4658"/><rect x="40" y="74" width="12" height="14" fill="#4B4658"/></g>'
+        + '<text x="22" y="46" font-size="30" font-weight="800" fill="#FBF7F0" stroke="#221F30" stroke-width="5" paint-order="stroke" font-family="\'Dela Gothic One\', monospace">TOMARE</text>'
+        + '<g transform="translate(150 52) rotate(-4)"><rect width="66" height="24" rx="4" fill="#D8363F" stroke="#221F30" stroke-width="3"/><text x="33" y="18" text-anchor="middle" font-size="16" fill="#fff" font-family="\'Dela Gothic One\', monospace">DECK</text></g></svg>',
+      back: '<svg viewBox="0 0 400 250" aria-hidden="true" shape-rendering="crispEdges"><defs><linearGradient id="td-n" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E1024"/><stop offset="1" stop-color="#2A2548"/></linearGradient><radialGradient id="td-l"><stop offset="0" stop-color="#FFF3B0"/><stop offset="1" stop-color="#FFF3B0" stop-opacity="0"/></radialGradient></defs>'
+        + '<rect width="400" height="250" fill="url(#td-n)"/>'
+        + [[10, 70, 60], [80, 50, 50], [140, 80, 70], [220, 60, 50], [280, 76, 60], [346, 56, 54]].map(([x, y, w], i) => `<rect x="${x}" y="${y}" width="${w}" height="${176 - y}" fill="#1B1B36"/>` + [...Array(6)].map((_, k) => `<rect x="${x + 6 + (k % 3) * 16}" y="${y + 10 + Math.floor(k / 3) * 22}" width="8" height="10" fill="${(i + k) % 3 ? '#E8C070' : '#3A3A5A'}"/>`).join('')).join('')
+        + '<rect y="176" width="400" height="74" fill="#15152A"/>'
+        + [0, 1, 2].map(k => `<g transform="translate(${-20 + k * 110} 118)"><rect width="104" height="58" fill="#E8E2D4" stroke="#221F30" stroke-width="3"/><rect y="30" width="104" height="7" fill="#2F9A58"/><rect y="39" width="104" height="2" fill="#E0A030"/>` + [0, 1, 2, 3, 4].map(w => `<rect x="${8 + w * 19}" y="8" width="13" height="14" fill="#FFE7A0"/>`).join('') + '<circle cx="18" cy="60" r="6" fill="#221F30"/><circle cx="86" cy="60" r="6" fill="#221F30"/></g>').join('')
+        + '<circle cx="312" cy="160" r="40" fill="url(#td-l)"/><rect x="330" y="120" width="44" height="56" fill="#B8C4D6" stroke="#221F30" stroke-width="3"/><rect x="336" y="126" width="32" height="4" fill="#8FA3B8"/>'
+        + '<text x="300" y="112" font-size="26" fill="#FFD23F" stroke="#221F30" stroke-width="4" paint-order="stroke" font-family="\'Dela Gothic One\', monospace">40</text>'
+        + [...Array(50)].map((_, i) => `<path d="M${(i * 53) % 400} ${(i * 37) % 250}l-4 14" stroke="#8FA3D9" stroke-width="1.5"/>`).join('') + '</svg>'
+    }
+  },
+  {
     id: 'lastbus',
     path: 'works/lastbus/index.html',
     title: '最終バスの車掌',
