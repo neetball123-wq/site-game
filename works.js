@@ -13,6 +13,61 @@
    ========================================================= */
 window.WORKS = [
   {
+    id: 'yofukashi',
+    path: 'works/yofukashi/index.html',
+    title: '深夜ラジオの投稿職人',
+    place: '最終回をむかえる、深夜ラジオの副調整室',
+    added: '2026-09-25',
+    genre: ['泣ける', '謎解き', '3D'],
+    minutes: 30,
+    difficulty: 3,
+    accent: '#D8962B',
+    catch: '二十三年つづいた深夜ラジオの最終回。代理の構成作家として、ハガキを選んでブースに入れる。消印、切手、エアチェックのテープ。名前を変えて何枚も書いていた、ひとりの投稿職人がいた。',
+    features: ['ガラスの向こうのブースを3Dで', 'ハガキの消印・切手・差出人を読む', 'エアチェックのテープとラジオのダイヤル', '名前を変えて書いていた、ひとりの職人'],
+    storageKey: 'yofukashi.v1',
+    progress(s) {
+      if (s.ended) return { pct: 100, label: '放送終了', cleared: true };
+      if (!s.intro) return { pct: s.playMs ? 2 : 0, label: '放送前（入館証）', cleared: false };
+      const L = ['オープニング', '最終回スペシャル', 'リクエスト', '灯台さんの最後のハガキ', 'CM', 'エンディング'], i = Math.min(5, s.stage || 0);
+      return { pct: 5 + i * 15, label: L[i], cleared: false };
+    },
+    spoilers: [
+      'オープニング：元・中学生さん（潮見 8.9.22 8-12）。22日の「0-8」は3時より前かもしれない、風景印は時間帯がない、「7」は去年、にじんだ消印は読めない',
+      '最終回スペシャル：潮見局の0-8・潮見郵便局留・逆さ切手がそろう4つの名前は同じ人。ねむれない灯台＋左ききのカモメ＋ねこ背の郵便屋＋3丁目の夕刊＝414票で1位。この4つに丸',
+      'リクエスト：テープB面の後ろで「中学二年の冬」「雪の歌」「A面じゃなくて裏の曲」。ダイヤル882の北浜ラジオで1978年1月生まれ（早生まれ）。白川ミオ「粉雪ステーション」（1991年12月）のB面「となりの窓の雪」',
+      '灯台さんの最後のハガキ：4つの名前の殿堂ハガキ8枚を、消印の日付順にならべて最初の字を読む。「みんながいるから」',
+      'CM：台帳の「3夕」「左カ」の行で、2007年から名字が三上に。潮見郵便局留　三上 灯 様',
+      'エンディング：テープA面で、ツジモトさんがラジオネームのない一通に「ねむれない灯台」と名づけている。カンペに「ねむれない灯台」',
+      'ほかにも：逆さ切手の下、テープB面の最後、殿堂ファイルのポケットの奥、ダイヤル、トークバック、マイクのフェーダー……',
+    ],
+    cover: {
+      front: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><linearGradient id="yf-s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#050914"/><stop offset="1" stop-color="#2a2446"/></linearGradient><radialGradient id="yf-l"><stop offset="0" stop-color="#ffc98a" stop-opacity=".75"/><stop offset="1" stop-color="#ffc98a" stop-opacity="0"/></radialGradient></defs>'
+        + '<rect width="400" height="250" fill="#141722"/>'
+        + '<rect x="96" y="40" width="208" height="92" fill="url(#yf-s)"/>'
+        + [...Array(36)].map((_, i) => `<circle cx="${100 + (i * 53) % 200}" cy="${44 + (i * 29) % 50}" r="${i % 6 ? 0.7 : 1.3}" fill="#fff" opacity=".8"/>`).join('')
+        + [104, 126, 150, 178, 206, 236, 262, 284].map((x, i) => `<rect x="${x}" y="${96 - (i % 3) * 10}" width="${14 + (i % 2) * 6}" height="${36 + (i % 3) * 10}" fill="#10152a"/><rect x="${x + 4}" y="${102 - (i % 3) * 10}" width="3" height="3" fill="#ffcf8f"/><rect x="${x + 9}" y="${112 - (i % 3) * 10}" width="3" height="3" fill="#ffcf8f" opacity=".7"/>`).join('')
+        + '<path d="M270 100 L304 92 L304 104 Z" fill="#fff2cc" opacity=".35"/><rect x="266" y="98" width="4" height="14" fill="#e8e4d8"/>'
+        + '<rect x="96" y="40" width="208" height="92" fill="none" stroke="#0b0c10" stroke-width="4"/><rect x="198" y="40" width="4" height="92" fill="#0b0c10"/>'
+        + '<rect x="40" y="16" width="52" height="18" rx="2" fill="#b8160c"/><text x="66" y="29" text-anchor="middle" font-size="11" font-weight="900" fill="#fff" font-family="sans-serif">ON AIR</text>'
+        + '<circle cx="336" cy="70" r="24" fill="#0a0a0c" stroke="#333" stroke-width="2"/>' + [...Array(30)].map((_, i) => { const a = i / 30 * Math.PI * 2 - Math.PI / 2; return `<circle cx="${(336 + Math.cos(a) * 19).toFixed(1)}" cy="${(70 + Math.sin(a) * 19).toFixed(1)}" r="1.4" fill="${i < 22 ? '#ff3b2a' : '#3a1210'}"/>`; }).join('') + '<text x="336" y="74" text-anchor="middle" font-size="9" fill="#ff3b2a" font-family="monospace">26:59</text>'
+        + '<circle cx="120" cy="128" r="46" fill="url(#yf-l)"/>'
+        + '<g transform="translate(200 118)"><path d="M-40 36 Q-38 0 0 -6 Q38 0 40 36 Z" fill="#2f3a52"/><circle cx="0" cy="-22" r="17" fill="#e6c3a5"/><path d="M-17 -26 Q0 -48 17 -26 Q12 -38 0 -39 Q-12 -38 -17 -26Z" fill="#2a221c"/><path d="M-20 -24 Q0 -52 20 -24" fill="none" stroke="#141519" stroke-width="4"/><rect x="-23" y="-28" width="7" height="12" rx="3" fill="#141519"/><rect x="16" y="-28" width="7" height="12" rx="3" fill="#141519"/><circle cx="-6" cy="-21" r="4" fill="none" stroke="#2a2522" stroke-width="1.2"/><circle cx="6" cy="-21" r="4" fill="none" stroke="#2a2522" stroke-width="1.2"/></g>'
+        + '<path d="M268 132 L268 88 L226 96" fill="none" stroke="#9aa0a8" stroke-width="2.5"/><rect x="218" y="92" width="10" height="16" rx="4" fill="#1b1d22"/>'
+        + '<path d="M104 150 L112 112 L124 104" fill="none" stroke="#9aa0a8" stroke-width="2"/><path d="M116 98 L134 98 L130 110 L120 110 Z" fill="#2f5a4a"/>'
+        + '<rect x="0" y="146" width="400" height="104" fill="#4b3525"/><rect x="0" y="146" width="400" height="6" fill="#6b4a32"/>'
+        + '<g transform="translate(58 196) rotate(-8)"><rect x="-34" y="-50" width="68" height="100" fill="#f7f1e1"/><g transform="translate(-20 -34) rotate(180)"><rect x="-9" y="-11" width="18" height="22" fill="#fff" stroke="#ddd"/><rect x="-7" y="-9" width="14" height="16" fill="#7fb6d8"/><path d="M-2 -5 H2 L3 5 H-3 Z" fill="#fff"/></g><circle cx="-10" cy="-30" r="12" fill="none" stroke="#2a2a3a" stroke-width="1.4" opacity=".8"/><path d="M-21 -33 H1 M-21 -26 H1" stroke="#2a2a3a" stroke-width="1" opacity=".8"/><text x="-10" y="-20.5" text-anchor="middle" font-size="5" fill="#2a2a3a" font-family="monospace">0-8</text><path d="M20 -34 V30 M10 -34 V20" stroke="#2b4c8c" stroke-width="2" opacity=".6"/></g>'
+        + '<g transform="translate(290 206) rotate(3)"><rect x="-86" y="-34" width="172" height="68" rx="3" fill="#fbfaf5"/><rect x="-86" y="-34" width="172" height="10" rx="3" fill="#2d4a8a"/><text x="0" y="10" text-anchor="middle" font-size="15" font-weight="700" fill="#111" font-family="sans-serif">深夜ラジオの投稿職人</text><text x="0" y="26" text-anchor="middle" font-size="8" fill="#555" font-family="sans-serif">よふかし通信　最終回</text></g></svg>',
+      back: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><radialGradient id="yf-g"><stop offset="0" stop-color="#ffe0a8" stop-opacity=".8"/><stop offset="1" stop-color="#ffe0a8" stop-opacity="0"/></radialGradient></defs>'
+        + '<rect width="400" height="250" fill="#070a14"/>' + [...Array(70)].map((_, i) => `<circle cx="${(i * 61) % 400}" cy="${(i * 37) % 120}" r="${i % 7 ? 0.7 : 1.4}" fill="#fff" opacity=".7"/>`).join('')
+        + '<rect y="150" width="400" height="100" fill="#050810"/>'
+        + [20, 70, 250, 300, 350].map((x, i) => `<rect x="${x}" y="${120 - (i % 2) * 14}" width="34" height="${34 + (i % 2) * 14}" fill="#10152a"/><rect x="${x + 8}" y="${128 - (i % 2) * 14}" width="4" height="4" fill="#ffcf8f"/>`).join('')
+        + '<rect x="120" y="116" width="90" height="38" fill="#3a372f"/><rect x="150" y="128" width="12" height="9" fill="#ffe0a8"/><circle cx="156" cy="132" r="22" fill="url(#yf-g)"/><text x="132" y="112" font-size="12" fill="#ff4a3a" font-weight="900" font-family="sans-serif">〒</text>'
+        + '<rect x="154" y="160" width="4" height="60" fill="#ffc98a" opacity=".25"/>'
+        + '<rect x="356" y="104" width="6" height="46" fill="#d9d6cc"/><rect x="355" y="98" width="8" height="6" fill="#fff2cc"/><path d="M359 101 L220 80 L220 96 Z" fill="#fff2cc" opacity=".25"/>'
+        + '<g transform="translate(286 200) rotate(6)"><rect x="-28" y="-40" width="56" height="82" fill="#f7f1e1"/><g transform="translate(-16 -27) rotate(180)"><rect x="-7" y="-9" width="14" height="18" fill="#fff" stroke="#ddd"/><rect x="-5" y="-7" width="10" height="13" fill="#7fb6d8"/></g><circle cx="-6" cy="-24" r="10" fill="none" stroke="#2a2a3a" stroke-width="1.2" opacity=".8"/><text x="-6" y="-16" text-anchor="middle" font-size="4.5" fill="#2a2a3a" font-family="monospace">0-8</text><path d="M16 -30 V26 M8 -30 V16" stroke="#2b4c8c" stroke-width="1.6" opacity=".6"/></g></svg>',
+    },
+  },
+  {
     id: 'tomaredeck',
     images: { front: 'works/tomaredeck/img/front.png', back: 'works/tomaredeck/img/back.png' },
     path: 'works/tomaredeck/index.html',

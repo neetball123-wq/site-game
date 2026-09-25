@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>深夜ラジオの投稿職人</title>
+<meta name="description" content="二十三年つづいた深夜ラジオの最終回。代理の構成作家として、ハガキを選んでブースに入れる。名前を変えて何枚も書いていた、ひとりの投稿職人がいた。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ヨリミチ">
+<meta property="og:title" content="深夜ラジオの投稿職人">
+<meta property="og:description" content="二十三年つづいた深夜ラジオの最終回。代理の構成作家として、ハガキを選んでブースに入れる。消印、切手、エアチェックのテープ。名前を変えて何枚も書いていた、ひとりの投稿職人がいた。">
+<meta property="og:url" content="https://neetball123-wq.github.io/site-game/works/yofukashi/">
+<meta property="og:image" content="https://neetball123-wq.github.io/site-game/works/yofukashi/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="深夜ラジオの投稿職人｜最終回をむかえる、深夜ラジオの副調整室">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Share+Tech+Mono&family=Klee+One:wght@400;600&family=Yusei+Magic&family=Zen+Kurenaido&family=Hachi+Maru+Pop&family=Yomogi&family=Kiwi+Maru:wght@400;500&family=Shippori+Mincho:wght@500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+<link rel="stylesheet" href="css/studio.css">
+</head>
+<body>
+<div class="sub" id="sub">
+  <header class="wall">
+    <div class="plate"><b>潮見放送</b><span>第2スタジオ　副調整室</span></div>
+    <div class="now"><span class="now-k">いまのコーナー</span><b id="now-t">放送前</b></div>
+    <button type="button" class="onair" id="onair" aria-label="ON AIRランプ"><span>ON AIR</span></button>
+    <div class="sclock" id="sclock" aria-label="スタジオの時計"></div>
+  </header>
+
+  <section class="glass" id="glass" aria-label="ブースの窓">
+    <canvas id="cv" aria-label="ガラスの向こうのブース。パーソナリティの辻本コウさん"></canvas>
+    <div class="kanpe-show" id="kanpe-show" hidden></div>
+    <div class="mail" id="mail" hidden></div>
+    <div class="cap" id="cap" hidden>
+      <span class="cap-who" id="cap-who"></span>
+      <p class="cap-t" id="cap-t" aria-live="polite"></p>
+      <div class="cap-b"><button type="button" id="cap-skip" aria-label="とばす">▶▶</button><button type="button" id="cap-next" aria-label="つぎへ">▼</button></div>
+    </div>
+    <div class="fade" id="fade"></div>
+  </section>
+
+  <section class="console" aria-label="卓">
+    <div class="faders">
+      <label class="fader"><input type="range" id="f-mic" min="0" max="100" value="80" aria-label="マイクのフェーダー"><span>マイク</span></label>
+      <label class="fader"><input type="range" id="f-bgm" min="0" max="100" value="60" aria-label="BGMのフェーダー"><span>BGM</span></label>
+    </div>
+    <div class="cue" id="cue"><span class="cue-k">佐伯Dのメモ</span><p id="cue-t">放送前。</p></div>
+    <div class="cbtn">
+      <button type="button" class="tb" id="tb"><i aria-hidden="true"></i>トークバック</button>
+      <button type="button" class="kb" id="kb">カンペ</button>
+      <button type="button" class="sb" id="snd">音：入</button>
+    </div>
+  </section>
+
+  <section class="desk">
+    <nav class="items" id="items" aria-label="机の上のもの"></nav>
+    <div class="open" id="open"></div>
+  </section>
+
+  <footer class="foot">この作品はフィクションです。登場する人物・放送局・番組・楽曲・地名は、実在のものとは関係ありません。</footer>
+</div>
+
+<div class="modal" id="modal" hidden></div>
+<div class="gate" id="gate" hidden></div>
+<div class="endcard" id="endcard" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script src="js/data.js"></script>
+<script src="js/booth.js"></script>
+<script src="js/snd.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
