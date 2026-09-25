@@ -36,7 +36,11 @@ uragawa/
 1. `works/<作品ID>/` に作品を置く。入口は `index.html`。CSS・JS・画像は相対パスで読み込む。
 2. `works.js` の `WORKS` に1件追加する（下のひな形）。
 3. 一覧をブラウザで開き、表紙・進行状況・「遊ぶ」を確認する。
-4. 公開版（Artifact）を更新する場合は、一覧と `works/` 以下のファイルを同じArtifactに再公開する。
+4. Xなどにリンクを貼ったとき画像つきで出るように、リンクカードを用意する。
+   - 画像：`works/<作品ID>/img/og.jpg`（1200×630）。
+   - `index.html` の `<head>` に `og:title`・`og:description`・`og:url`・`og:image`・`twitter:card`（`summary_large_image`）を入れる。`og:url` と `og:image` は `https://neetball123-wq.github.io/site-game/` から始まる絶対URLにする。
+   - 画像は手元の `_og/`（git管理外）で作れる。一覧を `python -m http.server 8940` で開いた状態で `node _og/shoot.js <保存先> <作品ID>=id=<作品ID>` を実行すると、`_og/gen.html` の見た目で撮影する。
+5. 公開版（Artifact）を更新する場合は、一覧と `works/` 以下のファイルを同じArtifactに再公開する。
 
 ```js
 {
