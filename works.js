@@ -13,6 +13,52 @@
    ========================================================= */
 window.WORKS = [
   {
+    id: 'tensei',
+    path: 'works/tensei/index.html',
+    title: '女神課 転生窓口',
+    place: '死後の世界の、役所の転生窓口',
+    added: '2026-09-26',
+    genre: ['異世界転生', '書類パズル', '泣ける'],
+    minutes: 30,
+    difficulty: 3,
+    accent: '#2F5D8A',
+    catch: '死後の世界の役所で、転生手続きの新人職員になった。生前記録票と転生規定集を読んで、魂の行き先と種族とスキルを決め、印を押す。規定の抜け道を探せば、かなえられる願いもある。',
+    features: ['生前記録票と転生規定集を読みくらべる', '功徳点でスキルをやりくり', '書類どうしのつながりで、真実が見える', '最後の一枚は、白紙の記録'],
+    storageKey: 'tensei.v1',
+    progress(s) {
+      if (s.ended) return { pct: 100, label: '本日の受付は終了', cleared: true };
+      if (!s.intro) return { pct: s.playMs ? 2 : 0, label: '配属の日', cleared: false };
+      const n = (s.filed || []).length;
+      if ((s.ci || 0) >= 6) return { pct: 92, label: '受付番号108', cleared: false };
+      return { pct: 5 + n * 14, label: n ? `${n}件を処理した` : '受付番号101', cleared: false };
+    },
+    spoilers: [
+      '101 田中：全属性魔法をあきらめる。アルステラ／人間／剣術・頑丈な体／記憶あり（950点）',
+      '102 佐藤：死因の「労災認定済み」で第八条（＋500）。ルルシア諸島／人間／万能農耕／記憶なし',
+      '103 ひな：死亡確認時刻が空欄（蘇生処置中）。第一条で「差戻」',
+      '104 タマ：縁結びに101（第十一条で世界の費用なし）。アルステラ／動物のすがた／記憶あり（300点）',
+      '105・106 宮下：第七条と第十三条で650点。ふたりともルルシア諸島、そら＝人魚・縁結び105、ちさと＝人間、記憶はふたりともなし',
+      '107 黒木：減点の夜と102佐藤の転落が同じ日時・場所。第十五条で102を添付（600点）。ギアノルド／人間',
+      '108：引き出しの鈴と、ひなの記録の家族欄。氏名「小野寺 湊」、命日「令和五年九月二十八日」。最後は転生するか、第十七条で窓口に残るか',
+      'ほかにも：壁の時計、整理券、規定集の付則、昔の綴り、灰原さんの名札……',
+    ],
+    cover: {
+      front: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><linearGradient id="ts-s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a9d0ec"/><stop offset="1" stop-color="#eaf4fb"/></linearGradient><radialGradient id="ts-o"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="#ffd9a0"/><stop offset=".75" stop-color="#e8963a" stop-opacity=".45"/><stop offset="1" stop-color="#e8963a" stop-opacity="0"/></radialGradient></defs>'
+        + '<rect width="400" height="250" fill="#eef2f5"/>' + [0, 1, 2].map((i) => `<rect x="${30 + i * 125}" y="14" width="90" height="62" rx="40" fill="url(#ts-s)" stroke="#c9d3dc" stroke-width="3"/>`).join('')
+        + '<rect y="150" width="400" height="100" fill="#d3dbe2"/>' + [60, 200, 340].map((x) => `<rect x="${x - 40}" y="150" width="80" height="6" rx="3" fill="#b9c4cf"/><circle cx="${x - 16}" cy="140" r="6" fill="#fff6d8" opacity=".8"/>`).join('')
+        + '<rect x="90" y="40" width="220" height="150" fill="#fff" opacity=".12" stroke="#9aa6b2" stroke-width="5"/><line x1="200" y1="40" x2="200" y2="190" stroke="#9aa6b2" stroke-width="3"/>'
+        + '<rect x="160" y="22" width="80" height="22" rx="4" fill="#2f5d8a"/><text x="200" y="38" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" font-family="sans-serif">３番窓口</text>'
+        + '<circle cx="200" cy="112" r="52" fill="url(#ts-o)"/><circle cx="200" cy="112" r="11" fill="#fff"/>'
+        + '<rect y="190" width="400" height="60" fill="#d9c8aa"/><rect y="190" width="400" height="4" fill="#f3ead8"/>'
+        + '<g transform="translate(300 214) rotate(-6)"><rect x="-58" y="-26" width="116" height="60" fill="#fff" stroke="#9fb8c6"/><text x="-50" y="-10" font-size="9" fill="#1f3a4a" font-family="serif">転生決定通知書</text><circle cx="30" cy="12" r="15" fill="none" stroke="#c2332a" stroke-width="2.5"/><text x="30" y="17" text-anchor="middle" font-size="11" font-weight="700" fill="#c2332a" font-family="serif">承認</text></g>'
+        + '<text x="92" y="232" text-anchor="middle" font-size="18" font-weight="700" fill="#244a70" letter-spacing="2" font-family="serif">女神課 転生窓口</text></svg>',
+      back: '<svg viewBox="0 0 400 250" aria-hidden="true"><rect width="400" height="250" fill="#d9c8aa"/><rect y="0" width="400" height="6" fill="#f3ead8"/>'
+        + '<g transform="translate(160 125) rotate(-3)"><rect x="-120" y="-100" width="240" height="200" fill="#fff" stroke="#9fb8c6" stroke-width="2"/><rect x="-120" y="-100" width="240" height="24" fill="#e2eef3"/><text x="-110" y="-83" font-size="11" fill="#1f3a4a" font-family="serif">生前記録票（白紙交付）　108</text>'
+        + [0, 1, 2, 3, 4].map((i) => `<line x1="-120" y1="${-50 + i * 30}" x2="120" y2="${-50 + i * 30}" stroke="#cfe0e8"/><text x="-112" y="${-58 + i * 30}" font-size="9" fill="#4a6070" font-family="sans-serif">${['氏名', '命日', '死因', '家族', '未練'][i]}</text>`).join('') + '</g>'
+        + '<g transform="translate(320 150)"><path d="M0 -60 v28" stroke="#8a6a3a" stroke-width="2.5"/><circle cx="0" cy="0" r="30" fill="#e6c257" stroke="#9a7a24" stroke-width="2.5"/><path d="M-25 -3 H25" stroke="#9a7a24" stroke-width="2.5"/><circle cx="0" cy="10" r="5" fill="#6a5010"/><path d="M0 15 v12" stroke="#6a5010" stroke-width="2.5"/><path d="M10 34 l30 22 l-40 -4 z" fill="#f3ead7" stroke="#b8a888"/></g></svg>',
+    },
+  },
+  {
     id: 'naraku',
     path: 'works/naraku/index.html',
     title: '奈落の証人',

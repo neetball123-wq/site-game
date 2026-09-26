@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>女神課 転生窓口</title>
+<meta name="description" content="死後の世界の役所で、転生手続きの新人職員になる。生前記録票と転生規定集を読んで、魂の行き先を決め、印を押す書類パズル。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ヨリミチ">
+<meta property="og:title" content="女神課 転生窓口">
+<meta property="og:description" content="死後の世界の役所で、転生手続きの新人職員になった。生前記録票と転生規定集を読んで、魂の行き先と種族とスキルを決め、印を押す。規定の抜け道を探せば、かなえられる願いもある。">
+<meta property="og:url" content="https://neetball123-wq.github.io/site-game/works/tensei/">
+<meta property="og:image" content="https://neetball123-wq.github.io/site-game/works/tensei/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="女神課 転生窓口｜死後の世界の、役所の転生窓口">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPMincho:wght@400;700&family=BIZ+UDPGothic:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Klee+One:wght@400;600&family=DotGothic16&display=swap">
+<link rel="stylesheet" href="css/office.css">
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="plate"><small>天界合同庁舎　二階</small><b>女神課 転生係</b></div>
+    <div class="disp" aria-live="polite"><span class="disp-k">ただいまの受付番号</span><b id="disp-n">---</b><span class="disp-k">番</span></div>
+    <button type="button" class="callb" id="call">呼び出し</button>
+    <div class="tools">
+      <button type="button" id="clock" class="clock" aria-label="壁の時計"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#fff" stroke="#9aa6b2" stroke-width="2.5"/><line x1="20" y1="20" x2="27" y2="23" stroke="#34424f" stroke-width="2.5" stroke-linecap="round"/><line x1="20" y1="20" x2="22" y2="6" stroke="#34424f" stroke-width="1.8" stroke-linecap="round"/><circle cx="20" cy="20" r="1.8" fill="#c2332a"/></svg></button>
+      <button type="button" id="ticket" class="ticket">整理券</button>
+      <button type="button" id="b-note" class="note-b">灰原の付箋<i class="dot" id="note-dot" hidden></i></button>
+      <button type="button" id="b-badge" class="badgeb" aria-label="職員証"><span id="badge-name"></span></button>
+      <button type="button" id="b-snd">音：入</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="window">
+      <div class="scene" id="scene">
+        <div class="scene-bg" id="scene-bg"></div>
+        <div class="soul" id="soul"></div>
+        <div class="dlg" id="dlg" hidden>
+          <span class="who" id="dlg-who"></span>
+          <p id="dlg-t" aria-live="polite"></p>
+          <div class="dlg-b"><button type="button" id="dlg-skip" aria-label="とばす">▶▶</button><span class="nx" aria-hidden="true">▼</span></div>
+        </div>
+      </div>
+      <div class="asks" id="asks" aria-label="面談"></div>
+      <p class="done">本日の処理　<b id="done-n">0</b>件</p>
+    </section>
+
+    <section class="desk" aria-label="机">
+      <nav class="tabs" id="tabs"></nav>
+      <div class="doc" id="doc"></div>
+    </section>
+  </main>
+  <footer class="foot">この作品はフィクションです。登場する人物・団体・世界は、実在のものとは関係ありません。</footer>
+</div>
+
+<div class="modal" id="modal" hidden></div>
+<div class="gate" id="gate" hidden></div>
+<div class="epi" id="epi" hidden></div>
+<div class="endc" id="endc" hidden></div>
+
+<script src="js/data.js"></script>
+<script src="js/art.js"></script>
+<script src="js/snd.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
