@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ヤドカリと七つの灯台</title>
+<meta name="description" content="消えた灯台に、もう一度灯りを。ヤドカリになって、ほら貝で潮を満たし、石や流木の箱を押して島をわたる。文字のほとんどない、潮の満ち引きのパズル。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ヨリミチ">
+<meta property="og:title" content="ヤドカリと七つの灯台">
+<meta property="og:description" content="消えた灯台に、もう一度灯りを。ヤドカリになって、ほら貝で潮を満たし、石や流木の箱を押して島をわたる。言葉のほとんどない、潮の満ち引きのパズル。">
+<meta property="og:url" content="https://neetball123-wq.github.io/site-game/works/yadokari/">
+<meta property="og:image" content="https://neetball123-wq.github.io/site-game/works/yadokari/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ヤドカリと七つの灯台｜灯りの消えた、七つの島">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Yomogi&display=swap">
+<link rel="stylesheet" href="css/sea.css">
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- タイトル -->
+  <section class="scr" id="title">
+    <canvas id="title-cv" class="title-cv"></canvas>
+    <div class="title-box">
+      <p class="t-sub">潮をあやつる、島めぐりのパズル</p>
+      <h1 class="t-h"><span>ヤドカリと</span><span>七つの灯台</span></h1>
+      <div class="t-btns">
+        <button type="button" class="btn big" id="t-start">はじめる</button>
+        <button type="button" class="btn" id="t-cont" hidden>つづきから</button>
+      </div>
+      <p class="t-note">音が出ます。　この作品はフィクションです。</p>
+    </div>
+    <button type="button" class="t-crab" id="t-crab" aria-label="ヤドカリ"></button>
+  </section>
+
+  <!-- 海図 -->
+  <section class="scr" id="chart" hidden>
+    <div class="chart-wrap" id="chart-wrap"></div>
+    <header class="chart-top">
+      <button type="button" class="ibtn" id="c-title" aria-label="タイトルへ"></button>
+      <p class="c-prog" id="c-prog"></p>
+      <button type="button" class="ibtn bottle" id="c-bottle" aria-label="びんの絵"><span id="c-bn"></span></button>
+      <button type="button" class="ibtn" id="c-snd" aria-label="音"></button>
+    </header>
+    <p class="c-hint" id="c-hint"></p>
+  </section>
+
+  <!-- 島 -->
+  <section class="scr" id="isle" hidden>
+    <header class="isle-top">
+      <button type="button" class="ibtn" id="i-back" aria-label="海図へ"></button>
+      <div class="i-name"><small id="i-time"></small><b id="i-name"></b></div>
+      <p class="i-cnt" id="i-cnt"></p>
+    </header>
+    <div class="coves" id="coves"></div>
+  </section>
+
+  <!-- 遊ぶ -->
+  <section class="scr" id="play" hidden>
+    <canvas id="cv" class="cv" aria-label="島の盤面"></canvas>
+    <header class="hud">
+      <button type="button" class="ibtn" id="p-back" aria-label="島へもどる"></button>
+      <div class="p-lab"><b id="p-id"></b><small id="p-moves"></small></div>
+      <button type="button" class="ibtn gull" id="p-gull" aria-label="カモメ（ヒント）"><i class="dot" id="p-dot" hidden></i></button>
+      <button type="button" class="ibtn" id="p-snd" aria-label="音"></button>
+    </header>
+    <p class="tip" id="tip" hidden></p>
+    <p class="say" id="say" aria-live="polite"></p>
+    <footer class="ctl">
+      <div class="pad" id="pad">
+        <button type="button" data-a="U" class="pu" aria-label="上"></button>
+        <button type="button" data-a="L" class="pl" aria-label="左"></button>
+        <button type="button" data-a="R" class="pr" aria-label="右"></button>
+        <button type="button" data-a="D" class="pd" aria-label="下"></button>
+      </div>
+      <div class="acts">
+        <button type="button" class="ibtn" id="p-undo" aria-label="もどす"><span></span><small>もどす</small></button>
+        <button type="button" class="ibtn" id="p-reset" aria-label="はじめから"><span></span><small>さいしょ</small></button>
+        <button type="button" class="conch" id="p-conch" aria-label="ほら貝をふく（潮）"><span></span><small id="p-tide">引き潮</small></button>
+      </div>
+    </footer>
+  </section>
+
+</div>
+
+<div class="ov" id="clear" hidden></div>
+<div class="ov" id="hint" hidden></div>
+<div class="ov dark" id="bottle" hidden></div>
+<div class="ov" id="gallery" hidden></div>
+<div class="ov dark" id="ending" hidden></div>
+
+<script src="js/engine.js"></script>
+<script src="js/data.js"></script>
+<script src="js/levels.js"></script>
+<script src="js/draw.js"></script>
+<script src="js/art.js"></script>
+<script src="js/snd.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -13,6 +13,60 @@
    ========================================================= */
 window.WORKS = [
   {
+    id: 'yadokari',
+    path: 'works/yadokari/index.html',
+    title: 'ヤドカリと七つの灯台',
+    place: '灯りの消えた、七つの島',
+    added: '2026-09-26',
+    genre: ['パズル', '島めぐり', '泣ける'],
+    minutes: 100,
+    difficulty: 4,
+    accent: '#E0674A',
+    catch: '消えた灯台に、もう一度灯りを。ヤドカリになって、ほら貝で潮を満たし、石や流木の箱を押して島をわたる。言葉のほとんどない、潮の満ち引きのパズル。',
+    features: ['潮の満ち引きで、島の形が変わる', '41の入り江と、七つの灯台', 'カモメが少しずつ手を貸してくれる', '灯台の棚に、びんが一本'],
+    storageKey: 'yadokari.v1',
+    progress(s) {
+      const n = Object.keys(s.solved || {}).filter((k) => +k.split('-')[0] <= 7).length;
+      if (s.ended) return { pct: 100, label: '七つの灯台が灯った', cleared: true };
+      if (!s.intro) return { pct: s.playMs ? 1 : 0, label: 'はじまりの岬', cleared: false };
+      const isl = ['はじまりの岬', 'しおみ浜', '流木の入り江', 'うず潮の瀬戸', '貝がらの磯', '月かげの岩礁', 'ともしび島'][Math.min(6, Math.max(0, (s.cur || 1) - 1))];
+      return { pct: Math.min(98, Math.max(1, Math.round(n / 41 * 100))), label: `${isl}・灯った入り江 ${n}`, cleared: false };
+    },
+    spoilers: [
+      'はじまりの岬：石は、押して動かないときは足場になる。海に落とせば、うまって一段高くなる。',
+      'しおみ浜：流木の箱を海に浮かべて乗り、ほら貝で満ち潮にすると、箱ごと一段高いところへ届く。',
+      '流木の入り江：押すと動いてしまう箱に乗りたいときは、満ち潮で浮かせてから乗る。引き潮にすれば、その上に立ったまま下りられる。',
+      'うず潮の瀬戸：流れの先に何があるかを見てから、箱に乗って潮を満たす。先に箱だけ流すと、戻ってこない。',
+      '貝がらの磯：貝の板は、水に沈んでいても押さえられる。満ち潮にすると、同じ色の杭が沈む。',
+      '月かげの岩礁・ともしび島：すべての仕組みを使う。行き詰まったら、カモメの三段目で手順を最後まで見せてもらえる。',
+      '物語：びんの絵は、灯台守のじいちゃんと孫の「みお」が描いたもの。最後の船で帰ってきたのは、大人になったみお。',
+      'ほかにも：各島にガラスのかけらが一つ（全部拾うと、ひみつの島）。いちばん少ない手数の貝がら、海図のくじら、タイトルのヤドカリ……',
+    ],
+    cover: {
+      front: (() => {
+        const B = (c, r, h, t, f) => { const x = 70 + c * 42, y = 104 + r * 27 - h * 14; return `<rect x="${x}" y="${y + 27}" width="43" height="${h * 14 + 1}" fill="${f}"/><rect x="${x}" y="${y}" width="43" height="28" fill="${t}"/>`; };
+        const S = ['#f0dcb0', '#d0ad78'], R = ['#a9b3b5', '#7c878c'], G = ['#98c96c', '#8b7b63'];
+        return '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><radialGradient id="yk-c" cx=".5" cy=".42" r=".7"><stop offset="0" stop-color="#cfe9e4"/><stop offset=".55" stop-color="#5fb4c6"/><stop offset="1" stop-color="#2f86b8"/></radialGradient><linearGradient id="yk-b" x1="0" x2="1"><stop offset="0" stop-color="#fff3c0" stop-opacity=".85"/><stop offset="1" stop-color="#fff3c0" stop-opacity="0"/></linearGradient><linearGradient id="yk-d" x1="1" x2="0"><stop offset="0" stop-color="#fff3c0" stop-opacity=".6"/><stop offset="1" stop-color="#fff3c0" stop-opacity="0"/></linearGradient></defs>'
+          + '<rect width="400" height="250" fill="url(#yk-c)"/>'
+          + '<path d="M258 27 L400 -2 L400 58Z" fill="url(#yk-b)"/><path d="M258 27 L140 6 L140 50Z" fill="url(#yk-d)"/>'
+          + B(3, 0, 2, ...R) + B(4, 0, 3, ...G) + B(5, 0, 3, ...G)
+          + B(0, 1, 1, ...S) + B(1, 1, 1, ...S) + B(2, 1, 1, ...S) + B(3, 1, 2, ...R) + B(4, 1, 3, ...G) + B(5, 1, 2, ...R)
+          + B(1, 2, 1, ...S) + B(2, 2, 1, ...S) + B(3, 2, 1, ...S) + B(5, 2, 1, ...S)
+          + '<rect x="70" y="171" width="296" height="3" fill="#fff" opacity=".7"/>'
+          + '<g transform="translate(258 66)"><ellipse cx="0" cy="2" rx="14" ry="4" fill="#000" opacity=".2"/><path d="M-11 0 L-8 -34 L8 -34 L11 0Z" fill="#f4efe6"/><path d="M-10 -12 L10 -12 L10.6 -5 L-10.6 -5Z" fill="#c9493b"/><path d="M-9 -26 L9 -26 L9.4 -20 L-9.4 -20Z" fill="#c9493b"/><rect x="-7" y="-44" width="14" height="10" fill="#ffd46b"/><path d="M-9 -44 L0 -52 L9 -44Z" fill="#39424a"/><circle cx="0" cy="-39" r="16" fill="#ffe7a0" opacity=".45"/></g>'
+          + '<g transform="translate(252 157)"><rect x="-15" y="-10" width="30" height="14" fill="#a3744a"/><rect x="-15" y="-22" width="30" height="13" fill="#e2bd8a"/><rect x="-15" y="-22" width="30" height="26" fill="none" stroke="#5a3a20" stroke-width="1.5"/><ellipse cx="0" cy="2" rx="20" ry="4" fill="none" stroke="#fff" stroke-width="1.5" opacity=".8"/></g>'
+          + '<g transform="translate(176 146)"><ellipse cx="4" cy="4" rx="16" ry="4" fill="#000" opacity=".2"/><path d="M8 -4 q8 -2 10 4" stroke="#b8432f" stroke-width="2" fill="none"/><ellipse cx="12" cy="-4" rx="8" ry="5" fill="#d85a3e"/><path d="M12 -10 v-8 M16 -10 v-7" stroke="#a63a28" stroke-width="1.6"/><circle cx="12" cy="-18" r="2.2" fill="#fff" stroke="#222" stroke-width=".8"/><circle cx="16" cy="-17" r="2.2" fill="#fff" stroke="#222" stroke-width=".8"/><path d="M8 0 C12 -16 -2 -24 -12 -16 C-19 -10 -16 2 -8 3Z" fill="#f2b99a" stroke="#9a5845" stroke-width="1.5"/><path d="M-3 -12 l1.4 3 3.2 .3 -2.4 2 .8 3.2 -3 -1.8 -3 1.8 .8 -3.2 -2.4 -2 3.2 -.3z" fill="#ffd84a"/></g>'
+          + '<text x="200" y="224" text-anchor="middle" font-size="24" font-weight="900" fill="#fff" letter-spacing="3" font-family="sans-serif" style="paint-order:stroke" stroke="#1d5f80" stroke-width="3">ヤドカリと七つの灯台</text></svg>';
+      })(),
+      back: '<svg viewBox="0 0 400 250" aria-hidden="true"><rect width="400" height="250" fill="#efe2c4"/>'
+        + [0, 1, 2, 3, 4, 5].map((i) => `<path d="M0 ${20 + i * 42} H400" stroke="#d2bf96" stroke-width="1"/>`).join('') + [0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => `<path d="M${20 + i * 48} 0 V250" stroke="#d2bf96" stroke-width="1"/>`).join('')
+        + '<path d="M50 200 L110 180 L90 128 L160 98 L230 128 L270 70 L330 40" fill="none" stroke="#8c6a45" stroke-width="2" stroke-dasharray="2 6"/>'
+        + [[50, 200], [110, 180], [90, 128], [160, 98], [230, 128], [270, 70], [330, 40]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="20" ry="13" fill="#e7d3a4" stroke="#b39463" stroke-width="2"/><ellipse cx="${x}" cy="${y}" rx="13" ry="8" fill="#c3d69c"/><rect x="${x - 2.5}" y="${y - 14}" width="5" height="12" fill="#fbf7ee" stroke="#5b4020" stroke-width="1"/><rect x="${x - 3}" y="${y - 18}" width="6" height="4" fill="#ffd24a" stroke="#5b4020" stroke-width="1"/>`).join('')
+        + '<g transform="translate(330 190) rotate(-18)"><rect x="-6" y="-38" width="12" height="9" rx="2" fill="#b9854e"/><path d="M-7 -29 h14 v8 c8 4 12 10 12 18 v24 a7 7 0 0 1 -7 7 h-24 a7 7 0 0 1 -7 -7 v-24 c0 -8 4 -14 12 -18z" fill="rgba(150,210,200,.55)" stroke="#5c8f88" stroke-width="2"/><rect x="-10" y="-6" width="20" height="24" fill="#fbf2dc" transform="rotate(-8)"/><path d="M-5 6 l2 -6 2 6 M-7 12 h14" stroke="#e0564a" stroke-width="1.5" fill="none"/></g>'
+        + '<text x="24" y="238" font-size="13" fill="#5b4020" font-family="serif">灯台守の海図</text></svg>',
+    },
+  },
+  {
     id: 'tensei',
     path: 'works/tensei/index.html',
     title: '女神課 転生窓口',
