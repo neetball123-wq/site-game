@@ -13,6 +13,55 @@
    ========================================================= */
 window.WORKS = [
   {
+    id: 'naraku',
+    path: 'works/naraku/index.html',
+    title: '奈落の証人',
+    place: '昭和三十六年、千秋楽の夜の劇場',
+    added: '2026-09-26',
+    genre: ['推理', 'ミステリー', '昭和'],
+    minutes: 35,
+    difficulty: 3,
+    accent: '#A8863A',
+    catch: '昭和三十六年、劇団「月見座」の千秋楽。舞台の真下の奈落で、演出家が死んでいた。客席にいた探偵として、現場を調べ、証言のくいちがいに証拠をつきつけていく。',
+    features: ['証言に証拠をつきつける推理', '奈落の見取り図と足跡', '舞台写真・進行台本・楽譜', '六つの幕で、ひとつの真相へ'],
+    storageKey: 'naraku.v1',
+    progress(s) {
+      if (s.ended) return { pct: 100, label: '閉幕', cleared: true };
+      if (!s.intro) return { pct: s.playMs ? 2 : 0, label: '開演前', cleared: false };
+      const L = ['序幕', '第一幕　奈落', '第二幕　小道具部屋', '第三幕　舞台袖', '第四幕　ふたたび奈落', '第五幕　プロンプト席', '終幕'], i = Math.min(6, s.stage || 0);
+      return { pct: 4 + i * 15, label: L[i], cleared: false };
+    },
+    spoilers: [
+      '第一幕：ワルツは二十一時五分に始まり、三番は五分三十秒後。倒れたのは二十一時十分',
+      '第二幕：七瀬の「直した扇を白石さんにわたした」に記録写真（第四場の扇は折れたまま）。第三場の仮面の男は七瀬だった',
+      '第三幕：写真は第三場の仮面の男の頭（仮面が大窓の下枠より下）。証言は「私が踊った」に写真かメモ、次に「楽屋で休んでいた」か「奈落には降りていない」に見取り図（足跡B）か鷺沢の手紙',
+      '第四幕：足跡Cは約25センチ。一文＝2.4センチなので十文半（25.2センチ）＝真柴耕三',
+      '第五幕：「ずっと席にいた」に見取り図、次に「奈落は真っ暗だった」に犬飼の証言（21時12分に電球をつけ、そのまま）',
+      '終幕：二十一時十分／七瀬ひばり／犬飼透／真柴耕三／真柴耕三',
+      'ほかにも：パンフレットの裏表紙、予備の仮面、伝声管、ベタ焼きの最後のコマ、上の緞帳、手帳の最後のページ……',
+    ],
+    cover: {
+      front: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><linearGradient id="nk-f" x1="0" x2="1"><stop offset="0" stop-color="#3a0710"/><stop offset=".45" stop-color="#8e1a24"/><stop offset="1" stop-color="#2c050b"/></linearGradient><radialGradient id="nk-s" cx=".5" cy=".62" r=".5"><stop offset="0" stop-color="#ffe6b0" stop-opacity=".55"/><stop offset="1" stop-color="#ffe6b0" stop-opacity="0"/></radialGradient><linearGradient id="nk-gd" x1="0" x2="1"><stop offset="0" stop-color="#7a5a26"/><stop offset=".5" stop-color="#e3c47e"/><stop offset="1" stop-color="#7a5a26"/></linearGradient></defs>'
+        + '<rect width="400" height="250" fill="#120a0c"/><rect x="40" y="26" width="320" height="176" fill="#0a0707"/>'
+        + [...Array(8)].map((_, i) => `<rect x="${40 + i * 12}" y="26" width="12" height="176" fill="url(#nk-f)"/><rect x="${264 + i * 12}" y="26" width="12" height="176" fill="url(#nk-f)"/>`).join('')
+        + '<path d="M40 26 ' + [...Array(8)].map((_, i) => `Q${60 + i * 40} 46 ${80 + i * 40} 26`).join(' ') + ' Z" fill="#7a111c" stroke="#c9a45c" stroke-width="1.5"/>'
+        + '<rect x="136" y="150" width="128" height="52" fill="#2a1d16"/><ellipse cx="200" cy="160" rx="92" ry="80" fill="url(#nk-s)"/>'
+        + '<rect x="166" y="176" width="68" height="20" fill="#050303" stroke="#c9a45c" stroke-width="1" stroke-dasharray="3 2"/><rect x="170" y="186" width="60" height="10" fill="#ffd9a0" opacity=".25"/>'
+        + '<g transform="translate(200 158) rotate(-12)"><path d="M-26 0 Q-20 -10 0 -6 Q20 -10 26 0 Q24 14 10 12 Q4 10 0 6 Q-4 10 -10 12 Q-24 14 -26 0 Z" fill="#f4f0e6"/><ellipse cx="-11" cy="2" rx="5.5" ry="3.2" fill="#120a0c"/><ellipse cx="11" cy="2" rx="5.5" ry="3.2" fill="#120a0c"/></g>'
+        + '<path d="M28 14 H372 V212 H28 Z M40 26 V202 H360 V26 Z" fill="#1c0f0c" fill-rule="evenodd"/><path d="M28 14 H372 V212 H28 Z" fill="none" stroke="url(#nk-gd)" stroke-width="2.5"/>'
+        + '<text x="200" y="238" text-anchor="middle" font-size="17" font-weight="800" fill="#e3c47e" letter-spacing="8" font-family="serif">奈落の証人</text></svg>',
+      back: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><pattern id="nk-g" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M12 0 H0 V12" fill="none" stroke="#2a3a52" stroke-width=".6"/></pattern></defs>'
+        + '<rect width="400" height="250" fill="#0b121d"/><rect width="400" height="250" fill="url(#nk-g)"/><rect x="16" y="16" width="368" height="218" fill="none" stroke="#8aa2c2" stroke-width="2"/>'
+        + '<rect x="155" y="80" width="70" height="70" fill="none" stroke="#aebfd6" stroke-width="2"/><text x="190" y="120" text-anchor="middle" font-size="10" fill="#c7d4e4" font-family="serif">せり</text>'
+        + '<rect x="24" y="170" width="55" height="50" fill="none" stroke="#6f86a4"/><line x1="24" y1="220" x2="79" y2="220" stroke="#e8c16a" stroke-width="2.5"/><rect x="321" y="170" width="55" height="50" fill="none" stroke="#6f86a4"/>'
+        + [[90, 192], [104, 186], [118, 190], [132, 184]].map(([x, y]) => `<g transform="translate(${x} ${y}) rotate(70)"><path d="M-2.4 -3 Q-2.4 -7 -.8 -7 L-.4 -3 Z M.4 -3 Q.8 -7 2 -6.6 Q2.6 -4 2.4 -2 Z M-2.4 -2 H2.4 L2 3.4 Q0 5 -2 3.4 Z" fill="#e8e4d8" opacity=".85"/></g>`).join('')
+        + [[300, 196], [284, 190], [268, 194], [252, 188], [236, 192]].map(([x, y]) => `<g transform="translate(${x} ${y}) rotate(-70)"><path d="M-2 -5 Q0 -7 2 -5 L1.4 0 L-1.4 0 Z" fill="#e8e4d8" opacity=".7"/><circle cx="0" cy="3.4" r="1.2" fill="#e8e4d8" opacity=".7"/></g>`).join('')
+        + '<g transform="translate(150 186) rotate(-28)" fill="none" stroke="#f2f2f2" stroke-width="1.2" stroke-dasharray="3 2"><ellipse cx="0" cy="-26" rx="8" ry="9"/><path d="M-12 -16 Q-16 6 -10 32 M12 -16 Q16 6 10 32 M-12 -14 L-26 8 M12 -14 L26 10"/></g>'
+        + '<circle cx="190" cy="48" r="5" fill="#ffe6a8"/><circle cx="190" cy="48" r="26" fill="#ffe6a8" opacity=".12"/>'
+        + '<text x="372" y="34" text-anchor="end" font-size="10" fill="#9fb2c8" letter-spacing="3" font-family="serif">奈落　見取り図</text></svg>',
+    },
+  },
+  {
     id: 'yofukashi',
     path: 'works/yofukashi/index.html',
     title: '深夜ラジオの投稿職人',

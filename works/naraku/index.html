@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>奈落の証人</title>
+<meta name="description" content="昭和三十六年、劇団月見座の千秋楽。舞台の真下の奈落で、演出家が死んでいた。証言に証拠をつきつけて、真相を暴く推理もの。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ヨリミチ">
+<meta property="og:title" content="奈落の証人">
+<meta property="og:description" content="昭和三十六年、劇団「月見座」の千秋楽。舞台の真下の奈落で、演出家が死んでいた。客席にいた探偵として、現場を調べ、証言のくいちがいに証拠をつきつけていく。">
+<meta property="og:url" content="https://neetball123-wq.github.io/site-game/works/naraku/">
+<meta property="og:image" content="https://neetball123-wq.github.io/site-game/works/naraku/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="奈落の証人｜昭和三十六年、千秋楽の夜の劇場">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@500;700;800&family=Zen+Old+Mincho:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Klee+One:wght@400;600&family=Yuji+Syuku&display=swap">
+<link rel="stylesheet" href="css/case.css">
+</head>
+<body>
+<div class="house">
+  <header class="top">
+    <div class="valance" id="valance" aria-hidden="true"></div>
+    <div class="bar">
+      <div class="ttl"><b>奈落の証人</b><span id="act">序幕　千秋楽</span></div>
+      <div class="tools">
+        <button type="button" id="b-ev">証拠品<i id="ev-n">0</i></button>
+        <button type="button" id="b-note">羽柴の手帳<i class="dot" id="note-dot" hidden></i></button>
+        <button type="button" id="b-snd">音：入</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="stage" id="stage" aria-label="舞台">
+      <div class="scene" id="scene"></div>
+      <div class="plate" id="plate" hidden></div>
+      <div class="dlg" id="dlg" hidden>
+        <span class="who" id="dlg-who"></span>
+        <p id="dlg-t" aria-live="polite"></p>
+        <div class="dlg-b"><button type="button" id="dlg-skip" aria-label="とばす">▶▶</button><span class="nx" aria-hidden="true">▼</span></div>
+      </div>
+      <div class="obj" id="obj" aria-hidden="true"></div>
+      <div class="curtain" id="curtain" aria-hidden="true"></div>
+    </section>
+    <section class="work" id="work" aria-label="手もと"></section>
+  </main>
+
+  <nav class="evbar" id="evbar" aria-label="証拠品"></nav>
+  <footer class="foot">この作品はフィクションです。登場する人物・劇団・劇場・事件は、実在のものとは関係ありません。</footer>
+</div>
+
+<div class="modal" id="modal" hidden></div>
+<div class="flyer" id="flyer" hidden></div>
+<div class="endc" id="endc" hidden></div>
+<div class="peep" id="peep" hidden aria-hidden="true"><svg viewBox="0 0 100 60" preserveAspectRatio="none"><defs><filter id="pb"><feGaussianBlur stdDeviation="1.2"/></filter><mask id="pm"><rect width="100" height="60" fill="#fff"/><ellipse cx="35" cy="31" rx="11" ry="7" fill="#000" filter="url(#pb)"/><ellipse cx="65" cy="31" rx="11" ry="7" fill="#000" filter="url(#pb)"/></mask></defs><rect width="100" height="60" fill="#050404" mask="url(#pm)"/></svg><p>（仮面の内側は、白粉と汗のにおいがした）</p></div>
+
+<script src="js/data.js"></script>
+<script src="js/art.js"></script>
+<script src="js/snd.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
