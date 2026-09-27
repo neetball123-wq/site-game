@@ -13,6 +13,64 @@
    ========================================================= */
 window.WORKS = [
   {
+    id: 'hakoikusa',
+    images: { front: 'works/hakoikusa/img/front.png', back: 'works/hakoikusa/img/back.png' },
+    path: 'works/hakoikusa/index.html',
+    title: 'ハコイクサ',
+    place: 'からくり職人の、夜の作業台',
+    added: '2026-09-27',
+    genre: ['ストラテジー', 'オートバトル', '3D'],
+    minutes: 30,
+    difficulty: 4,
+    accent: '#C8452D',
+    catch: '道具を立体に積んで、あとは箱どうしが勝手に戦う。火は上へ、水は下へ、歯車は同じ段で。高く積むほど強く、段を埋めれば速い。積み方ひとつで、同じ道具が別物になる。',
+    features: ['1〜4マスの立体の道具を、上から落として積む', '効果範囲も立体（上・下・同じ段・縦一列）', '高く積むほど強く、段を埋めると「段そろい」', '6つの合体と、5×5×5の天守'],
+    storageKey: 'hakoikusa.v1',
+    progress(s) {
+      const m = s.meta || {};
+      if (m.clears) return { pct: 100, label: m.clears > 1 ? `天守を${m.clears}回落とした` : '天守を落とした', cleared: true };
+      const r = s.run;
+      if (r && r.round) return { pct: Math.min(95, Math.max(3, Math.round((r.wins || 0) / 8 * 100))), label: `第${r.round}戦・${r.wins || 0}勝${r.wins >= 7 ? '（次は天守）' : ''}`, cleared: false };
+      if (m.bestWins) return { pct: Math.min(90, Math.round(m.bestWins / 8 * 100)), label: `いちばん遠く：${m.bestWins}勝`, cleared: false };
+      return { pct: s.playMs ? 2 : 0, label: s.playMs ? '流派えらび' : 'まだ箱は空っぽ', cleared: false };
+    },
+    spoilers: [
+      '置き場所の基本：火鉢・炉・竈は「上」に効く（熱は上へ）。下に置いて、真上に武器を積む。水桶は「下」に効く：真下の木の道具が速くなり、鉄は錆びて遅くなる',
+      '高さと段そろい：高い段ほど効き目が+10%ずつ上がる。段のマスを全部うめると、その段の道具が20%速くなり、戦いのはじめに盾（1マス2）。下の段を安い道具でうめて、その上に武器を積むのが基本',
+      '歯車は同じ段の前後左右でつながり、列の枚数×6%ぶん、ふれている道具を速くする。上下に重ねただけではかみ合わない。縦に立てた軸や水車（真上に水で5枚ぶん）が段をつなぐ',
+      '合体：刀の真下に炉・となりに砥石→名刀・火群／同じ段に歯車を2×2→大歯車／木の板をぴったり2枚重ね→樫の大盾／大筒のとなりに焙烙玉→焙烙砲／立てた竹槍の真上に水桶→若竹槍（戦うたびに育つ）／手裏剣を縦に3つ→風車手裏剣',
+      '相性：燃焼は盾を無視してけずる。急須を火の上に置くと、回復が増えて燃焼を消す。雷は道具がいちばん多い縦一列をしびれさせるが、最上段の避雷針が受け止める。錆は油で打ち消せる',
+      '天守（5×5×5の箱）は体力も多い。勝ち星7つまでに、段そろいを2つ以上と、合体を1つは作っておきたい。負けても命が残っていれば、組み直して何度でも挑める',
+      'ほかにも：0文で出陣すると、次の品書きに招き猫が混じることがある。前の合戦の箱が、ふらりと相手として現れることも。箱をからっぽにすると底に焼き印、タイトルの箱をつつき続けると……',
+    ],
+    cover: {
+      front: (() => {
+        const C = (x, y, z, c, ox, oy) => {
+          const X = ox + (x - z) * 22, Y = oy + (x + z) * 12.7 - y * 25;
+          const t = `${X},${Y} ${X + 22},${Y + 12.7} ${X},${Y + 25.4} ${X - 22},${Y + 12.7}`;
+          const l = `${X - 22},${Y + 12.7} ${X},${Y + 25.4} ${X},${Y + 50.4} ${X - 22},${Y + 37.7}`;
+          const r = `${X},${Y + 25.4} ${X + 22},${Y + 12.7} ${X + 22},${Y + 37.7} ${X},${Y + 50.4}`;
+          return `<polygon points="${l}" fill="${c[1]}"/><polygon points="${r}" fill="${c[2]}"/><polygon points="${t}" fill="${c[0]}"/><polyline points="${l} ${l.split(' ')[0]}" fill="none" stroke="#2a211b" stroke-width="1.6"/><polyline points="${r} ${r.split(' ')[0]}" fill="none" stroke="#2a211b" stroke-width="1.6"/><polyline points="${t} ${t.split(' ')[0]}" fill="none" stroke="#2a211b" stroke-width="1.6"/>`;
+        };
+        const R = ['#e4582f', '#b8401f', '#8f3116'], B = ['#d7a45f', '#b5823f', '#8e6329'], G = ['#d1a332', '#a98221', '#826416'], V = ['#9a74e0', '#7650bd', '#5a3a96'], Gr = ['#56a872', '#3f8a58', '#2f6a43'];
+        const cells = [[0, 0, 0, R], [1, 0, 0, G], [2, 0, 0, G], [0, 0, 1, G], [0, 1, 0, B], [1, 1, 0, B], [0, 2, 0, R], [2, 0, 1, V], [2, 0, 2, V], [1, 0, 2, Gr], [0, 0, 2, Gr], [1, 0, 1, G], [0, 1, 1, R], [0, 1, 2, Gr]];
+        cells.sort((a, b) => a[0] + a[2] - b[0] - b[2] || a[1] - b[1]);
+        return '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><radialGradient id="hk-bg" cx=".6" cy=".5" r=".75"><stop offset="0" stop-color="#faf1e1"/><stop offset="1" stop-color="#d9c29c"/></radialGradient></defs><rect width="400" height="250" fill="url(#hk-bg)"/>'
+          + '<polygon points="290,112 356,150 290,188 224,150" fill="#dcc39b" stroke="#8c6e4e" stroke-width="2" transform="translate(0 44)"/>'
+          + cells.map(([x, y, z, c]) => C(x, y, z, c, 290, 116)).join('')
+          + '<circle cx="268" cy="96" r="11" fill="#fff4dc" stroke="#2a211b" stroke-width="2"/><text x="268" y="101" text-anchor="middle" font-size="12" font-weight="900" fill="#2a211b" font-family="sans-serif">火</text>'
+          + '<g transform="translate(26 58) rotate(-3)"><rect width="176" height="118" rx="12" fill="#fbf5ea" stroke="#2a211b" stroke-width="3"/><text x="18" y="30" font-size="12" font-weight="900" fill="#c8452d" letter-spacing="3" font-family="sans-serif">からくり箱合戦</text><text x="16" y="70" font-size="38" font-weight="900" fill="#2a211b" font-family="sans-serif">ハコ</text><text x="16" y="106" font-size="38" font-weight="900" fill="#c8452d" stroke="#2a211b" stroke-width="1" font-family="sans-serif">イクサ</text></g></svg>';
+      })(),
+      back: '<svg viewBox="0 0 400 250" aria-hidden="true"><rect width="400" height="250" fill="#efe2c8"/>'
+        + '<g stroke="#2a211b" stroke-width="2"><polygon points="70,150 120,122 170,150 120,178" fill="#dcc39b"/><polygon points="230,150 280,122 330,150 280,178" fill="#8e7a66"/></g>'
+        + '<g stroke="#2a211b" stroke-width="1.6"><rect x="96" y="110" width="30" height="40" fill="#e4582f"/><rect x="126" y="122" width="26" height="30" fill="#d1a332"/><rect x="258" y="102" width="30" height="48" fill="#9a74e0"/><rect x="288" y="118" width="24" height="32" fill="#6e8fb5"/></g>'
+        + '<circle cx="120" cy="70" r="20" fill="#e4582f" stroke="#2a211b" stroke-width="3"/><text x="120" y="77" text-anchor="middle" font-size="18" font-weight="900" fill="#fff" font-family="sans-serif">炎</text>'
+        + '<circle cx="280" cy="70" r="20" fill="#7a6552" stroke="#2a211b" stroke-width="3"/><text x="280" y="77" text-anchor="middle" font-size="18" font-weight="900" fill="#fff" font-family="sans-serif">鳴</text>'
+        + '<path d="M150 64 Q200 20 252 60" fill="none" stroke="#ff8a3d" stroke-width="3" stroke-dasharray="4 6"/><path d="M300 10 L290 50 L304 52 L292 96" fill="none" stroke="#9d7cff" stroke-width="3"/>'
+        + '<text x="200" y="232" text-anchor="middle" font-size="14" font-weight="900" fill="#5b4a3a" font-family="sans-serif">箱と箱の合戦</text></svg>',
+    },
+  },
+  {
     id: 'yadokari',
     path: 'works/yadokari/index.html',
     title: 'ヤドカリと七つの灯台',

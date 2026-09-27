@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>ハコイクサ</title>
+<meta name="description" content="からくり箱の合戦。立体の道具を箱に積んで、あとは箱どうしが勝手に戦う。火は上に、水は下に、歯車は同じ段でかみ合う。積み方ひとつで、同じ道具が別物になる。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ヨリミチ">
+<meta property="og:title" content="ハコイクサ">
+<meta property="og:description" content="からくり箱の合戦。立体の道具を箱に積んで、あとは箱どうしが勝手に戦う。火は上に、水は下に、歯車は同じ段でかみ合う。積み方ひとつで、同じ道具が別物になる。">
+<meta property="og:url" content="https://neetball123-wq.github.io/site-game/works/hakoikusa/">
+<meta property="og:image" content="https://neetball123-wq.github.io/site-game/works/hakoikusa/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ハコイクサ｜からくり職人の、夜の作業台">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap">
+<link rel="stylesheet" href="css/hako.css?v=18141">
+</head>
+<body>
+<div id="app" class="app">
+  <canvas id="cv" aria-label="箱の中"></canvas>
+  <div id="labels" class="labels" aria-hidden="true"></div>
+
+  <!-- ========== タイトル ========== -->
+  <section id="title" class="scr title" hidden>
+    <div class="t-in">
+      <p class="t-kicker">からくり箱合戦</p>
+      <h1 class="t-logo"><span>ハコ</span><span>イクサ</span></h1>
+      <p class="t-lead">道具を立体に積んで、箱どうしを戦わせる。<br>高く積むほど強く、段を埋めれば速く。<br>火は<b class="c-up">上</b>へ、水は<b class="c-down">下</b>へ、歯車は<b class="c-side">同じ段</b>で。</p>
+      <div class="t-btns">
+        <button type="button" class="btn big red" id="t-new">はじめる</button>
+        <button type="button" class="btn big" id="t-cont" hidden>つづきから</button>
+        <div class="t-row">
+          <button type="button" class="btn" id="t-book">からくり帖</button>
+          <button type="button" class="btn" id="t-how">遊び方</button>
+        </div>
+      </div>
+      <p class="t-note" id="t-note">音が出ます。　この作品はフィクションです。</p>
+    </div>
+  </section>
+
+  <!-- ========== 流派えらび ========== -->
+  <section id="school" class="scr school" hidden>
+    <div class="sc-in">
+      <h2 class="sc-h">どの流派で組む？</h2>
+      <div class="sc-list" id="sc-list"></div>
+      <button type="button" class="btn ghost" id="sc-back">もどる</button>
+    </div>
+  </section>
+
+  <!-- ========== 工房（買って積む） ========== -->
+  <div id="hud" class="hud" hidden>
+    <header class="top">
+      <div class="t-round"><small id="h-school"></small><b id="h-round">第1戦</b></div>
+      <div class="t-track" id="h-track" aria-label="勝ち星"></div>
+      <div class="t-lives" id="h-lives" aria-label="のこりの命"></div>
+      <div class="t-coin" id="h-coin"><i class="coin"></i><b id="h-gold">10</b><small>文</small></div>
+      <div class="t-menu">
+        <button type="button" class="ib" id="h-book" title="からくり帖" aria-label="からくり帖">帖</button>
+        <button type="button" class="ib" id="h-snd" title="音" aria-label="音">音</button>
+        <button type="button" class="ib" id="h-menu" title="メニュー" aria-label="メニュー">≡</button>
+      </div>
+    </header>
+
+    <div id="view" class="view" aria-hidden="true"></div>
+
+    <aside class="info" id="info">
+      <div class="card" id="card"></div>
+      <div class="pow" id="pow"></div>
+    </aside>
+
+    <aside class="shop" id="shop">
+      <div class="shop-h"><b>品書き</b><small id="shop-sub">ドラッグで箱へ</small></div>
+      <div class="shop-list" id="shop-list"></div>
+      <div class="shop-foot">
+        <button type="button" class="btn" id="b-reroll">入れ替え <i class="pr">1文</i></button>
+        <button type="button" class="btn" id="b-expand">箱を広げる <i class="pr" id="b-expand-p">4文</i></button>
+      </div>
+      <div class="sell-zone" id="sell-zone"><b>ここで売る</b><span id="sell-price"></span></div>
+    </aside>
+
+    <div class="bottom">
+      <div class="bench" id="bench" aria-label="仮置き台"></div>
+      <div class="ctl" id="ctl">
+        <div class="ctl-g cam">
+          <button type="button" class="cb" id="c-rl" title="箱を左へ回す（Q）">⟲</button>
+          <button type="button" class="cb" id="c-rr" title="箱を右へ回す（E）">⟳</button>
+        </div>
+        <div class="ctl-g slice" id="slice" title="上の段を隠して、中を見る（1〜4、0で全部）"></div>
+        <div class="ctl-g hand" id="hand-ctl">
+          <button type="button" class="cb wide" id="c-yaw" title="回す（R・ホイール）">回す<kbd>R</kbd></button>
+          <button type="button" class="cb wide" id="c-tip" title="倒す（F）">倒す<kbd>F</kbd></button>
+          <button type="button" class="cb wide ok" id="c-put">置く</button>
+          <button type="button" class="cb wide" id="c-cancel" title="やめる（Esc・右クリック）">やめる</button>
+        </div>
+      </div>
+      <button type="button" class="go" id="b-go"><span>出陣</span></button>
+    </div>
+
+    <div class="expand-pop" id="expand-pop" hidden></div>
+  </div>
+
+  <p class="say" id="say" aria-live="polite"></p>
+
+  <!-- ========== 合戦 ========== -->
+  <div id="bhud" class="bhud" hidden>
+    <div class="vs">
+      <div class="bar me" id="bar0"><div class="nm"><i class="cr" id="cr0"></i><b id="nm0"></b></div><div class="hp"><i class="fillb"></i><i class="fill"></i><i class="shield"></i><span class="num"></span></div><div class="st"></div></div>
+      <div class="clock"><b id="b-time">0.0</b><small id="b-fat"></small></div>
+      <div class="bar en" id="bar1"><div class="nm"><b id="nm1"></b><i class="cr" id="cr1"></i></div><div class="hp"><i class="fillb"></i><i class="fill"></i><i class="shield"></i><span class="num"></span></div><div class="st"></div></div>
+    </div>
+    <div class="spd">
+      <button type="button" class="cb" data-spd="1">×1</button>
+      <button type="button" class="cb" data-spd="2">×2</button>
+      <button type="button" class="cb" data-spd="4">×4</button>
+      <button type="button" class="cb" id="b-pause">止</button>
+      <button type="button" class="cb wide" id="b-skip">結果へ</button>
+    </div>
+    <div class="feed" id="feed"></div>
+  </div>
+
+  <!-- ========== 結果・終わり ========== -->
+  <div id="result" class="result" hidden><div class="r-card" id="r-card"></div></div>
+
+  <!-- ========== からくり帖 ========== -->
+  <div id="book" class="book" hidden>
+    <div class="bk-in">
+      <header class="bk-h"><b>からくり帖</b><nav class="bk-tabs" id="bk-tabs"></nav><button type="button" class="ib" id="bk-close" aria-label="閉じる">×</button></header>
+      <div class="bk-body" id="bk-body"></div>
+    </div>
+  </div>
+
+  <!-- ========== 確認の箱（confirm の代わり） ========== -->
+  <div id="ask" class="ask" hidden><div class="ask-in"><p id="ask-t"></p><div class="ask-b"><button type="button" class="btn" id="ask-no">やめる</button><button type="button" class="btn red" id="ask-yes">はい</button></div></div></div>
+
+  <div id="drag" class="drag" hidden><img alt=""></div>
+  <div id="boot" class="boot"><p>箱を組んでいます…</p></div>
+  <div id="nogl" class="nogl" hidden><p>この端末では3D表示が使えないため、遊べません。<br>別のブラウザか端末でお試しください。</p></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="js/data.js?v=18141"></script>
+<script src="js/rules.js?v=18141"></script>
+<script src="js/audio.js?v=18141"></script>
+<script src="js/render.js?v=18141"></script>
+<script src="js/game.js?v=18141"></script>
+</body>
+</html>
