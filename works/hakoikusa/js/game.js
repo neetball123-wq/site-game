@@ -387,7 +387,10 @@
   function aimAt(x, y) {
     if (!hand) return;
     const pk = V.pick(x, y - (touch ? 56 : 0), { margin: 1.6 });
-    if (!pk) { hand.target = null; updateHand(); return; }
+    if (!pk) { hand.target = null; V.setArrowFrom(null); updateHand(); return; }
+    // 矢印は、指（マウス）のところから落ちる先へ
+    const fp = touch ? V.pick(x, y, { margin: 6 }) : pk;
+    V.setArrowFrom(fp && fp.point ? fp.point : pk.point);
     let tx, tz;
     if (pk.floor) { tx = pk.floor[0]; tz = pk.floor[1]; }
     else {
@@ -461,6 +464,7 @@
   function endHand() {
     hand = null;
     lastGhostKey = '';
+    V.setArrowFrom(null);
     V.clearGhost(); V.clearRange(); V.setLabels([]); V.highlight(0, null); V.setWobble(0, null);
     $('#drag').hidden = true;
     $('#shop').classList.remove('selling', 'over');
@@ -1453,6 +1457,14 @@
       <p>決まった積み方をすると、道具がひとつになって強くなる。からくり帖の「合体」にヒントがある。</p>
     </div>`;
   }
+
+  /* ---------------- ほかのタブへ移ったら、合戦を止めて音も止める ---------------- */
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      if (A.ctx && A.ctx.state === 'running') A.ctx.suspend();
+      if (battle && !battle.finished && !battle.paused && battle.t > 0) togglePause();
+    } else if (A.ctx && !SV.meta.mute) A.ctx.resume();
+  });
 
   /* ---------------- テスト用の口 ---------------- */
   G.__hk = {

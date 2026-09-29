@@ -465,7 +465,8 @@
       shadow.add(q);
     }
     S.root.add(group, shadow);
-    ghost = { key, group, mesh, mat, target, shadow, id, cells, ok };
+    const topY = Math.max(...cells.map((c) => c[1])) + 1 - ctr[1];
+    ghost = { key, group, mesh, mat, target, shadow, id, cells, ok, topY };
     if (extra && extra.snap) group.position.copy(target);
   };
   V.clearGhost = function () {
@@ -475,6 +476,62 @@
     ghost.mesh.geometry.dispose(); ghost.mat.dispose();
     ghost = null;
   };
+
+  /* ---------------- 置く先を示すカーブの矢印 ---------------- */
+  let arrow = null, arrowFrom = null, arrowKey = '';
+  V.setArrowFrom = function (p) { arrowFrom = p ? p.clone() : null; };
+  function makeArrow() {
+    const g = new THREE.Group();
+    const mk = (color) => new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.96, depthTest: false, depthWrite: false });
+    const u = g.userData;
+    u.outMat = mk(0x2a211b); u.inMat = mk(0xFFD66B);
+    u.tubeO = new THREE.Mesh(new THREE.BufferGeometry(), u.outMat);
+    u.tubeI = new THREE.Mesh(new THREE.BufferGeometry(), u.inMat);
+    u.headO = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.42, 16), u.outMat);
+    u.headI = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.32, 16), u.inMat);
+    u.tubeO.renderOrder = 31; u.headO.renderOrder = 31;
+    u.tubeI.renderOrder = 32; u.headI.renderOrder = 32;
+    u.dots = [0, 1, 2].map(() => { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: dotTex, color: 0xffffff, transparent: true, depthTest: false, depthWrite: false })); s.scale.set(0.16, 0.16, 1); s.renderOrder = 33; g.add(s); return s; });
+    g.add(u.tubeO, u.tubeI, u.headO, u.headI);
+    scene.add(g);
+    return g;
+  }
+  function updateArrow() {
+    if (!ghost || !arrowFrom || mode !== 'shop') { if (arrow) arrow.visible = false; return; }
+    if (!arrow) arrow = makeArrow();
+    arrow.visible = true;
+    const S = sides[0];
+    const to = S.root.localToWorld(new THREE.Vector3(ghost.group.position.x, ghost.group.position.y + ghost.topY + 0.06, ghost.group.position.z));
+    let from = arrowFrom.clone().add(new THREE.Vector3(0, 0.25, 0));
+    const { right } = camBasis(cam.yaw);
+    if (from.distanceTo(to) < 0.9) from = to.clone().add(right.clone().multiplyScalar(0.9)).add(new THREE.Vector3(0, 1.5, 0));
+    const d = from.distanceTo(to);
+    const ctrl = from.clone().lerp(to, 0.5).add(new THREE.Vector3(0, 0.55 + d * 0.35, 0));
+    const curve = new THREE.QuadraticBezierCurve3(from, ctrl, to);
+    const key = [from, to].map((v) => v.toArray().map((x) => x.toFixed(2)).join(',')).join('|') + ghost.ok;
+    const u = arrow.userData;
+    if (key !== arrowKey) {
+      arrowKey = key;
+      // 矢じりの分だけ手前で止める
+      const end = curve.getPointAt(Math.max(0, 1 - 0.3 / Math.max(0.5, curve.getLength())));
+      const body = new THREE.QuadraticBezierCurve3(from, ctrl, end);
+      u.tubeO.geometry.dispose(); u.tubeI.geometry.dispose();
+      u.tubeO.geometry = new THREE.TubeGeometry(body, 24, 0.07, 6, false);
+      u.tubeI.geometry = new THREE.TubeGeometry(body, 24, 0.042, 6, false);
+      const tan = curve.getTangentAt(1).normalize();
+      const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), tan);
+      u.headO.quaternion.copy(q); u.headI.quaternion.copy(q);
+      u.headO.position.copy(to).addScaledVector(tan, -0.2);
+      u.headI.position.copy(to).addScaledVector(tan, -0.17);
+      u.inMat.color.setHex(ghost.ok ? 0xFFD66B : 0xE8573A);
+      u.curve = body;
+    }
+    for (let i = 0; i < u.dots.length; i++) {
+      const t = ((time * 0.9 + i / u.dots.length) % 1);
+      u.dots[i].position.copy(u.curve.getPointAt(t));
+      u.dots[i].material.opacity = Math.sin(t * Math.PI);
+    }
+  }
 
   /* ---------------- 効果範囲の表示 ---------------- */
   const RANGE_COL = { up: 0xf08a3c, down: 0x3f8fd6, adj: 0x4fb06a, side: 0xd9b23a, col: 0x8c62d6, layer: 0xd9b23a, gear: 0xd9b23a, self: 0x999999 };
@@ -845,7 +902,7 @@
       const [W_, D_] = S.dims;
       const inside = loc.clone().sub(n.clone().multiplyScalar(0.02));
       const cell = [Math.floor(inside.x + W_ / 2), Math.floor(inside.y), Math.floor(inside.z + D_ / 2)];
-      return { si, uid: M.uid, cell, normal: [Math.round(n.x), Math.round(n.y), Math.round(n.z)] };
+      return { si, uid: M.uid, cell, normal: [Math.round(n.x), Math.round(n.y), Math.round(n.z)], point: h.point.clone() };
     }
     // 床
     for (const si of which) {
@@ -855,11 +912,12 @@
       const pl = new THREE.Plane(new THREE.Vector3(0, 1, 0), -S.root.position.y);
       const p = new THREE.Vector3();
       if (!raycaster.ray.intersectPlane(pl, p)) continue;
+      const world = p.clone();
       const loc = S.root.worldToLocal(p);
       const fx = loc.x + W_ / 2, fz = loc.z + D_ / 2;
       const m = opts.margin == null ? 0 : opts.margin;
       if (fx < -m || fz < -m || fx > W_ + m || fz > D_ + m) continue;
-      return { si, floor: [Math.max(0, Math.min(W_ - 1, Math.floor(fx))), Math.max(0, Math.min(D_ - 1, Math.floor(fz)))], out: fx < 0 || fz < 0 || fx > W_ || fz > D_ };
+      return { si, floor: [Math.max(0, Math.min(W_ - 1, Math.floor(fx))), Math.max(0, Math.min(D_ - 1, Math.floor(fz)))], out: fx < 0 || fz < 0 || fx > W_ || fz > D_, point: world };
     }
     return null;
   };
@@ -1015,6 +1073,7 @@
       ghost.mat.uniforms.uAlpha.value = (ghost.ok ? 0.55 : 0.42) + Math.sin(time * 7) * 0.08;
       ghost.mat.uniforms.uOrigin.value.set(-sides[0].dims[0] / 2, 0, -sides[0].dims[1] / 2);
     }
+    updateArrow();
     // 範囲
     for (let i = 0; i < rangeUsed; i++) {
       const o = rangePool[i];
