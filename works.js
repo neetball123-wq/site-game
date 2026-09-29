@@ -966,48 +966,4 @@ window.WORKS = [
         + '<text x="200" y="232" text-anchor="middle" font-size="12" fill="#8E96B0" letter-spacing="2">23:08 のまま、時計が動かない。</text></svg>'
     }
   },
-  {
-    id: 'nemure',
-    images: { back: 'img/back-nemure.jpg' },
-    path: 'works/nemure/index.html',
-    title: 'NEMURE',
-    place: '夢の中でしか会えない、アイドルの番組',
-    added: '2026-09-19',
-    genre: ['ホラー', 'アイドル', '夢'],
-    minutes: 10,
-    difficulty: 1,
-    accent: '#7E6AD0',
-    catch: '「夢の中でしか会えない」4人組バーチャルアイドルの公式サイト。……メンバーは、本当に4人？',
-    features: ['隠しテキスト', 'ファンレター', '関係者ログイン', '終わりかたが2つ'],
-    storageKey: 'nemure.v1',
-    progress(s) {
-      const n = (s.frags || []).length;
-      if (s.ending) return { pct: 100, label: `終わり「${s.ending === 'awake' ? 'おはよう' : 'おやすみ'}」`, cleared: true };
-      if (s.restored) return { pct: 90, label: '？？？', cleared: false };
-      if (s.unlocked) return { pct: 70, label: '管理画面に侵入', cleared: false };
-      return { pct: n * 12, label: n ? `夢の欠片 ${n}/5` : 'はじめたばかり', cleared: false };
-    },
-    spoilers: [
-      '欠片Ⅰ 月：おやすみモード（月のボタン）にして、ABOUTに出る一文を押す',
-      '欠片Ⅱ 羊：別のタブに移って戻る（または45秒なにもしない）',
-      '欠片Ⅲ 枕：お知らせ「一部配信における不具合」の空白をドラッグで選択',
-      '欠片Ⅳ 鍵：MEMBERの5つ目の空席（点滅する丸）',
-      '欠片Ⅴ 鈴：ファンレターに「澪」「みお」と書いて送る',
-      'ログイン：月 → 羊 → 枕 → 鍵 → 鈴（フッターの小さな staff から）'
-    ],
-    cover: {
-      front: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><linearGradient id="ne-f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#17122B"/><stop offset=".6" stop-color="#2C2254"/><stop offset="1" stop-color="#5A4A8C"/></linearGradient></defs>'
-        + '<rect width="400" height="250" fill="url(#ne-f)"/>' + Array.from({ length: 36 }, (_, i) => `<circle cx="${(i * 67) % 400}" cy="${(i * 37) % 150}" r="${i % 4 ? 0.9 : 1.6}" fill="#F4EEFF" opacity=".8"/>`).join('')
-        + '<text x="200" y="86" text-anchor="middle" font-family="Didot, \'Bodoni 72\', \'Times New Roman\', serif" font-size="50" letter-spacing="12" fill="#F4F1F8">NEMURE</text>'
-        + '<text x="200" y="112" text-anchor="middle" font-size="12" letter-spacing="3" fill="#D9D0FF">眠れない夜は、わたしたちが迎えにいく。</text>'
-        + [['#8F7BD8', '#DCD3FF', 110], ['#E58FB0', '#FFE0EA', 170], ['#5FB3AC', '#D5F5F1', 230], ['#D29A45', '#FFEFD2', 290]].map(([c, g, x], i) => `<defs><radialGradient id="ne-p${i}" cx="50%" cy="38%" r="62%"><stop offset="0" stop-color="${g}"/><stop offset="1" stop-color="${c}"/></radialGradient><clipPath id="ne-c${i}"><circle cx="${x}" cy="176" r="25"/></clipPath></defs><circle cx="${x}" cy="176" r="25" fill="url(#ne-p${i})"/><g clip-path="url(#ne-c${i})" fill="#221A38"><circle cx="${x}" cy="175" r="11"/><path d="M${x - 20} 206c2-12 10-15 20-15s18 3 20 15z"/></g><circle cx="${x - 4}" cy="176" r="1.8" fill="#FBF7FF"/><circle cx="${x + 4}" cy="176" r="1.8" fill="#FBF7FF"/>`).join('')
-        + '<path d="M0 232Q200 206 400 232V250H0Z" fill="#F4F1F8"/></svg>',
-      back: '<svg viewBox="0 0 400 250" aria-hidden="true"><rect width="400" height="250" fill="#050407"/>'
-        + Array.from({ length: 9 }, (_, i) => `<path d="M0 ${30 + i * 26}q50-10 100 0t100 0t100 0t100 0" stroke="#6F86B8" stroke-opacity=".12" fill="none"/>`).join('')
-        + '<g transform="translate(200 108)"><path d="M-110 0q55-44 110 0q-55 44-110 0z" fill="#EDE6FF"/><circle cx="-55" cy="0" r="16" fill="#6F86B8"/><circle cx="-55" cy="0" r="6" fill="#050407"/>'
-        + '<path d="M0 0q55-44 110 0q-55 44-110 0z" transform="translate(0 0)" fill="#EDE6FF"/><circle cx="55" cy="0" r="16" fill="#6F86B8"/><circle cx="55" cy="0" r="6" fill="#050407"/></g>'
-        + '<text x="200" y="186" text-anchor="middle" font-size="15" letter-spacing="4" fill="#D6DDF2">5人目は、まだそこにいる。</text>'
-        + '<text x="200" y="214" text-anchor="middle" font-size="11" letter-spacing="3" fill="#6F86B8">水底 ■ ／ このメンバーは存在しません</text></svg>'
-    }
-  }
 ];
