@@ -149,7 +149,7 @@
     $('#player-frame').src = w.path;
     $('#player').hidden = false;
     document.body.classList.add('playing');
-    document.title = `${w.title} ｜ ${BASE_TITLE}`;
+    document.title = `${w.title} ｜ ヨリミチ`;
     $('#player-back').focus({ preventScroll: true });
   }
   function closePlayer() {

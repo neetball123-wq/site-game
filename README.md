@@ -46,7 +46,8 @@ uragawa/
    - 画像：`works/<作品ID>/img/og.jpg`（1200×630）。
    - `index.html` の `<head>` に `og:title`・`og:description`・`og:url`・`og:image`・`twitter:card`（`summary_large_image`）を入れる。`og:url` と `og:image` は `https://neetball123-wq.github.io/site-game/` から始まる絶対URLにする。
    - 画像は手元の `_og/`（git管理外）で作れる。一覧を `python -m http.server 8940` で開いた状態で `node _og/shoot.js <保存先> <作品ID>=id=<作品ID>` を実行すると、`_og/gen.html` の見た目で撮影する。
-5. 公開版（Artifact）を更新する場合は、一覧と `works/` 以下のファイルを同じArtifactに再公開する。
+5. 検索向けの設定を入れる。`node _og/seo.js` を実行すると、works.js をもとに各作品と一覧の `<title>`（「作品名｜無料で遊べる〇〇ゲーム - ヨリミチ」）・description・canonical・構造化データ（JSON-LD）と `sitemap.xml` を作り直す。何度実行しても同じ結果になる。検索でどう呼ぶか（〇〇ゲーム）は `_og/seo.js` の KIND に作品IDごとに書く。
+6. 公開版（Artifact）を更新する場合は、一覧と `works/` 以下のファイルを同じArtifactに再公開する。
 
 ```js
 {
