@@ -69,11 +69,19 @@
     season(t) { tone(hz(84), t, 0.5, { type: 'sine', v: 0.05 }); tone(hz(91), t + 0.1, 0.6, { type: 'sine', v: 0.04 }); },
     pulse(t) { tone(hz(72), t, 0.6, { type: 'sine', v: 0.1 }); tone(hz(79), t + 0.02, 0.6, { type: 'sine', v: 0.05 }); },
     fall(t) { tone(hz(96), t, 1.2, { type: 'sine', v: 0.05, to: hz(84) }); },
+    roll(t) { noise(t, 0.03, { f: 380, v: 0.05 }); },
+    notice(t) { tone(hz(86), t, 0.06, { type: 'square', v: 0.03 }); tone(hz(93), t + 0.06, 0.09, { type: 'square', v: 0.03 }); },
+    hop(t) { tone(hz(70), t, 0.11, { type: 'square', v: 0.03, to: hz(82) }); },
+    rustle(t) { for (let i = 0; i < 5; i++) noise(t + i * 0.08, 0.07, { ft: 'bandpass', f: 2600 + (i % 2) * 900, v: 0.09 }); },
+    whoosh(t) { noise(t, 0.7, { ft: 'bandpass', f: 900, v: 0.08 }); tone(hz(84), t + 0.5, 0.4, { type: 'sine', v: 0.04 }); },
+    dig(t) { for (let i = 0; i < 3; i++) noise(t + i * 0.14, 0.07, { f: 520, v: 0.14 }); },
+    hello(t) { tone(hz(81), t, 0.55, { type: 'sine', v: 0.08 }); tone(hz(77), t + 0.3, 0.8, { type: 'sine', v: 0.08 }); },
+    tune(t, v) { const k = v === undefined ? 1 : v; [84, 88, 91, 88, 86, 83, 84].forEach((n, i) => tone(hz(n), t + i * 0.15, 0.4, { type: 'sine', v: 0.06 * k })); },
     giggle(t) { [84, 88, 84, 91].forEach((n, i) => tone(hz(n), t + i * 0.06, 0.08, { type: 'square', v: 0.035 })); },
   };
-  function play(name) {
+  function play(name, v) {
     if (!on || !init() || !SFX[name]) return;
-    try { SFX[name](ac.currentTime + 0.01); } catch (e) { }
+    try { SFX[name](ac.currentTime + 0.01, v); } catch (e) { }
   }
 
   /* ---- 子守うた（オリジナル） ---- */

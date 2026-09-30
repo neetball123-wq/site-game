@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ツブのとっておき｜無料で遊べる育成ゲーム - ヨリミチ</title>
-<meta name="description" content="無料・登録なしで遊べる育成ゲーム（約20分）。ひと粒の光から生まれた女の子「ツブ」を育てる。ツブが毎日もち帰る物から、缶にとっておく物を選ぶと、それがツブの性格になり、見た目になり、行き先になる。数字の出ない、ドット絵の育成ゲーム。結末は12。">
+<meta name="description" content="無料・登録なしで遊べる育成ゲーム（約25分）。ひと粒の光から生まれた女の子「ツブ」を育てる。小さいうちは手をつないでおさんぽ、大きくなるとツブはひとりで出かけていく。見つけてきた物から缶にとっておく物を選ぶと、それがツブの性格になり、見た目になり、行き先になる。数字の出ない、ドット絵の育成ゲーム。結末は12。">
 <link rel="canonical" href="https://neetball123-wq.github.io/site-game/works/tsubu/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ヨリミチ">
@@ -20,9 +20,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&family=Mochiy+Pop+P+One&display=swap">
-<link rel="stylesheet" href="css/tin.css?v=1">
+<link rel="stylesheet" href="css/tin.css?v=2">
 <!-- seo:ld -->
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"ツブのとっておき","url":"https://neetball123-wq.github.io/site-game/works/tsubu/","description":"ひと粒の光から生まれた女の子「ツブ」を育てる。ツブが毎日もち帰る物から、缶にとっておく物をひとつ選ぶ。とっておいた物が、あの子の性格になり、姿になり、行き先になる。数字の出ない、ドット絵の育成ゲーム。","image":"https://neetball123-wq.github.io/site-game/works/tsubu/img/og.jpg","genre":["育成","ドット絵","マルチエンディング"],"gamePlatform":["Web browser","PC","スマートフォン"],"applicationCategory":"Game","operatingSystem":"Any","inLanguage":"ja","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},"timeRequired":"PT20M","datePublished":"2026-09-30","isPartOf":{"@type":"WebSite","name":"ヨリミチ","url":"https://neetball123-wq.github.io/site-game/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"ツブのとっておき","url":"https://neetball123-wq.github.io/site-game/works/tsubu/","description":"ひと粒の光から生まれた女の子「ツブ」を育てる。小さいうちは手をつないでおさんぽ、大きくなると、ツブはひとりで出かけていく。見つけてきた物から、缶にとっておく物をひとつ選ぶ。とっておいた物が、あの子の性格になり、姿になり、行き先になる。数字の出ない、ドット絵の育成ゲーム。","image":"https://neetball123-wq.github.io/site-game/works/tsubu/img/og.jpg","genre":["育成","ドット絵","マルチエンディング"],"gamePlatform":["Web browser","PC","スマートフォン"],"applicationCategory":"Game","operatingSystem":"Any","inLanguage":"ja","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},"timeRequired":"PT25M","datePublished":"2026-09-30","isPartOf":{"@type":"WebSite","name":"ヨリミチ","url":"https://neetball123-wq.github.io/site-game/"}}</script>
 <!-- /seo:ld -->
 </head>
 <body class="t-night">
@@ -58,6 +58,7 @@
             <canvas id="view"></canvas>
             <p class="age" id="age"></p>
             <div class="season" id="season"></div>
+            <div class="pocket" id="pocket" hidden><b id="pk-cap"></b><div class="pk-s" id="pk-s"></div></div>
           </div>
           <div class="say" id="say"><p id="say-t"></p><span class="say-next" id="say-next">▼</span></div>
         </div>
@@ -113,11 +114,12 @@
 <script src="js/items.js?v=1"></script>
 <script src="js/icons.js?v=1"></script>
 <script src="js/icons-data.js?v=1"></script>
-<script src="js/rules.js?v=1"></script>
+<script src="js/rules.js?v=2"></script>
 <script src="js/room.js?v=1"></script>
-<script src="js/story.js?v=1"></script>
+<script src="js/walk.js?v=1"></script>
+<script src="js/story.js?v=2"></script>
 <script src="js/ends.js?v=1"></script>
-<script src="js/snd.js?v=1"></script>
-<script src="js/app.js?v=1"></script>
+<script src="js/snd.js?v=2"></script>
+<script src="js/app.js?v=2"></script>
 </body>
 </html>

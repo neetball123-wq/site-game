@@ -4,12 +4,12 @@
 (function () {
   'use strict';
   const $ = (s) => document.querySelector(s);
-  const PX = window.PX, TA = window.TA, TI = window.TI, TR = window.TR, R2 = window.TR2, TS = window.TS, TE = window.TE, SND = window.TSND;
+  const PX = window.PX, TA = window.TA, TI = window.TI, TR = window.TR, R2 = window.TR2, TS = window.TS, TE = window.TE, SND = window.TSND, TW = window.TW;
   const KEY = 'tsubu.v1';
   const RES = [[40, 30], [40, 30], [64, 48], [88, 66], [104, 78]];
   const TIN_NAME = ['', 'ドロップの缶', 'クッキーの缶', '木の箱', '古いトランク'];
   const ABORT = { abort: 1 };
-  let gen = 0, FAST = false;
+  let gen = 0, FAST = false, AUTO = null;
 
   /* ---------- 保存 ---------- */
   let S = {};
@@ -119,10 +119,15 @@
   function compose(t) {
     const W = V.W, H = V.H;
     if (V.mode === 'pro') return proFrame(t);
-    const room = roomBmp();
-    const b = room.clone();
-    let gpos = null;
-    if (V.show) {
+    let room = null, b, gpos = null;
+    if (V.mode === 'walk' && V.wk) {
+      const r = V.wk.draw(t, () => girlBmp(curFace(t)));
+      b = r.b;
+      if (r.pos) gpos = r.pos;
+    } else {
+      room = roomBmp(); b = room.clone();
+    }
+    if (room && V.show) {
       const f = curFace(t), g = girlBmp(f);
       let bob = 0;
       if (V.walk) bob = Math.floor(t / 150) % 2;
@@ -137,10 +142,10 @@
         b.blit(m, x + a[0] + 1 - (n >> 1) + 1, y + a[1] + 1 - (n >> 1));
       }
     }
-    R2.light(b, room);
+    if (room) R2.light(b, room);
     if (gpos) {
       const d = TA.dot(V.st); const gc = (TA.TINT[V.look.tint] || TA.TINT.fu).g;
-      const px = gpos.x + d[0], py = gpos.y + d[1];
+      const px = gpos.flip ? gpos.x + gpos.w - 1 - d[0] : gpos.x + d[0], py = gpos.y + d[1];
       b.put(px, py, gc);
       if (V.time === 'night' || V.time === 'evening') {
         const a = 0.25 + 0.15 * Math.sin(t / 400);
@@ -180,9 +185,9 @@
     b.put(bx + (n >> 1), by - 1, '#5a3424'); b.put(bx + (n >> 1) - 1, by - 1, '#5a3424');
   }
   function drawFx(b, t, room) {
-    const m = room.meta;
+    const m = room && room.meta;
     // 窓の外の雪・花びら
-    if (V.season === 'winter' || V.season === 'spring') {
+    if (m && (V.season === 'winter' || V.season === 'spring')) {
       const n = V.st >= 3 ? 10 : 6, w = m.x1 - m.x0, h = m.y1 - m.y0;
       for (let k = 0; k < n; k++) {
         const sp = V.season === 'winter' ? 0.004 : 0.0028;
@@ -225,10 +230,12 @@
     return b;
   }
 
-  let imgD = null;
+  let imgD = null, lastT = 0;
   function frame(t) {
     requestAnimationFrame(frame);
+    const dt = lastT ? (t - lastT) / 1000 : 0; lastT = t;
     if (!$('#game').classList.contains('on')) return;
+    if (V.mode === 'walk' && V.wk) V.wk.update(dt);
     const b = compose(t);
     V.last = b;
     if (cv.width !== b.w || cv.height !== b.h) { cv.width = b.w; cv.height = b.h; imgD = null; }
@@ -237,7 +244,8 @@
   }
   requestAnimationFrame(frame);
   $('#view-box').addEventListener('click', (e) => {
-    if (e.target.closest('.card')) return;
+    if (e.target.closest('.card') || e.target.closest('.pocket')) return;
+    if (V.mode === 'walk') return;
     if (V.mode === 'room' && V.show && V.last && !typing && !sayWait && !waiters.size) pokeGirl(e);
     else tapAdvance();
   });
@@ -412,6 +420,7 @@
         const r = S.run;
         if (r.phase === 'prologue') await doPrologue(g);
         else if (r.phase === 'morning') await doMorning(g);
+        else if (r.phase === 'walk') await doWalk(g);
         else if (r.phase === 'evening') await doEvening(g);
         else if (r.phase === 'event') await doEvent(g);
         else if (r.phase === 'growth') await doGrowth(g);
@@ -521,6 +530,16 @@
       }
     }
     setActs([]); tray('none');
+    if (r.st <= 2) { // いっしょに おさんぽ
+      const d = doorAt(); face('n');
+      await walkTo(g, d.x, 900);
+      V.door = true; SND.play('door');
+      await X(g, wait(240)); V.show = false;
+      await X(g, tween(420, (p) => (V.dark = p)));
+      V.door = false;
+      TR.walkPlan(r); persist();
+      return;
+    }
     TR.goOut(r); persist();
     await outing(g);
   }
@@ -543,6 +562,173 @@
     await walkTo(g, spot().x, 1000);
   }
 
+  /* ---- おさんぽ（あかちゃん・こども） ---- */
+  const pocketEl = $('#pocket');
+  function pocketUI(wk, cap) {
+    if (!wk) { pocketEl.hidden = true; return; }
+    pocketEl.hidden = false;
+    if (cap !== undefined) $('#pk-cap').textContent = cap;
+    const box = $('#pk-s'); box.innerHTML = '';
+    for (let i = 0; i < 3; i++) {
+      const id = wk.pocket[i], e = document.createElement('button'); e.type = 'button';
+      e.className = 'pk' + (id ? ' has' : '');
+      if (id) { e.appendChild(iconCv(id)); e.setAttribute('aria-label', TI.get(id).name + '（道に おく）'); e.onclick = () => dropPocket(wk, i); } else e.setAttribute('aria-label', 'あき');
+      box.appendChild(e);
+    }
+  }
+  function dropPocket(wk, i) {
+    const id = wk.drop(i); if (!id) return;
+    SND.play('release'); pocketUI(wk);
+    const hb = $('#acts .hold'), kb = $('#acts .btn.sm'); if (hb && kb) { hb.classList.add('main'); kb.classList.remove('main'); }
+    say(V.st === 1 ? `「${TI.get(id).name}」を、道に そっと おいた。` : `${TI.get(id).name}、おいてくね。`);
+  }
+  // 画面の中の点（キャンバスの画素）から、ポケットへ飛ばす
+  function flyToPocket(id, hp, slot) {
+    const vb = $('#view-box').getBoundingClientRect(), k = vb.width / V.W;
+    const c = iconCv(id); c.className = 'pk-fly';
+    const s0 = Math.max(18, 10 * k);
+    c.style.cssText = `left:${vb.left + hp.x * k - s0 / 2}px;top:${vb.top + hp.y * k - s0 / 2}px;width:${s0}px`;
+    document.body.appendChild(c);
+    const to = slot ? slot.getBoundingClientRect() : vb;
+    requestAnimationFrame(() => requestAnimationFrame(() => { c.style.transform = `translate(${to.left + to.width / 2 - (vb.left + hp.x * k)}px, ${to.top + to.height / 2 - (vb.top + hp.y * k)}px) scale(.6)`; c.style.opacity = '.3'; }));
+    setTimeout(() => c.remove(), 520);
+  }
+  let holdOn = null;
+  function holdUI(on) { const b = $('#acts .hold'); if (b) b.classList.toggle('on', !!on); }
+  function walkActs(wk, st, toddle) {
+    const el = $('#acts'); el.innerHTML = '';
+    const b = document.createElement('button'); b.type = 'button';
+    b.className = 'btn main hold'; b.textContent = st === 1 && !toddle ? 'ベビーカーを おす' : 'てを つないで あるく';
+    const dn = (e) => { e.preventDefault(); if (wk.done) return; wk.hold = true; holdUI(true); try { b.setPointerCapture(e.pointerId); } catch (x) { } };
+    const up = () => { wk.hold = false; holdUI(false); };
+    b.addEventListener('pointerdown', dn); b.addEventListener('pointerup', up); b.addEventListener('pointercancel', up); b.addEventListener('lostpointercapture', up);
+    b.addEventListener('contextmenu', (e) => e.preventDefault());
+    el.appendChild(b);
+    const h = document.createElement('button'); h.type = 'button'; h.className = 'btn sm'; h.textContent = 'もう かえる';
+    h.onclick = () => { SND.play('tap'); wk.hold = false; wk.finish('home'); };
+    el.appendChild(h);
+  }
+  // 画面を押しているあいだも、歩く
+  const vbox = $('#view-box');
+  vbox.addEventListener('pointerdown', (e) => {
+    if (V.mode !== 'walk' || !V.wk || V.wk.done || e.target.closest('.pocket')) return;
+    e.preventDefault(); V.wk.hold = true; holdUI(true); holdOn = e.pointerId;
+    try { vbox.setPointerCapture(e.pointerId); } catch (x) { }
+  });
+  const vup = () => { if (V.wk) V.wk.hold = false; holdUI(false); holdOn = null; };
+  vbox.addEventListener('pointerup', vup); vbox.addEventListener('pointercancel', vup); vbox.addEventListener('lostpointercapture', vup);
+  vbox.addEventListener('contextmenu', (e) => { if (V.mode === 'walk') e.preventDefault(); });
+  addEventListener('keydown', (e) => { if (V.mode === 'walk' && V.wk && (e.key === ' ' || e.key === 'ArrowRight')) { e.preventDefault(); V.wk.hold = true; holdUI(true); } });
+  addEventListener('keyup', (e) => { if (V.wk && (e.key === ' ' || e.key === 'ArrowRight')) { V.wk.hold = false; holdUI(false); } });
+
+  function hashS(s, n) { let h = n | 0; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 2654435761); return ((h >>> 0) % 1000) / 1000; }
+  async function doWalk(g) {
+    const r = S.run, P = r.walk, st = r.st;
+    show('game'); setStage(st);
+    const tm = TR.timeOf(r);
+    V.season = tm.season; setTime('day'); refreshLook();
+    V.show = true; V.sleep = false; face('n'); V.held = r.held; V.bag = false;
+    ageLabel(); tray('none'); setActs([]); clearCards();
+    SND.music('s' + st);
+    // ひろう物をえらぶのは、自動のときだけ
+    if (FAST) {
+      let picks = P.things.slice();
+      for (let i = picks.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [picks[i], picks[j]] = [picks[j], picks[i]]; }
+      picks = AUTO === 'none' ? [] : picks.slice(0, 1 + Math.floor(Math.random() * 3));
+      picks.forEach(seen);
+      TR.walkEnd(r, picks); persist(); V.dark = 0; return;
+    }
+    const f = TR.fav(r), sc = TR.now(r);
+    const likes = (id) => {
+      const t = TI.get(id).t;
+      if (f === 'yoru') return !!t.yoru || hashS(id, r.turn) < 0.25;
+      if (f) return (t[f] || 0) >= 2;
+      return hashS(id, r.turn + st * 10) < 0.3;
+    };
+    const refuse = (id) => st === 2 && r.turn >= 5 && !!f && sc[f] >= 6 && (sc[TI.main(id)] || 0) <= 0.5 && !likes(id);
+    const q = []; let qr = null;
+    const emit = (e) => { if (qr) { const fn = qr; qr = null; fn(e); } else q.push(e); };
+    const nextEv = () => new Promise((res) => { if (q.length) res(q.shift()); else qr = res; });
+    const said = {};
+    const PICK2 = [(n) => `${n}、みーつけた！`, (n) => `みて、${n}！`, (n) => `${n}！`];
+    let grabbed = null, npick = 0;
+    const wk = TW.create({
+      W: V.W, H: V.H, st, dest: P.dest, season: tm.season, seed: P.seed, things: P.things,
+      toddle: !!P.toddle, alone: !!P.alone, grabby: st === 2 && r.turn >= 4 && !P.alone, likes, refuse, held: r.held,
+      hooks: {
+        sfx: (n) => SND.play(n),
+        tune: (v) => SND.play('tune', v),
+        face: (fc, ms) => face(fc, ms),
+        pick: (id, hp) => {
+          seen(id); pocketUI(wk);
+          flyToPocket(id, hp, $('#pk-s').children[wk.pocket.length - 1]);
+          SND.play('pick');
+          const n = TI.get(id).name;
+          if (grabbed === id) say('これ、ほしかったの。');
+          else if (st === 1) say(P.toddle ? `ツブが、「${n}」を ひろった。` : `「${n}」を、ツブに わたした。`);
+          else say(PICK2[npick % PICK2.length](n));
+          npick++; grabbed = null;
+          const hb = $('#acts .hold'), kb = $('#acts .btn.sm'); if (hb && kb) { hb.classList.toggle('main', wk.pocket.length < 3); kb.classList.toggle('main', wk.pocket.length >= 3); }
+          if (wk.pocket.length >= 3) setTimeout(() => { if (!wk.done && V.wk === wk) say(st === 1 ? '（もう いっぱい。いつでも かえれる）' : 'もう、もてないよ。かえろっか。'); }, 1400);
+        },
+        full: () => say(st === 1 ? 'かごが、いっぱい。' : 'もう、もてないよ。'),
+        pout: () => { face('sad', 1300); if (!said.pout) { said.pout = 1; say(st === 1 && !P.toddle ? 'ツブが、ふりかえって 手をのばしている。' : 'あー……。'); } },
+        grab: (id) => { grabbed = id; face('wow', 900); say('あっ、まって！'); SND.play('notice'); },
+        refuse: () => { face('n', 1500); say('それは、いいや。'); SND.play('none'); },
+        giveIn: () => { face('n', 800); say('……しょうがないなあ。'); },
+        alone: () => emit('alone'),
+        gone: () => emit('gone'),
+        done: (why) => emit('done:' + why),
+      },
+    });
+    V.wk = wk; V.mode = 'walk'; document.body.classList.add('walking');
+    pocketUI(wk, st === 1 && !P.toddle ? 'かご' : 'ポケット');
+    V.dark = V.dark || 1;
+    await X(g, tween(500, (p) => (V.dark = 1 - p))); V.dark = 0;
+    const el = $('#season'); el.textContent = TW.PLACE[P.dest] || ''; el.classList.add('on', 'place');
+    setTimeout(() => el.classList.remove('on', 'place'), 1500);
+    const first = !S.meta.guideWalk;
+    const L1 = st === 1 ? (P.toddle ? ['はじめて、手をつないで おさんぽ。'] : ['ベビーカーを おして、おさんぽへ。', 'きょうも、おさんぽ。', 'ツブが、そわそわしている。']) : ['いってきまーす！', 'きょうは、どこまで いく？', 'て、つないで いこ！', 'はやく はやく！'];
+    say(L1[(r.turn + r.kept) % L1.length] + (first ? '\n（おしているあいだ 歩く。はなすと 止まる）' : ''));
+    S.meta.guideWalk = 1;
+    walkActs(wk, st, P.toddle);
+    let why = 'end';
+    for (;;) {
+      const ev = await X(g, nextEv());
+      if (ev === 'alone') {
+        setActs([]); vup(); face('n');
+        await X(g, say('ねえ。', true));
+        await X(g, say('ここからは、ひとりで いってみたい。', true));
+        face('joy', 1400);
+        await X(g, say('だいじょうぶ。ちゃんと かえってくるから！', true));
+        say(''); SND.play('giggle'); wk.away();
+      } else if (ev === 'gone') {
+        await X(g, wait(900));
+        await X(g, say('ちいさな せなかが、角をまがって 見えなくなった。', true));
+        say('');
+        await X(g, tween(2200, (p) => (wk.dusk = 0.3 + p * 0.7)));
+        await X(g, say('手のひらに、ちいさな手の あたたかさが のこっている。', true));
+        wk.finish('alone');
+      } else if (ev.indexOf('done:') === 0) { why = ev.slice(5); break; }
+    }
+    setActs([]); vup();
+    if (why === 'end' || why === 'home') {
+      const empty = !wk.pocket.length;
+      const L2 = st === 1 ? (empty ? ['ツブは、うとうとしている。'] : ['そろそろ、かえろうか。']) : (empty ? ['きょうは、なんにも なかったね。'] : ['あー、たのしかった！', 'また いこうね！']);
+      await X(g, say(L2[r.turn % L2.length], true));
+    }
+    const picks = wk.pocket.slice();
+    await X(g, tween(600, (p) => (V.dark = p)));
+    pocketUI(null);
+    TR.walkEnd(r, picks); r.offer.items.forEach(seen); persist();
+    V.wk = null; V.mode = 'room'; document.body.classList.remove('walking');
+    setTime('evening'); refreshLook();
+    const d = doorAt(); V.gx = d.x; V.show = true; V.door = true; face('n');
+    await X(g, tween(500, (p) => (V.dark = 1 - p))); V.dark = 0;
+    SND.play('door'); await X(g, wait(200)); V.door = false;
+    await walkTo(g, spot().x, 900);
+  }
+
   /* ---- 夕方 ---- */
   async function doEvening(g) {
     const r = S.run, o = r.offer;
@@ -552,10 +738,11 @@
     ageLabel(); tray('none'); setActs([]);
     SND.music('s' + r.st);
     if (V.held) { await X(g, say(TS.HELD_BACK[r.st](TI.get(V.held).name), true)); V.held = null; }
-    await X(g, say(TS.BACK[r.st][r.dest], true));
+    const back = o.walked === 'alone' ? TS.ALONE_BACK : o.walked && TS.WALK_BACK[r.st] ? TS.WALK_BACK[r.st][r.dest] : TS.BACK[r.st][r.dest];
+    await X(g, say(back, true));
     o.items.forEach(seen); if (o.hers) seen(o.hers);
     showCards(o); SND.play('card'); face('joy', 1200);
-    say(TS.SHOW[r.st] + (!S.meta.guideKeep ? '\n（ひとつだけ、缶に とっておける）' : ''));
+    say((o.walked === 'alone' ? TS.ALONE_SHOW : o.walked ? TS.SHOW_WALK[r.st] : TS.SHOW[r.st]) + (!S.meta.guideKeep ? '\n（ひとつだけ、缶に とっておける）' : ''));
     S.meta.guideKeep = 1;
     if (o.hers) {
       await X(g, wait(1500));
@@ -848,7 +1035,7 @@
     c.width = o.w; c.height = o.h; PX.toCanvas(o, c);
   }
   function toTitle() {
-    gen++; overlayOff(); $('#peek').hidden = true; clearCards(); setActs([]);
+    gen++; overlayOff(); V.wk = null; if (V.mode === 'walk') V.mode = 'room'; document.body.classList.remove('walking'); pocketUI(null); $('#peek').hidden = true; clearCards(); setActs([]);
     show('title'); bodyTime('night');
     SND.music(null);
     $('#t-cont').hidden = !S.run;
@@ -967,7 +1154,8 @@
       const val = (id) => { const t = TI.get(id).t; let v = Math.random() * 0.5; for (const k in pref || {}) v += (t[k] || 0) * pref[k]; return v; };
       let guard = 0;
       while (r.st < st && guard++ < 400) {
-        if (r.phase === 'morning') TR.goOut(r);
+        if (r.phase === 'morning') { if (r.st <= 2) TR.walkPlan(r); else TR.goOut(r); }
+        else if (r.phase === 'walk') TR.walkEnd(r, r.walk.things.slice().sort((a, b) => val(b) - val(a)).slice(0, 3));
         else if (r.phase === 'evening') { const best = r.offer.items.slice().sort((a, b) => val(b) - val(a))[0]; const out = TR.full(r) ? r.tin.filter(Boolean).sort((a, b) => val(a) - val(b))[0] : null; TR.keep(r, best, out); }
         else if (r.phase === 'event') { const cs = TR.choices(r); TR.choose(r, Math.floor(Math.random() * cs.length), TR.full(r) ? r.tin.filter(Boolean)[0] : null); }
         else if (r.phase === 'growth') TR.grow(r);
@@ -976,10 +1164,10 @@
       persist(); play();
     },
     ending(id) { gen++; const d = S.lastEnd || { id, look: { hair: 'fu', outfit: 'fu', tint: 'fu', yoru: 0, acc: [] }, tin: [], mine: [], bag: [] }; d.id = id; showEnding(gen, d, false); },
-    give, skipNow, tap: () => tapAdvance(), resume: () => play(),
-    toPhase(ph) { const r = S.run; let k = 0; while (r.phase !== ph && k++ < 300) { if (r.phase === 'morning') TR.goOut(r); else if (r.phase === 'evening') TR.keep(r, r.offer.items[0], TR.full(r) ? r.tin[0] : null); else if (r.phase === 'event') TR.choose(r, 0, TR.full(r) ? r.tin[0] : null); else if (r.phase === 'growth') TR.grow(r); else break; } persist(); play(); return r.phase; },
+    give, skipNow, tap: () => tapAdvance(), resume: () => play(), wk: () => V.wk,
+    toPhase(ph) { const r = S.run; let k = 0; while (r.phase !== ph && k++ < 300) { if (r.phase === 'morning') { if (r.st <= 2) TR.walkPlan(r); else TR.goOut(r); } else if (r.phase === 'walk') TR.walkEnd(r, r.walk.things.slice(0, 3)); else if (r.phase === 'evening') TR.keep(r, r.offer.items[0], TR.full(r) ? r.tin[0] : null); else if (r.phase === 'event') TR.choose(r, 0, TR.full(r) ? r.tin[0] : null); else if (r.phase === 'growth') TR.grow(r); else break; } persist(); play(); return r.phase; },
     async autoplay(n, mode) {
-      FAST = true;
+      FAST = true; AUTO = mode || null;
       const sl = (ms) => new Promise((r) => setTimeout(r, ms));
       const q = (s) => [...document.querySelectorAll(s)];
       for (let i = 0; i < (n || 4000); i++) {
@@ -991,12 +1179,12 @@
         const evs = q('#ev-c .btn'); if (evs.length) { (mode === 'none' ? evs[evs.length - 1] : evs[Math.floor(Math.random() * evs.length)]).click(); continue; }
         const r = S.run; if (!r) continue;
         const cards = q('#cards .card[data-id]');
-        if (mode === 'none') { const en0 = q('#acts .btn').filter((b) => !b.disabled); const nb = en0.find((b) => /とっておかない|そのまま|ふれる|おさんぽ|いって/.test(b.textContent)); if (nb) { nb.click(); continue; } }
+        if (mode === 'none') { const en0 = q('#acts .btn').filter((b) => !b.disabled); const nb = en0.find((b) => /とっておかない|そのまま|ふれる|おさんぽ|いって|でかける/.test(b.textContent)); if (nb) { nb.click(); continue; } }
         if ((r.phase === 'evening' || r.phase === 'prologue') && cards.length && !q('#cards .card.sel').length) { cards[Math.floor(Math.random() * cards.length)].click(); continue; }
         if ($('#tray').classList.contains('swap')) { const s = q('#tray .slot.has'); if (s.length) { s[Math.floor(Math.random() * s.length)].click(); continue; } }
         if (r.phase === 'depart' && q('#tray .slot.pick').length < 3) { const s = q('#tray .slot.has:not(.pick)'); if (s.length) { s[0].click(); continue; } }
         const en = q('#acts .btn').filter((b) => !b.disabled);
-        if (en.length) { (en.find((b) => /とっておく|わたす|いって|おさんぽ|ふれる/.test(b.textContent)) || en[0]).click(); continue; }
+        if (en.length) { (en.find((b) => /とっておく|わたす|いって|おさんぽ|でかける|ふれる/.test(b.textContent)) || en[0]).click(); continue; }
       }
       return 'timeout:' + (S.run && S.run.phase);
     },

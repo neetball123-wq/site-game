@@ -149,32 +149,85 @@
     return true;
   }
 
-  // 出かける：行き先を決めて、もち帰る物をそろえる
-  function goOut(run) {
+  // 行き先：いまの色と、持たせた物で決まる
+  function pickDest(run) {
     const sc = now(run), w = {};
     MAIN.forEach((k) => (w[k] = 1 + Math.max(0, sc[k]) * 0.7));
     if (run.held) addK(w, it(run.held).t, 2.2);
     if (run.held) run.lent++;
     delete w.yoru;
-    const dest = pickW(run, w);
-    run.dest = dest;
-    const offer = [];
-    const ok = (x) => !run.seen[x.id] && offer.indexOf(x.id) < 0;
-    const draw = (p) => { if (!p.length) return null; const x = p[Math.floor(rnd(run) * p.length)]; offer.push(x.id); return x.id; };
-    // 色 theme の物：同じ時期 → となりの時期 → 同じ時期のほかの色
-    const take = (theme, rare) => {
+    return (run.dest = pickW(run, w));
+  }
+  // 色 theme の物をひとつ、list に足す：同じ時期 → となりの時期 → 同じ時期のほかの色
+  function taker(run, list) {
+    const ok = (x) => !run.seen[x.id] && list.indexOf(x.id) < 0;
+    const draw = (p) => { if (!p.length) return null; const x = p[Math.floor(rnd(run) * p.length)]; list.push(x.id); return x.id; };
+    return (theme) => {
       if (theme === 'yoru') return draw(TI.LIST.filter((x) => ok(x) && x.t.yoru && x.st && x.st <= run.st));
       return draw(TI.LIST.filter((x) => ok(x) && x.st === run.st && (x.t[theme] || 0) >= 2 && !x.rare))
         || draw(TI.LIST.filter((x) => ok(x) && x.st && Math.abs(x.st - run.st) === 1 && (x.t[theme] || 0) >= 2 && !x.rare))
-        || draw(TI.LIST.filter((x) => ok(x) && x.st === run.st && !x.rare && offer.every((id) => rank(it(id).t)[0] !== rank(x.t)[0])))
+        || draw(TI.LIST.filter((x) => ok(x) && x.st === run.st && !x.rare && list.every((id) => rank(it(id).t)[0] !== rank(x.t)[0])))
         || draw(TI.LIST.filter((x) => ok(x) && x.st === run.st && !x.rare));
     };
+  }
+  const yoruCount = (run) => [...run.tin, ...run.mine].filter((id) => id && it(id).t.yoru).length;
+  // いまのツブの いちばん好きな色（はっきりしないときは null）
+  function fav(run) {
+    const sc = now(run), r = rank(sc, ALL);
+    return sc[r[0]] >= 2 && sc[r[0]] >= sc[r[1]] * 1.2 ? r[0] : null;
+  }
+
+  // おさんぽ（あかちゃん・こども）：道に並ぶ物を決める。ひろうのは、歩きながら
+  function walkPlan(run) {
+    if (run.phase !== 'morning' || run.st > 2) return null;
+    const sc = now(run), dest = pickDest(run);
+    const n = run.st === 1 ? 5 : 6, list = [], take = taker(run, list);
+    take(dest); take(dest);
+    const r = rank(sc).filter((k) => k !== dest);
+    take(r[0]);
+    const rest = r.slice(1);
+    for (let i = rest.length - 1; i > 0; i--) { const j = Math.floor(rnd(run) * (i + 1)); [rest[i], rest[j]] = [rest[j], rest[i]]; }
+    const yoruN = yoruCount(run);
+    const night = run.st >= 2 && (run.flags.callYoru || (yoruN > 0 && rnd(run) < Math.min(0.75, 0.2 + 0.14 * yoruN)));
+    for (const k of rest) { if (list.length >= n - (night ? 1 : 0)) break; take(k); }
+    for (let i = list.length - 1; i > 0; i--) { const j = Math.floor(rnd(run) * (i + 1)); [list[i], list[j]] = [list[j], list[i]]; }
+    if (night) take('yoru'); // 夜の物は、道のおわり（夕ぐれ）に
+    const alone = run.st === 2 && run.turn === STAGES[2].turns - 1 ? 1 : 0;
+    const toddle = run.st === 1 && run.turn === STAGES[1].turns - 1 ? 1 : 0;
+    run.walk = { dest, things: list, seed: Math.floor(rnd(run) * 1e9), alone, toddle };
+    run.phase = 'walk';
+    return run.walk;
+  }
+  // おさんぽのおわり：ひろった物（3つまで）が、夕方に見せる物になる。
+  // ひとりで行った日と、なにもひろわなかった日は、ツブが自分で選ぶ
+  function walkEnd(run, picked) {
+    const w = run.walk; if (!w || run.phase !== 'walk') return null;
+    const items = (picked || []).filter((id, i, a) => w.things.indexOf(id) >= 0 && a.indexOf(id) === i).slice(0, 3);
+    const want = w.alone ? 3 : 1;
+    if (items.length < want) {
+      const top = rank(now(run), ALL)[0];
+      const rest = w.things.filter((id) => items.indexOf(id) < 0);
+      rest.sort((a, b) => (it(b).t[top] || 0) - (it(a).t[top] || 0));
+      while (items.length < want && rest.length) items.push(rest.shift());
+    }
+    items.forEach((id) => (run.seen[id] = 1));
+    if (items.some((id) => it(id).t.yoru)) run.flags.callYoru = 0;
+    run.dest = w.dest;
+    run.offer = { items, hidden: null, hers: null, walked: w.alone ? 'alone' : 1 };
+    run.walk = null; run.phase = 'evening';
+    return run.offer;
+  }
+
+  // 出かける（少女・むすめ）：行き先を決めて、もち帰る物をそろえる
+  function goOut(run) {
+    const sc = now(run), dest = pickDest(run);
+    const offer = [], take = taker(run, offer);
     take(dest);
     // 2つめ：いまの色の上のほうから（行き先とちがう色）
     const r = rank(sc).filter((k) => k !== dest);
     take(rnd(run) < 0.55 ? r[0] : r[1 + Math.floor(rnd(run) * 4)]);
     // 3つめ：まだの色から（よるの子には、ときどき夜のもの）
-    const yoruN = [...run.tin, ...run.mine].filter((id) => id && it(id).t.yoru).length;
+    const yoruN = yoruCount(run);
     if (run.st >= 2 && (run.flags.callYoru || (yoruN > 0 && rnd(run) < Math.min(0.7, 0.14 + 0.12 * yoruN))) && take('yoru')) run.flags.callYoru = 0;
     else {
       const rest = MAIN.filter((k) => offer.every((id) => (it(id).t[k] || 0) < 2));
@@ -307,6 +360,6 @@
     return { id: PURE[top], top, sec, sc };
   }
 
-  const API = { MAIN, ALL, STAGES, EVENTS, SOUVENIR, slots, newRun, now, score, rank, look, timeOf, prologue, begin, give, release, goOut, keep, full, night, next, grow, choices, choose, depart, ending, rnd };
+  const API = { MAIN, ALL, STAGES, EVENTS, SOUVENIR, slots, newRun, now, score, rank, look, timeOf, prologue, begin, give, release, fav, walkPlan, walkEnd, goOut, keep, full, night, next, grow, choices, choose, depart, ending, rnd };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else G.TR = API;
 })(typeof window !== 'undefined' ? window : globalThis);

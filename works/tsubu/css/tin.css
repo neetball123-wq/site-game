@@ -112,7 +112,24 @@ canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: bloc
 .slot.gone canvas { animation: gone .5s forwards; }
 @keyframes gone { to { transform: translateY(-20px) scale(.4); opacity: 0; } }
 
-.acts { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; min-height: 47px; }
+.acts { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; min-height: 47px; }
+
+/* ---------- おさんぽ ---------- */
+.view { touch-action: manipulation; }
+.view canvas { -webkit-touch-callout: none; }
+body.walking .view { touch-action: none; cursor: pointer; }
+.season.place { font-size: clamp(20px, 6vw, 34px); letter-spacing: .12em; align-items: flex-start; padding-top: 12%; }
+.pocket { position: absolute; right: 6px; top: 6px; display: flex; align-items: center; gap: 5px; padding: 3px 5px 3px 9px; border-radius: 999px; background: rgba(255,250,240,.86); box-shadow: 0 2px 0 rgba(58,32,48,.35); }
+.pocket[hidden] { display: none; }
+.pocket b { font-weight: 500; font-size: 11px; }
+.pk-s { display: flex; gap: 4px; }
+.pk { width: 30px; height: 30px; border-radius: 8px; border: 2px dashed rgba(58,32,48,.3); background: rgba(255,255,255,.5); padding: 0; display: flex; align-items: center; justify-content: center; }
+.pk.has { border: 2px solid var(--ink); background: #fff; cursor: pointer; animation: pop .45s cubic-bezier(.3,1.6,.5,1); }
+.pk canvas { width: 24px; height: auto; pointer-events: none; }
+.pk-fly { position: fixed; z-index: 30; pointer-events: none; transition: transform .5s cubic-bezier(.4,0,.6,1), opacity .5s; }
+.btn.hold { touch-action: none; -webkit-touch-callout: none; min-width: 190px; font-size: 16px; }
+.btn.hold.on { transform: translateY(3px); box-shadow: 0 0 0 var(--ink); background: #ffe8a8; }
+.btn.hold.on::after { content: ' …'; }
 
 .tin.pro { background: transparent !important; box-shadow: none !important; }
 .tin.pro::before, .tin.pro::after { display: none; }
