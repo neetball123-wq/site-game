@@ -141,6 +141,9 @@
 @keyframes mg-fadein { from { opacity: 0; } }
 .sc-bg { position: absolute; inset: 0; background: none; }
 .sc-bg img, .sc-bg > svg { animation: mg-zoom 20s ease-out both; }
+.sc-vid { width: 100%; height: 100%; object-fit: cover; object-position: 58% 50%; display: block; opacity: 0; transition: opacity 1s; animation: mg-zoom 20s ease-out both; }
+.has-vid .sc-vid { opacity: 1; }
+.has-vid .sc-dog { display: none; }
 .sc-bus::before, .sc-sea::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(transparent 30%, rgba(20, 12, 6, .65)); }
 .sc-dog { position: absolute; z-index: 2; left: 50%; bottom: 20%; width: min(260px, 50vw); margin-left: min(-130px, -25vw); --wag: 1.2s; transition: transform 3.4s cubic-bezier(.4, 0, .2, 1), opacity 3.4s; }
 .sc-dog svg { width: 100%; display: block; filter: drop-shadow(0 8px 12px rgba(0, 0, 0, .35)); }

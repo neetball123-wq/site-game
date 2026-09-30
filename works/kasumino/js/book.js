@@ -52,7 +52,7 @@
       ? '<p>管理人です。戻りました。ご心配をおかけしました。</p><p>くわしくは、七章の日記に書きました。</p><p class="slip-sign">ミナト</p>'
       : '<p>管理人のミナトさんと、九月五日の夜から連絡がとれません。</p><p>最後の日記は、限定公開のままになっています。お心当たりのある方は、六章「掲示板」まで。</p><p class="slip-sign">会員有志</p>';
     K.page('<section class="cover">'
-      + `<div class="cover-photo">${K.print('hero', '夕暮れの鉄橋をわたる一両の気動車')}</div>`
+      + `<div class="cover-photo">${K.print('hero', '夕暮れの鉄橋をわたる一両の気動車')}${K.reduced ? '' : '<video class="cover-vid" src="img/hero.mp4" poster="img/hero.jpg" muted playsinline autoplay preload="auto" aria-hidden="true"></video>'}</div>`
       + '<div class="cover-title"><h1 class="ct-name">霞野線</h1><p class="ct-sub">海から、霧の高原まで</p></div>'
       + '<p class="cover-foot"><span>北灘鉄道 霞野線　写真と記録</span><span>1931 — 1987</span></p></section>'
       + `<aside class="slip${state.ended ? ' back' : ''}" aria-label="はさみこみ"><p class="slip-head">はさみこみ</p>${slip}</aside>`
@@ -64,6 +64,8 @@
       + '<dl class="spec-mini"><div><dt>区間</dt><dd>灘浜 — 霞野</dd></div><div><dt>営業キロ</dt><dd>24.6 km</dd></div><div><dt>線路</dt><dd>1067mm 単線・非電化</dd></div><div><dt>廃止</dt><dd>1987.3.31</dd></div></dl></section>'
       + '<section class="toc-inline"><h2 class="ch"><span>目</span>目次</h2>' + tocList() + '</section>'
       + `<section class="revisions"><h2>改訂の記録</h2><ul>${upd.map(([d, t]) => `<li><time>${d}</time><span>${esc(t)}</span></li>`).join('')}</ul></section>`);
+    const v = $('.cover-vid');
+    if (v) { v.addEventListener('playing', () => v.classList.add('on'), { once: true }); v.addEventListener('error', () => v.remove(), { once: true }); v.play().catch(() => {}); }
   };
   const tocList = () => '<ol class="toc-list">' + TOC.map(([h, no, t, pg], i) => `<li style="--i:${i}"><a href="#/${h}"><span class="toc-no">${no}</span><span class="toc-t">${t}</span><span class="toc-dots"></span><span class="toc-pg">${pg}</span></a></li>`).join('') + '</ol>';
 

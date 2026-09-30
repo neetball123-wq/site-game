@@ -107,6 +107,9 @@ body[data-page="cover"] .page { max-width: none; padding: 0 0 96px; }
 .cover-photo, .cover-photo .print { position: absolute; inset: 0; }
 .cover-photo img, .cover-photo svg { width: 100%; height: 100%; object-fit: cover; display: block; animation: kenburns 16s ease-out both; }
 @keyframes kenburns { from { transform: scale(1.08); } }
+/* 保存会の8ミリ：気動車が鉄橋をわたる（一度だけ流して、最後のコマで止める） */
+.cover-vid { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity 1.2s; animation: kenburns 16s ease-out both; pointer-events: none; }
+.cover-vid.on { opacity: 1; }
 .cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0, 0, 0, .28), transparent 30%, transparent 60%, rgba(0, 0, 0, .45)); pointer-events: none; }
 .cover-title { position: absolute; z-index: 2; right: clamp(20px, 7vw, 100px); top: clamp(80px, 12vh, 130px); display: flex; flex-direction: row-reverse; align-items: flex-start; gap: 18px; }
 .cover-title > * { writing-mode: vertical-rl; white-space: nowrap; }

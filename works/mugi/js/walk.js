@@ -172,17 +172,29 @@
     await sleep(2000);
 
     // 浜
-    stage.innerHTML = `<div class="sc sc-sea">${MG.ph('end-sea', '夕焼けの 浜', 'sc-bg')}<div class="sc-dog puppy run" id="sea-dog"><svg viewBox="0 0 120 90"><use href="#mg-dog"/></svg></div><div class="sc-text" id="sc-text"></div></div>`;
-    const tx3 = $('#sc-text'), sd = $('#sea-dog');
+    // 動画があれば、むぎ本人が ふりかえって、光のほうへ（ないとき・動きを減らす設定のときは、絵のむぎ）
+    const useVid = !calm && !MG.fast;
+    stage.innerHTML = `<div class="sc sc-sea">${MG.ph('end-sea', '夕焼けの 浜', 'sc-bg')}${useVid ? '<video class="sc-bg sc-vid" id="sea-vid" src="img/end-sea.mp4" poster="img/end-sea-v.jpg" muted playsinline preload="auto" aria-hidden="true"></video>' : ''}<div class="sc-dog puppy run" id="sea-dog"><svg viewBox="0 0 120 90"><use href="#mg-dog"/></svg></div><div class="sc-text" id="sc-text"></div></div>`;
+    const tx3 = $('#sc-text'), sd = $('#sea-dog'), sv = $('#sea-vid');
+    // 動画を区切って流す：to まで流して止める（to なしは最後まで）
+    let vOk = false, vStop = null;
+    const vPlay = (to, from) => { if (!vOk || MG.fast) return; if (from && sv.currentTime < from) sv.currentTime = from; vStop = to || null; sv.play().catch(() => {}); };
+    if (sv) {
+      sv.addEventListener('loadeddata', () => { vOk = true; sv.closest('.sc').classList.add('has-vid'); }, { once: true });
+      sv.addEventListener('error', () => sv.remove(), { once: true });
+      const watch = () => { if (!sv.isConnected) return; if (vStop !== null && sv.currentTime >= vStop) { sv.pause(); vStop = null; } frame(watch); };
+      frame(watch);
+    }
     await sleep(1200);
     line(tx3, '灯台の 見える 浜に ついた。'); await sleep(2400);
+    vPlay(2.1);
     sd.classList.add('look');
     line(tx3, 'むぎは 波うちぎわで、いちどだけ ふりかえった。'); await sleep(2400);
     line(tx3, '（ついてきてる？）', 'kid'); await sleep(2200);
     line(tx3, 'うん。ついてきてるよ。ずっと。'); await sleep(2800);
     tx3.innerHTML = '';
     line(tx3, 'リードが、ふっと かるく なった。'); await sleep(2400);
-    sd.classList.remove('look'); sd.classList.add('away');
+    sd.classList.remove('look'); sd.classList.add('away'); vPlay(0, 2.1);
     line(tx3, 'むぎは 光の ほうへ、走っていった。子いぬの ころ みたいに。'); await sleep(3600);
     tx3.innerHTML = '';
     line(tx3, 'むぎ、', 'big'); await sleep(1800);
