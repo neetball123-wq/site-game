@@ -13,6 +13,35 @@
    ========================================================= */
 window.WORKS = [
   {
+    id: 'tsubu',
+    images: { front: 'works/tsubu/img/front.png', back: 'works/tsubu/img/back.png' },
+    path: 'works/tsubu/index.html',
+    title: 'ツブのとっておき',
+    place: 'ひと粒の光が落ちてきた、あなたの部屋',
+    added: '2026-09-30',
+    genre: ['育成', 'ドット絵', 'マルチエンディング'],
+    minutes: 20,
+    difficulty: 2,
+    accent: '#D9668C',
+    catch: 'ひと粒の光から生まれた女の子「ツブ」を育てる。ツブが毎日もち帰る物から、缶にとっておく物をひとつ選ぶ。とっておいた物が、あの子の性格になり、姿になり、行き先になる。数字の出ない、ドット絵の育成ゲーム。',
+    features: ['育つほど、画面の解像度が上がっていく', '数値は出ない。見た目とことばだけが手がかり', '年を重ねるほど、ツブが自分で選ぶようになる', '結末は12。育て方で服も髪型も変わる'],
+    storageKey: 'tsubu.v1',
+    progress(s) {
+      const m = s.meta || {}, n = Object.keys(m.ends || {}).length;
+      if (n) return { pct: Math.round(n / 12 * 100), label: n >= 12 ? '12のむすびを、すべて見とどけた' : `むすび ${n} / 12`, cleared: true };
+      const r = s.run, A = [null, [0, 4, 4], [4, 6, 8], [10, 6, 8], [16, 3, 4]];
+      if (r && r.st && A[r.st]) {
+        const [a0, sp, tn] = A[r.st];
+        return { pct: Math.min(95, Math.max(3, Math.round((r.st - 1) * 25 + r.turn / tn * 25))), label: `ツブ ${Math.floor(a0 + r.turn * sp / tn)}さい`, cleared: false };
+      }
+      return { pct: s.playMs ? 2 : 0, label: s.playMs ? 'ひと粒の光' : 'まだ、光は落ちてこない', cleared: false };
+    },
+    cover: {
+      front: '<svg viewBox="0 0 400 250" aria-hidden="true"><rect width="400" height="250" fill="#2c4f97"/><rect x="14" y="14" width="236" height="222" rx="10" fill="#f4e4cf"/><rect x="266" y="14" width="120" height="222" rx="10" fill="#22407e"/><rect x="118" y="120" width="40" height="70" rx="6" fill="#f59ac8"/><circle cx="138" cy="100" r="30" fill="#7a4a3a"/><circle cx="138" cy="106" r="20" fill="#ffe3cf"/><circle cx="146" cy="62" r="4" fill="#fff3c4"/></svg>',
+      back: '<svg viewBox="0 0 400 250" aria-hidden="true"><rect width="400" height="250" fill="#07060d"/><rect x="198" y="90" width="4" height="4" fill="#fffbe6"/><circle cx="200" cy="92" r="12" fill="#fff3c4" opacity=".12"/><text x="200" y="160" text-anchor="middle" font-size="16" fill="#d9cfe8" font-family="sans-serif">ひと粒の光</text></svg>',
+    },
+  },
+  {
     id: 'hakoikusa',
     images: { front: 'works/hakoikusa/img/front.png', back: 'works/hakoikusa/img/back.png' },
     path: 'works/hakoikusa/index.html',

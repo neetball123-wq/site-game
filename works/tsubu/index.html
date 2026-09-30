@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ツブのとっておき｜無料で遊べる育成ゲーム - ヨリミチ</title>
+<meta name="description" content="無料・登録なしで遊べる育成ゲーム（約20分）。ひと粒の光から生まれた女の子「ツブ」を育てる。ツブが毎日もち帰る物から、缶にとっておく物を選ぶと、それがツブの性格になり、見た目になり、行き先になる。数字の出ない、ドット絵の育成ゲーム。結末は12。">
+<link rel="canonical" href="https://neetball123-wq.github.io/site-game/works/tsubu/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ヨリミチ">
+<meta property="og:title" content="ツブのとっておき">
+<meta property="og:description" content="ひと粒の光から生まれた女の子を育てる。とっておいた物が、あの子になる。数字の出ない、ドット絵の育成ゲーム。結末は12。">
+<meta property="og:url" content="https://neetball123-wq.github.io/site-game/works/tsubu/">
+<meta property="og:image" content="https://neetball123-wq.github.io/site-game/works/tsubu/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ツブのとっておき｜ひと粒の光が落ちてきた、あなたの部屋">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&family=Mochiy+Pop+P+One&display=swap">
+<link rel="stylesheet" href="css/tin.css?v=1">
+<!-- seo:ld -->
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"ツブのとっておき","url":"https://neetball123-wq.github.io/site-game/works/tsubu/","description":"ひと粒の光から生まれた女の子「ツブ」を育てる。ツブが毎日もち帰る物から、缶にとっておく物をひとつ選ぶ。とっておいた物が、あの子の性格になり、姿になり、行き先になる。数字の出ない、ドット絵の育成ゲーム。","image":"https://neetball123-wq.github.io/site-game/works/tsubu/img/og.jpg","genre":["育成","ドット絵","マルチエンディング"],"gamePlatform":["Web browser","PC","スマートフォン"],"applicationCategory":"Game","operatingSystem":"Any","inLanguage":"ja","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},"timeRequired":"PT20M","datePublished":"2026-09-30","isPartOf":{"@type":"WebSite","name":"ヨリミチ","url":"https://neetball123-wq.github.io/site-game/"}}</script>
+<!-- /seo:ld -->
+</head>
+<body class="t-night">
+<div class="app" id="app">
+
+  <!-- タイトル -->
+  <section class="scr on" id="title">
+    <canvas class="t-sky" id="t-sky"></canvas>
+    <div class="t-box">
+      <canvas class="t-logo" id="t-logo" aria-label="ツブのとっておき"></canvas>
+      <h1 class="vh">ツブのとっておき</h1>
+      <p class="t-sub">ひと粒の光から生まれた、女の子の話</p>
+      <div class="t-btns">
+        <button type="button" class="btn big" id="t-new">はじめる</button>
+        <button type="button" class="btn" id="t-cont" hidden>つづきから</button>
+        <div class="t-row">
+          <button type="button" class="btn sm" id="t-zukan">たからもの</button>
+          <button type="button" class="btn sm" id="t-musubi">むすび</button>
+        </div>
+      </div>
+      <p class="t-mark" id="t-mark"></p>
+    </div>
+    <p class="t-note">この作品はフィクションです。</p>
+  </section>
+
+  <!-- 育てる -->
+  <section class="scr" id="game">
+    <div class="stage">
+      <div class="tin s1" id="tin">
+        <div class="lid">
+          <div class="lid-print"></div>
+          <div class="view" id="view-box">
+            <canvas id="view"></canvas>
+            <p class="age" id="age"></p>
+            <div class="season" id="season"></div>
+          </div>
+          <div class="say" id="say"><p id="say-t"></p><span class="say-next" id="say-next">▼</span></div>
+        </div>
+        <div class="box">
+          <p class="box-cap" id="box-cap"></p>
+          <div class="tray" id="tray"></div>
+        </div>
+      </div>
+      <div class="acts" id="acts"></div>
+    </div>
+  </section>
+
+  <!-- もち帰った物・できごと・旅立ち -->
+  <div class="ov" id="ov" hidden>
+    <div class="ov-in" id="ov-in"></div>
+  </div>
+
+  <!-- 物の説明 -->
+  <div class="peek" id="peek" hidden>
+    <div class="peek-card">
+      <canvas id="peek-cv"></canvas>
+      <p class="peek-n" id="peek-n"></p>
+      <p class="peek-s" id="peek-s"></p>
+      <div class="peek-b" id="peek-b"></div>
+    </div>
+  </div>
+
+  <!-- 結末 -->
+  <section class="scr" id="end">
+    <div class="end-in">
+      <canvas id="end-cv"></canvas>
+      <div class="end-txt" id="end-txt"></div>
+      <div class="end-b" id="end-b"></div>
+    </div>
+  </section>
+
+  <!-- たからもの・むすび -->
+  <section class="scr" id="book">
+    <div class="book-in">
+      <h2 class="book-h" id="book-h"></h2>
+      <p class="book-p" id="book-p"></p>
+      <div class="book-grid" id="book-grid"></div>
+      <p class="book-d" id="book-d"></p>
+      <button type="button" class="btn" id="book-back">もどる</button>
+    </div>
+  </section>
+
+  <div class="ask" id="ask" hidden><div class="ask-in"><p id="ask-t"></p><div class="ask-b" id="ask-b"></div></div></div>
+  <button type="button" class="snd" id="snd" aria-label="音">♪</button>
+</div>
+<script src="js/pix.js?v=1"></script>
+<script src="js/tsubu.js?v=1"></script>
+<script src="js/items.js?v=1"></script>
+<script src="js/icons.js?v=1"></script>
+<script src="js/icons-data.js?v=1"></script>
+<script src="js/rules.js?v=1"></script>
+<script src="js/room.js?v=1"></script>
+<script src="js/story.js?v=1"></script>
+<script src="js/ends.js?v=1"></script>
+<script src="js/snd.js?v=1"></script>
+<script src="js/app.js?v=1"></script>
+</body>
+</html>
