@@ -401,7 +401,7 @@
     const adv = () => {
       if (stage === 0) {
         stage = 1; S.sfx('cork');
-        ov.innerHTML = `<div class="btl"><div class="pic">${pic.draw(id)}</div><p class="cap">${esc(pic.cap)}</p><p class="tap">（押すと、しまう）</p></div>`;
+        ov.innerHTML = `<div class="btl"><div class="pic${pic.img ? ' photo' : ''}">${A.picHTML(pic, id)}</div><p class="cap">${esc(pic.cap)}${pic.sign ? `<small>${esc(pic.sign)}</small>` : ''}</p><p class="tap">（押すと、しまう）</p></div>`;
         setTimeout(() => { stage = 2; }, 900);
       } else if (stage === 2) { ov.hidden = true; ov.onclick = null; done && done(); }
     };
@@ -411,7 +411,7 @@
   function openGallery() {
     const ov = $('#gallery');
     const items = [...A.PICS.map((p, i) => ['p' + (i + 1), p]), ['last', A.LAST], ...(allGlass() || st.bottles.includes('old') ? [['old', A.OLD]] : [])];
-    ov.innerHTML = `<div class="gal"><button type="button" class="x" style="position:absolute;right:12px;top:12px;width:36px;height:36px;border-radius:50%;border:0;background:rgba(0,0,0,.06);font-size:18px" data-k="x" aria-label="とじる">×</button><h2>びんの絵</h2><div class="grid">${items.map(([k, p], i) => st.bottles.includes(k) ? `<button type="button" class="it" data-i="${i}">${p.draw('g' + i)}<span>${esc(p.cap)}</span></button>` : '<div class="it no">？</div>').join('')}</div></div>`;
+    ov.innerHTML = `<div class="gal"><button type="button" class="x" style="position:absolute;right:12px;top:12px;width:36px;height:36px;border-radius:50%;border:0;background:rgba(0,0,0,.06);font-size:18px" data-k="x" aria-label="とじる">×</button><h2>びんの絵</h2><div class="grid">${items.map(([k, p], i) => st.bottles.includes(k) ? `<button type="button" class="it${p.img ? ' photo' : ''}" data-i="${i}">${A.picHTML(p, 'g' + i)}<span>${esc(p.cap)}</span></button>` : '<div class="it no">？</div>').join('')}</div></div>`;
     ov.hidden = false;
     ov.onclick = (e) => {
       if (e.target === ov || e.target.closest('[data-k="x"]')) { ov.hidden = true; return; }

@@ -185,6 +185,10 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
 @keyframes floatin { from { transform: translate(-60vw, 30px) rotate(-30deg); } 70% { transform: translate(0, -6px) rotate(8deg); } }
 .btl .pic { width: 100%; background: #fbf6ea; border-radius: 6px; box-shadow: 0 20px 50px rgba(0,0,0,.45); transform-origin: top center; animation: unroll .9s ease-out; overflow: hidden; }
 .btl .pic svg { display: block; width: 100%; height: auto; }
+/* 画像のびんの絵：紙のかたちのまま（うしろの白い台紙と角丸をやめる） */
+.btl .pic.photo { background: none; box-shadow: none; border-radius: 0; overflow: visible; }
+.btl .pic img { display: block; width: 100%; height: auto; filter: drop-shadow(0 18px 28px rgba(0,0,0,.45)); }
+.btl .cap small { display: block; margin-top: 4px; font-size: 13px; opacity: .75; letter-spacing: .08em; }
 @keyframes unroll { from { transform: scaleY(.04) rotate(-2deg); opacity: .6; } }
 .btl .cap { color: #fff; font-family: var(--hand); font-size: 18px; margin: 0; text-align: center; }
 .btl .cap.pro { font-family: var(--round); font-weight: 700; font-size: clamp(17px, 2.6vw, 22px); letter-spacing: .08em; line-height: 1.9; min-height: 3.8em; display: grid; place-items: center; opacity: 0; }
@@ -196,6 +200,8 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
 .gal .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
 .gal .it { border: 0; padding: 0; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.12); }
 .gal .it svg { display: block; width: 100%; height: auto; }
+.gal .it.photo { background: #efe6d2; }
+.gal .it img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: contain; padding: 8px 8px 0; filter: drop-shadow(0 3px 5px rgba(0,0,0,.2)); }
 .gal .it.no { background: #e9dfc8; aspect-ratio: 600 / 420; display: grid; place-items: center; color: #a8987a; font-weight: 900; font-size: 24px; }
 .gal .it span { display: block; font-family: var(--hand); padding: 4px 8px 6px; font-size: 13px; text-align: left; }
 

@@ -131,7 +131,8 @@ h2.st{margin:24px 0 10px;font:800 16px/1.4 var(--f);border-bottom:2px dotted var
   overflow:hidden;text-decoration:none;color:var(--ink);transition:transform .16s,box-shadow .16s}
 .card:hover{transform:translateY(-3px);box-shadow:0 8px 18px rgba(0,0,0,.12)}
 .card .img{aspect-ratio:4/3;display:block}
-.card .img svg,.card .img canvas{width:100%;height:100%;display:block}
+.card .img svg,.card .img canvas,.card .img img{width:100%;height:100%;display:block}
+.card .img img,.item .img img,.cartrow .img img{object-fit:cover;background:#F6F4F0}
 .card .cb{padding:8px 10px 10px;display:flex;flex-direction:column;gap:3px;flex:1}
 .card .nm{font-weight:800;font-size:13.5px;line-height:1.4}
 .card .pr{font-size:12px;color:var(--r);font-weight:800}
@@ -152,7 +153,7 @@ h2.st{margin:24px 0 10px;font:800 16px/1.4 var(--f);border-bottom:2px dotted var
 /* ---------- 商品ページ ---------- */
 .item{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:18px;align-items:start}
 .item .img{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--paper)}
-.item .img svg,.item .img canvas{display:block;width:100%;height:auto}
+.item .img svg,.item .img canvas,.item .img img{display:block;width:100%;height:auto}
 .item h1{margin:0 0 6px;font:800 21px/1.4 var(--f)}
 .pricebox{margin:12px 0;padding:12px 14px;border-radius:8px;background:var(--y2);border:2px solid var(--y)}
 .pricebox .lb{font-size:12px;color:var(--sub)}
@@ -209,7 +210,7 @@ body.megane .law td{filter:none;opacity:1}
 .steps span.on{background:var(--r);color:#fff}
 .cartrow{display:flex;gap:12px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:10px}
 .cartrow .img{width:96px;flex:none;border-radius:6px;overflow:hidden}
-.cartrow .img svg,.cartrow .img canvas{display:block;width:100%;height:auto}
+.cartrow .img svg,.cartrow .img canvas,.cartrow .img img{display:block;width:100%;height:auto;aspect-ratio:4/3}
 .pays{display:flex;flex-direction:column;gap:8px;margin:10px 0}
 .pay{display:flex;gap:10px;align-items:flex-start;background:var(--paper);border:2px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer}
 .pay input{margin-top:5px}

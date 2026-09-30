@@ -284,5 +284,18 @@ window.YA = (() => {
     const p = SPOTS[i], top = svg.querySelector('.top'); if (!top) return;
     top.insertAdjacentHTML('beforeend', `<g transform="translate(${p.x + 6} ${p.y - 30})" class="nl"><g class="beam"><path d="M0 0 L-170 -34 L-170 30Z M0 0 L170 -34 L170 30Z" fill="url(#${pre}-b)"/></g><circle r="34" fill="#ffd24a" opacity=".28"/><circle r="12" fill="#ffe89a" opacity=".85"/><rect x="-7" y="-4" width="14" height="8" fill="#ffd24a"/></g>`);
   }
-  return { ICON, PICS, LAST, OLD, chart, SPOTS, nightLamp };
+  // びんの絵の画像（なければ、クレヨンの線画に戻す）
+  PICS.forEach((p, i) => { p.img = 'img/btl-' + (i + 1) + '.webp'; p.sign = 'みお ' + p.age; });
+  LAST.img = 'img/btl-7.webp'; LAST.sign = 'みお ' + LAST.age;
+  OLD.img = 'img/btl-8.webp'; OLD.sign = '灯台守 じいちゃん';
+  const ALL = [...PICS, LAST, OLD];
+  const picHTML = (p, id) => (p.img ? '<img class="btl-img" src="' + p.img + '" alt="' + p.cap + '" data-pic="' + ALL.indexOf(p) + '" data-id="' + id + '" decoding="async">' : p.draw(id));
+  document.addEventListener('error', (e) => {
+    const im = e.target;
+    if (!(im instanceof HTMLImageElement) || !im.classList.contains('btl-img')) return;
+    const p = ALL[+im.dataset.pic]; if (!p) return;
+    const box = im.parentElement; box.classList.remove('photo'); im.outerHTML = p.draw(im.dataset.id);
+  }, true);
+
+  return { ICON, PICS, LAST, OLD, chart, SPOTS, nightLamp, picHTML };
 })();

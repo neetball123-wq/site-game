@@ -90,11 +90,18 @@
      共通の部品
      ========================================================= */
   const priceLabel = (k) => ({ kioku: 'どうでもいい記憶 ×1', moji: '文字（ひらがな一字）', iro: '色', kino: '昨日', name: '名前' })[k] || '';
+  const PHOTO = ['megane', 'hitokoto', 'yoru', 'jubyo', 'tenki', 'kyoku', 'tebukuro', 'nichiyo', 'nioi', 'koe', 'kaerimichi'];
   const imgHTML = (it) => {
     if (isName(it.id)) return NK.ICON.name;
     if (it.plate) return '<canvas data-plate width="400" height="300" aria-label="虹の写真"></canvas>';
+    if (PHOTO.includes(it.id)) return '<img class="p-img" src="img/item-' + it.id + '.jpg" alt="" data-id="' + it.id + '" decoding="async">';
     return NK.ICON[it.id] || NK.ICON.name;
   };
+  // 商品写真（画像がなければ、今までの絵に戻す）
+  document.addEventListener('error', (e) => {
+    const im = e.target;
+    if (im instanceof HTMLImageElement && im.classList.contains('p-img')) im.outerHTML = NK.ICON[im.dataset.id] || NK.ICON.name;
+  }, true);
   const cardHTML = (it) => {
     const got = !!st.bought[it.id] && SINGLE.includes(it.id);
     const cls = 'card' + (it.soldout ? ' soldout' : '') + (got ? ' bought' : '');
