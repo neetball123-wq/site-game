@@ -64,7 +64,7 @@
 /* ---------- 開封の演出 ---------- */
 .finale { position: fixed; inset: 0; z-index: 200; display: flex; flex-direction: column; background: radial-gradient(ellipse at 50% 40%, #2B2620 0%, #151310 70%); color: var(--paper); animation: fin-in .8s ease both; }
 @keyframes fin-in { from { opacity: 0; } }
-.fin-stage { position: relative; flex: 1; min-height: 0; display: grid; place-items: center; perspective: 1400px; padding: 24px 16px 0; }
+.fin-stage { position: relative; flex: 1; min-height: 0; display: grid; grid-template-rows: minmax(0, 1fr); grid-template-columns: minmax(0, 1fr); place-items: center; perspective: 1400px; padding: 24px 16px 0; }
 .fin-env { position: absolute; width: min(520px, 86vw); transition: transform 1.2s var(--em), opacity 1.2s; }
 .fin-env .env-seals { opacity: .5; }
 .fin-stage.flap .env-flap { transform: rotateX(180deg); }
@@ -79,7 +79,12 @@
 .fold.top { transform-origin: bottom center; transform: rotateX(-172deg); }
 .fold.bottom { transform-origin: top center; transform: rotateX(172deg); }
 .fin-stage.unfold .fold.top, .fin-stage.unfold .fold.bottom { transform: none; }
-.fold.mid { flex: 1; min-height: 0; overflow-y: auto; padding: 8px clamp(20px, 6vw, 56px) 20px; box-shadow: 0 30px 80px rgba(0, 0, 0, .5); scrollbar-width: thin; }
+.fold.mid { flex: 1; min-height: 0; overflow-y: auto; background-attachment: local; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; touch-action: pan-y; padding: 8px clamp(20px, 6vw, 56px) 20px; box-shadow: 0 30px 80px rgba(0, 0, 0, .5); scrollbar-width: thin; }
+/* 開き終わったら立体をやめる（iPhone で、立体の中の枠がスクロールしないことがあるため） */
+.fin-stage.flat { perspective: none; }
+.fin-stage.flat .fin-env { display: none; }
+.fin-stage.flat .fin-paper { transform-style: flat; transition: none; }
+.fin-stage.flat .fold { transition: none; }
 .letter-lines { color: var(--ai); font: 400 clamp(15px, 2.2vw, 18px)/40px var(--f-hand); }
 .letter-lines p { margin: 0; }
 .letter-lines .gap { height: 20px; }

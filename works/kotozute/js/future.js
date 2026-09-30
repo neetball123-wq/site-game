@@ -117,6 +117,7 @@
     later(() => stage.classList.add('flap'), 500);
     later(() => stage.classList.add('rise'), 1500);
     later(() => stage.classList.add('unfold'), 2600);
+    later(() => stage.classList.add('flat'), 3900);
     let t = replay === true ? 3000 : 3900;
     KT.letter.forEach((l, i) => {
       later(() => {
@@ -137,6 +138,7 @@
         lines.innerHTML = KT.letter.map((l, i) => `<p class="${l ? 'ln' : 'gap'}${i === 0 ? ' to' : ''}${i >= KT.letter.length - 2 ? ' from' : ''} now">${l ? `<span>${esc(l)}</span>` : ''}</p>`).join('');
         stage.classList.add('flap', 'rise', 'unfold');
       }
+      setTimeout(() => stage.classList.add('flat'), reduced ? 0 : 1400);
       $('#fin-skip', ov).hidden = true;
       $('#fin-next', ov).hidden = false;
       if (!state.done) { state.done = true; state.endedAt = Date.now(); save(); }
