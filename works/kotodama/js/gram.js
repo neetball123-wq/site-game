@@ -53,7 +53,8 @@
     const real = T.filter((t) => !SKIP.includes(t.cat));
     const nx = (t) => { if (!t) return null; for (let j = t.i + 1; j < T.length; j++) if (!SKIP.includes(T[j].cat)) return T[j]; return null; };
     const pv = (t) => { if (!t) return null; for (let j = t.i - 1; j >= 0; j--) if (!SKIP.includes(T[j].cat)) return T[j]; return null; };
-    const soft = (a, b) => { if (!a || !b) return false; for (let j = a.i + 1; j < b.i; j++) if (T[j].cat === 'BR' || T[j].cat === 'CM') return true; return false; };
+    let autoCut = [];
+    const soft = (a, b) => { if (!a || !b) return false; for (let j = a.i + 1; j < b.i; j++) if (T[j].cat === 'BR' || T[j].cat === 'CM') return true; return autoCut.some((k) => k >= a.i && k < b.i); };
     const isP = (t, ...ps) => !!t && t.cat === 'P' && (!ps.length || ps.includes(t.p));
     const isCase = (t) => !!t && t.cat === 'P' && t.c === 'case';
     const content = T.filter((t) => t.k === 'w' && t.cat !== 'OTO');
@@ -106,15 +107,53 @@
     }
     for (const t of T) { t.ph = (TILES[t.p] && TILES[t.p].ph && t.s === t.p) ? TILES[t.p].ph : t.y; t.m = count(t.y); }
 
+    /* ---- 改行（句） ---- */
+    let lines = null;
+    if (T.some((t) => t.cat === 'BR')) {
+      lines = []; let from = 0;
+      for (let j = 0; j <= T.length; j++) {
+        if (j === T.length || T[j].cat === 'BR') {
+          const seg = T.slice(from, j);
+          if (seg.some((x) => x.cat !== 'BR' && x.cat !== 'CM')) lines.push({ from, to: j - 1, m: seg.reduce((a, x) => a + x.m, 0) });
+          from = j + 1;
+        }
+      }
+    }
+    // うた（句に区切ってある、または五・七・五などの型に近い）なら、うたの文法でゆるく読む：
+    // 句の終わりで言いさしても（〜ように、〜に）「余韻」として通す
+    const mora = T.reduce((a, t) => a + t.m, 0);
+    const auto = !lines && KD.form ? KD.form({ T, mora, lines: null }) : null;
+    const verse = !!((lines && lines.length >= 2) || auto);
+    // 改行がなくても型に区切れるなら、その句の切れ目は改行と同じに扱う
+    autoCut = auto ? auto.lines.slice(0, -1).map((l) => l[1]) : [];
+
     /* ---- 2. つながりを調べる ---- */
     const clauses = []; let cl = { from: 0, toks: [] };
     let pend = [], advs = [], like = [], wo = null;
     const rhet = [], mods = {}, links = [];
     const addMod = (n, m, kind) => { (mods[n] = mods[n] || []).push({ i: m, kind }); };
     // 名詞で言い切ったときは「猫に小判」のような省略を認める（「を」だけは動詞がいる）
+    const predList = [];
+    const markPred = (t) => { t.pred = true; predList.push(t.i); };
+    const lastReal = real.length ? real[real.length - 1].i : -1;
+    // 前にある述語（倒置法の受け手）。を は動詞だけ。自分の受け手そのものは除く
+    const lastPred = (pos, verbOnly, not) => { for (let k = predList.length - 1; k >= 0; k--) { const q = predList[k]; if (q < pos && q !== not && (!verbOnly || T[q].cat === 'V')) return q; } return -1; };
     const close = (at, tai) => {
       if (tai) pend = pend.filter((p) => { if (p.p === 'を' || p.implied) return true; T[p.i].ellip = true; return false; });
-      for (const p of pend) err(p.i, p.implied ? `「${T[p.head].s}」を受ける言葉がない` : `「${T[p.i].p}」を受ける言葉がない`);
+      // 倒置法：文の終わりに残った「〜を」「〜へ」や副詞は、前の述語にかかる（行こう、海へ／降る、しんしんと）
+      if (at >= lastReal) {
+        pend = pend.filter((p) => { if (p.implied) return true; const q = lastPred(p.i, p.p === 'を', p.head); if (q < 0) return true; links.push({ pred: q, head: p.head, p: p.p, at: p.i }); rhet.push({ t: '倒置法', i: p.i, j: q }); return false; });
+        advs = advs.filter((a) => { const q = lastPred(a, false, -1); if (q < 0) return true; links.push({ pred: q, adv: a }); rhet.push({ t: '倒置法', i: a, j: q }); return false; });
+        like = like.filter((l) => { const pp = pv(T[l]); if (!pp || !isP(pp, 'の')) return true; const q = lastPred(l, false, -1); if (q < 0) return true; links.push({ pred: q, like: l }); rhet.push({ t: '倒置法', i: l, j: q }); return false; });
+      }
+      // うたの言いさし：句の終わりで受け手がなくても、余韻として通す
+      if (verse) {
+        for (const p of pend) { T[p.i].ellip = true; rhet.push({ t: '余韻', i: p.i }); }
+        for (const a of advs) { T[a].ellip = true; rhet.push({ t: '余韻', i: a }); }
+        for (const l of like) { const pp = pv(T[l]); const h = pp && isP(pp, 'の') ? pv(pp) : pp; T[l].ellip = true; rhet.push({ t: '直喩', i: h ? h.i : l, j: l }); rhet.push({ t: '余韻', i: l }); }
+        pend = []; advs = []; like = [];
+      }
+      for (const p of pend) err(p.i, p.implied ? `「${T[p.head].s}」を受ける言葉がない` : p.i >= lastReal ? `「${T[p.i].p}」で終わっている` : `「${T[p.i].p}」を受ける言葉がない`);
       for (const a of advs) err(a, `「${T[a].s}」がかかる先がない`);
       for (const l of like) err(l, '「ように」がかかる先がない');
       pend = []; advs = []; like = []; wo = null;
@@ -123,8 +162,10 @@
     // 述語が来たら、待っている助詞と副詞をひきとる。「を」は動詞だけがひきとれる
     const resolve = (t, isVerb) => {
       const keep = [];
+      const hasWo = pend.some((q) => q.p === 'を');
       for (const p of pend) {
         if (p.p === 'を' && !isVerb) { keep.push(p); continue; }
+        if (p.implied && isVerb && t.w && !t.w.vi && !hasWo && T[p.head].w && !anim(T[p.head].w)) { links.push({ pred: t.i, head: p.head, p: 'を', at: p.i }); continue; }
         links.push({ pred: t.i, head: p.head, p: p.p, at: p.i });
         if (p.p === 'を') wo = null;
       }
@@ -163,13 +204,13 @@
           break;
         }
         case 'V': {
-          resolve(t, true);
+          resolve(t, true); predList.push(t.i);
           if (isP(n, 'ない', 'た', 'て', 'たら', 'ば', 'けり', 'ように', 'から', 'まで', 'と', 'よ', 'ね', 'か', 'ぞ', 'かな', 'たい', 'う', '命令', 'ながら', 'ので', 'けど', 'だろう', 'の')) break;
           if (isP(n, 'に') && nx(n) && nx(n).cat === 'V') break;
           // 「散るを待つ」：言い切りの形のまま名詞のように使う（古い言い方・うたでよく使う）
           if (isP(n, 'を', 'が', 'は', 'も') && t.form === 'base' && !t.w.free) { t.nomi = true; break; }
           if (n && n.cat === 'N' && !sN) { t.rel = true; break; }
-          if (ENDOK(n) || sN) { close(t.i); break; }
+          if (ENDOK(n) || sN || n.cat === 'ADV') { close(t.i); break; }
           err(n.i, `「${t.s}」のあとに「${n.s}」は続かない`);
           break;
         }
@@ -180,16 +221,15 @@
             if (h) { addMod(h.i, t.i, 'adj'); takeAdvs(t); } else err(t.i, `「${t.s}」がかかる名詞がない`);
             break;
           }
-          resolve(t, false); t.pred = true;
+          resolve(t, false); markPred(t);
           if (isP(n, 'から', 'まで', 'と', 'よ', 'ね', 'か', 'ぞ', 'かな', 'ない', 'た', 'たら', 'て', 'ば', 'ので', 'けど', 'だろう', 'の', 'だ')) break;
           if (t.cat === 'NA' && isP(n, 'で')) break;
-          if (ENDOK(n) || sN) { close(t.i); break; }
+          if (ENDOK(n) || sN || n.cat === 'ADV') { close(t.i); break; }
           err(n.i, `「${t.s}」のあとに「${n.s}」は続かない`);
           break;
         }
         case 'ADV': {
-          if (isP(n, 'と')) { advs.push(t.i); break; }
-          if (!n) { err(t.i, `「${t.s}」で終わっている`); break; }
+          if (isP(n, 'と') || !n) { advs.push(t.i); break; }
           if (n.cat === 'CJ' || n.cat === 'P') { err(t.i, `「${t.s}」のあとに「${n.s}」は続かない`); break; }
           advs.push(t.i);
           break;
@@ -242,7 +282,6 @@
           }
           if (P === 'と' && n && (n.cat === 'N' || n.cat === 'RT' || n.cat === 'A' || n.cat === 'NA')) { t.coord = true; return; }
           if (P === 'や') { if (!n) err(t.i, '「や」で終わっている'); else if (n.cat === 'N' && !nx(n)) t.coord = true; else { t.kire = true; close(t.i); } return; }
-          if (!n) { err(t.i, `「${P}」で終わっている`); return; }
           if (P === 'を') { if (wo !== null) { err(t.i, '「を」が二つある'); return; } wo = t.i; }
           pend.push({ i: t.i, p: P, head: headOf(t) });
           return;
@@ -291,36 +330,36 @@
           if (p.cat === 'V' || p.cat === 'A' || p.cat === 'NA') { if (p.cat !== 'V') resolve(p, false); p.neg = true; }
           else if (isCase(p) && ['が', 'は', 'も', 'の', 'に', 'で', 'と'].includes(p.p) || isP(p, 'だけ')) { resolve(t, false); t.exist = true; }
           else { err(t.i, `「${p.s}」に「ない」は直接つかない`); return; }
-          t.pred = true; after(['N', 'て', 'た', 'たら', 'ば', 'から', 'と', 'よ', 'ね', 'か', 'ぞ', 'かな', 'ので', 'けど', 'だろう', 'の']); return;
+          markPred(t); after(['N', 'て', 'た', 'たら', 'ば', 'から', 'と', 'よ', 'ね', 'か', 'ぞ', 'かな', 'ので', 'けど', 'だろう', 'の']); return;
         }
         if (P === 'た') {
           if (!(p.cat === 'V' || p.cat === 'A' || p.cat === 'NA' || isP(p, 'ない', 'だ', 'たい'))) { err(t.i, `「${p.s}」に「た」は直接つかない`); return; }
           if (p.cat === 'A' || p.cat === 'NA') resolve(p, false);
-          t.pred = true; after(['N', 'から', 'と', 'よ', 'ね', 'か', 'ぞ', 'かな', 'ので', 'けど', 'だろう', 'の']); return;
+          markPred(t); after(['N', 'から', 'と', 'よ', 'ね', 'か', 'ぞ', 'かな', 'ので', 'けど', 'だろう', 'の']); return;
         }
         if (P === 'だ') {
           if (!(nounish(p) || p.cat === 'NA')) { err(t.i, `「${p.s || p.p}」に「だ」は直接つかない`); return; }
-          resolve(t, false); t.pred = true; t.copula = p.nomi ? -1 : p.i;
+          resolve(t, false); markPred(t); t.copula = p.nomi ? -1 : p.i;
           after(['た', 'たら', 'から', 'と', 'よ', 'ね', 'か', 'ぞ', 'けど']); return;
         }
         if (P === 'たい') {
           if (p.cat !== 'V') { err(t.i, '「たい」は動詞のあとにつく'); return; }
-          t.pred = true; after(['N', 'ない', 'て', 'た', 'たら', 'ば', 'から', 'と', 'よ', 'ね', 'か', 'ぞ', 'かな', 'ので', 'けど', 'の', 'だろう']); return;
+          markPred(t); after(['N', 'ない', 'て', 'た', 'たら', 'ば', 'から', 'と', 'よ', 'ね', 'か', 'ぞ', 'かな', 'ので', 'けど', 'の', 'だろう']); return;
         }
-        if (P === 'う') { if (p.cat !== 'V') { err(t.i, '「う（よう）」は動詞のあとにつく'); return; } t.pred = true; after(['と', 'か', 'よ', 'ね', 'ぞ', 'けど']); return; }
-        if (P === '命令') { if (p.cat !== 'V') { err(t.i, '命令の形にできるのは動詞だけ'); return; } t.pred = true; after(['よ']); return; }
+        if (P === 'う') { if (p.cat !== 'V') { err(t.i, '「う（よう）」は動詞のあとにつく'); return; } markPred(t); after(['と', 'か', 'よ', 'ね', 'ぞ', 'けど']); return; }
+        if (P === '命令') { if (p.cat !== 'V') { err(t.i, '命令の形にできるのは動詞だけ'); return; } markPred(t); after(['よ']); return; }
         if (P === 'だろう') {
           if (!(predish(p) || nounish(p) || p.cat === 'NA' || isP(p, 'ない', 'た', 'たい'))) { err(t.i, `「${p.s}」に「だろう」はつかない`); return; }
-          resolve(t, false); t.pred = true; after(['か', 'よ', 'ね', 'ぞ', 'と', 'けど']); return;
+          resolve(t, false); markPred(t); after(['か', 'よ', 'ね', 'ぞ', 'と', 'けど']); return;
         }
         if (P === 'ように') {
           if (!(isP(p, 'の') || p.cat === 'V' || isP(p, 'た', 'ない'))) { err(t.i, '「ように」は「の」か動詞のあとにつく'); return; }
-          if (!n || n.cat === 'P' || n.cat === 'CJ') { err(t.i, '「ように」がかかる先がない'); return; }
+          if (n && (n.cat === 'P' || n.cat === 'CJ')) { err(t.i, '「ように」がかかる先がない'); return; }
           like.push(t.i);
           if (isP(p, 'の')) { const k = pend.findIndex((x) => x.i === p.i); if (k >= 0) pend.splice(k, 1); }
           return;
         }
-        if (P === 'けり') { if (p.cat !== 'V') { err(t.i, '「けり」は動詞のあとにつく'); return; } t.pred = true; t.kire = true; after(['かな', 'よ']); return; }
+        if (P === 'けり') { if (p.cat !== 'V') { err(t.i, '「けり」は動詞のあとにつく'); return; } markPred(t); t.kire = true; after(['かな', 'よ']); return; }
       }
     }
     if (cl.toks.length) close(T.length - 1, real.length && real[real.length - 1].cat === 'N');
@@ -374,24 +413,18 @@
     // 形容詞が名詞とぶつかる（熱い雪）
     for (const n in mods) for (const m of mods[n]) if (m.kind === 'adj' && T[m.i].w && opp(T[m.i].w.tags, W(+n).tags)) rhet.push({ t: '撞着語法', i: m.i, j: +n });
 
-    /* ---- 5. 改行（句） ---- */
-    let lines = null;
-    if (T.some((t) => t.cat === 'BR')) {
-      lines = []; let from = 0;
-      for (let j = 0; j <= T.length; j++) {
-        if (j === T.length || T[j].cat === 'BR') {
-          const seg = T.slice(from, j);
-          if (seg.some((x) => x.cat !== 'BR' && x.cat !== 'CM')) lines.push({ from, to: j - 1, m: seg.reduce((a, x) => a + x.m, 0) });
-          from = j + 1;
-        }
-      }
+    // 句の切れ目：前の句が名詞・切れ字・言いさしで終わっている（取り合わせ）
+    let cuts = 0;
+    const segs = lines ? lines.map((l) => [l.from, l.to]) : auto ? auto.lines : [];
+    for (let k = 0; k < segs.length - 1; k++) {
+      let L = null; for (let j = segs[k][1]; j >= segs[k][0]; j--) if (!SKIP.includes(T[j].cat)) { L = T[j]; break; }
+      if (L && ((L.cat === 'N' && L.tai) || L.kire || L.ellip || L.fin || (L.cat === 'P' && L.p === 'や'))) cuts++;
     }
-
     errs.sort((a, b) => a.i - b.i);
     const last = real[real.length - 1];
     return {
-      T, ok: !errs.length, errs, clauses: clauses.filter((c) => c.toks.length), preds: Object.values(preds), mods, rhet, lines,
-      mora: T.reduce((a, t) => a + t.m, 0), content, oto,
+      T, ok: !errs.length, errs, clauses: clauses.filter((c) => c.toks.length), preds: Object.values(preds), mods, rhet, lines, verse, cuts,
+      mora, content, oto,
       tai: !!(last && last.cat === 'N'), q: !!(last && isP(last, 'か')), kire: T.filter((t) => t.kire || isP(t, 'かな')).map((t) => t.i),
     };
   }

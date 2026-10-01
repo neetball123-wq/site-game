@@ -187,6 +187,27 @@
   R('dochaku', '撞着語法', '反対の性質をぶつける（「熱い雪」）', 3, 1, true);
   R('inyu', '隠喩', '「AはBだ」。この戦いのあいだ、A は B の性質を帯びる', 2, 1);
   R('chokuyu', '直喩', '「〜のように」。たとえたものの性質が乗る', 1.5, 0.5);
+  R('yoin', '余韻', 'うたの句の終わりで、言いさす（「〜ように」「〜に」で止める）。言わないぶん、残る', 1.5, 0.5);
+  R('tochi', '倒置法', '言葉の順をひっくり返す（行こう、海へ／降る、しんしんと）', 2, 1);
+  WAZA.push({ id: 'toriawase', name: '取り合わせ', desc: 'うたの句を名詞や切れ字でいったん切り、別の景色を並べる（光る月／…／赤い鳥）', kind: 'add', base: 2, per: 1, group: 'うた',
+    detect: (an) => (an.verse && an.cuts ? { n: an.cuts } : null) });
+  const COLORS = ['赤', '白', '青', '黒', '色'];
+  WAZA.push({ id: 'shikisai', name: '色彩', desc: 'ちがう色が二つ以上うかぶ（赤い鳥と青い空）', kind: 'add', base: 1.5, per: 0.5, hide: true, group: 'うた',
+    detect: (an) => {
+      const got = {}, hl = [];
+      for (const t of words(an)) { const c = COLORS.filter((x) => t.w.tags.includes(x)); if (c.length) { c.forEach((x) => { got[x] = 1; }); hl.push(t.i); } }
+      const n = Object.keys(got).length;
+      return n >= 2 ? { n: n - 1, hl } : null;
+    } });
+  // 言葉ひとつにつき感じはひとつ（めずらしい感じを優先）。三つ以上の感じがそろうと五感
+  const SENSE = [['聞く', ['音']], ['嗅ぐ', ['香']], ['味わう', ['甘', '苦', '食']], ['さわる', ['熱', '冷', '柔', '硬', '重', '軽']], ['見る', ['光', '明', '暗', '色', '赤', '白', '青', '黒']]];
+  WAZA.push({ id: 'gokan', name: '五感', desc: '見る・聞く・さわる・嗅ぐ・味わう のうち、三つ以上の感じを、それぞれ別の言葉で入れる', kind: 'add', base: 3, per: 1, hide: true, group: 'うた',
+    detect: (an) => {
+      const got = {}, hl = [];
+      for (const t of words(an)) { const k = SENSE.find(([, tg]) => tg.some((x) => t.w.tags.includes(x))); if (k && !got[k[0]]) { got[k[0]] = 1; hl.push(t.i); } }
+      const n = Object.keys(got).length;
+      return n >= 3 ? { n: n - 2, hl, note: Object.keys(got).join('・') } : null;
+    } });
   WAZA.push({ id: 'taigen', name: '体言止め', desc: '名詞で言い切る（言葉三つ以上）', kind: 'add', base: 2, per: 1, group: 'あや',
     detect: (an) => (an.tai && words(an).length >= 3 ? { n: 1, hl: [an.T.length - 1] } : null) });
   WAZA.push({ id: 'kireji', name: '切れ字', desc: '「や」「かな」「けり」。型（俳句など）と組むと「×倍」になる', kind: 'mul', base: 1.5, per: 0.25, group: 'あや',
