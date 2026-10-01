@@ -96,13 +96,17 @@
   }
   const relicSum = (run, k) => run.relics.reduce((a, id) => a + ((KD.RELICS.find((r) => r.id === id) || {})[k] || 0), 0);
   const hasRelic = (run, id) => run.relics.includes(id);
-  const handSize = (run) => 8 + relicSum(run, 'hand');
+  // 文机の手入れ（手札・詠む・書き直し）。何度でも買えて、上限はない。値段は買うたびに上がる
+  const UPS = { hand: { base: 6, name: '短冊箱を広げる' }, plays: { base: 9, name: '拍子木を足す' }, discards: { base: 4, name: '墨を足す' } };
+  const ups = (run) => (run.up = run.up || { hand: 0, plays: 0, discards: 0 });
+  const upPrice = (run, k) => Math.round(UPS[k].base * Math.pow(1.5, ups(run)[k]));
+  const handSize = (run) => 8 + relicSum(run, 'hand') + ups(run).hand + ((run.fight && run.fight.wide) || 0);
 
   function startFight(run) {
     const e = enemyFor(run);
     run.fight = {
       eid: e.id, target: lg(KD.target(run.ch, run.tier) * (run.mode === 'random' ? 3 : 1)), got: -Infinity,
-      plays: 4 + relicSum(run, 'plays'), discards: 3 + relicSum(run, 'discards'),
+      plays: 4 + relicSum(run, 'plays') + ups(run).plays, discards: 3 + relicSum(run, 'discards') + ups(run).discards,
       sealed: false, bless: 1, defs: {}, used: {}, weak: null, eaten: [], log: [], n: 0,
     };
     const f = run.fight;
@@ -223,6 +227,7 @@
         case 'guard': { log.guard = true; log.list.push('使った短冊が手札に戻る'); break; }
         case 'seal': { if (!f.sealed) { f.sealed = true; log.list.push('物の怪の技を封じた'); } break; }
         case 'bless': { f.bless *= 1 + 0.25 * ef.pow * rep; log.list.push(`次の一句 ×${Math.round(f.bless * 100) / 100}`); break; }
+        case 'widen': { const n = Math.max(1, tg.length) * rep; f.wide = (f.wide || 0) + n; log.list.push(`この戦いのあいだ、手札 +${n}枚（${handSize(run)}枚）`); break; }
         case 'meta': { const a = an.T[ef.a], b = an.T[ef.b]; if (a && b && a.w && b.w) { f.defs[a.w.id] = [...new Set([...(f.defs[a.w.id] || []), ...b.w.tags])]; log.list.push(`この戦いのあいだ、${a.w.s} は ${b.w.s} になる`); } break; }
         default: break;
       }
@@ -382,6 +387,12 @@
   }
   function buy(run, kind, k) {
     const s = run.shop; if (!s) return false;
+    if (kind === 'up') {
+      const pr = upPrice(run, k);
+      if (!UPS[k] || run.zeni < pr) return false;
+      run.zeni -= pr; ups(run)[k]++;
+      return true;
+    }
     const it = kind === 'scroll' ? s.scroll : s[kind][k];
     if (!it || it.sold || run.zeni < it.price) return false;
     run.zeni -= it.price; it.sold = true;
@@ -400,7 +411,7 @@
   }
 
   KD.Run = {
-    create, rng, wordOf, card, items, enemyOf, ctxOf, check, preview, play, discard, draw, textOf, lines, handSize, isEaten,
+    create, rng, wordOf, card, items, enemyOf, ctxOf, check, preview, play, discard, draw, textOf, lines, handSize, isEaten, UPS, ups, upPrice,
     cutOptions, cut, glueResult, glue, homophones, rewrite, erase, copy, stamp, sumi, shiori,
     takeCash, takeReward, nextFight, endless, openShop, buy, reroll, priceOf, base, relicSum, hasRelic, startFight,
   };

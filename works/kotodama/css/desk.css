@@ -249,6 +249,7 @@ button:focus-visible { outline: 2px solid var(--gold2); outline-offset: 2px; }
 .good .gi.relic { background: var(--shu); }
 .good .gi.tool { background: #3c5a7d; }
 .good .gi.scroll { background: var(--gold); color: var(--ink); }
+.good .gi.up { background: #5b4a7a; }
 .good b { display: block; font-size: 15px; }
 .good small { display: block; font-size: 12px; line-height: 1.5; color: var(--ink2); }
 .good .pr { font: 700 12px/1 var(--f-text); color: #8a6b20; margin-top: 3px; display: block; }
@@ -354,6 +355,14 @@ button:focus-visible { outline: 2px solid var(--gold2); outline-offset: 2px; }
   .tz-dots { left: 3px; }
   .acts { gap: 6px; }
   .act { font-size: 13px; }
+  /* 手札が8枚より多いときは二段に */
+  .hand.many { flex-wrap: wrap; overflow: visible; row-gap: 6px; align-content: flex-end; }
+  .hand.many .tz { height: 96px; padding: 15px 0 19px; }
+  .hand.many .tz-w { font-size: 16px; max-height: 58px; }
+  .hand.many .tz-w.s5 { font-size: 13px; } .hand.many .tz-w.s6 { font-size: 11px; } .hand.many .tz-w.s8 { font-size: 8px; }
+  .hand.many .tz-pow { height: 15px; line-height: 15px; bottom: 3px; }
+  .hand.many .tz::before { top: 4px; }
+  .hand.many .tz-dots { top: 15px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }

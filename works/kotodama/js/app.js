@@ -14,6 +14,7 @@
     atk: '祓う', grow: '育てる ─「を」の言葉（なければ「が」）の力が、ずっと増える', copy: '増やす ─「を」の言葉が、束に一枚増える', call: '呼ぶ ─ 手札を引く',
     heal: '休める ─ 言葉のかすれが戻る', gain: '稼ぐ ─ 銭が入る', sell: '売る ─「を」の言葉を束から消して、力の2倍の銭', del: '消す ─「を」の言葉が束から消える',
     dye: '染める ─「で」「に」の言葉や、かかる形容詞の性質を「を」の言葉に足す', guard: '守る ─ 使った短冊が手札に戻る', seal: '封じる ─ 物の怪の技を止める', bless: '祈る ─ 次の一句が強くなる',
+    widen: '広げる ─ この戦いのあいだ、手札が増える（「を」の言葉の数だけ）',
   };
   const TIER = ['小物', '中物', '大物'];
   const ELC = (t) => (KD.ELEM.includes(t) ? `var(--e-${t})` : null);
@@ -111,6 +112,7 @@
     $('#g-got').textContent = KD.fmt(f.got);
     $('#g-target').textContent = KD.fmt(f.target);
     $('#l-plays').textContent = f.plays;
+    $('#l-hand').textContent = R.handSize(run);
     $('#l-disc').textContent = f.discards;
   }
   let lastPre = null;
@@ -222,6 +224,7 @@
       el.addEventListener('click', () => onCard(u));
       H.appendChild(el);
     }
+    H.classList.toggle('many', us.length > 8);
     if (!us.length) H.innerHTML = `<p class="hand-empty">${run.hand.length ? '手札は、ぜんぶ紙の上' : '手札がない'}</p>`;
   }
   // 札の説明（長押し）
@@ -467,6 +470,7 @@
       <h3>言葉</h3><div class="picks" id="s-words"></div>
       <h3>御守り</h3><div class="goods" id="s-relics"></div>
       <h3>道具・巻物</h3><div class="goods" id="s-tools"></div>
+      <h3>文机の手入れ（何度でも）</h3><div class="goods" id="s-ups"></div>
       <div class="btns"><button type="button" class="btn" id="s-reroll">品替え（${2 + s.rerolls}銭）</button><button type="button" class="btn" id="s-deck">束を見る（${run.deck.length}枚）</button><button type="button" class="btn red" id="s-next">${esc(nextLabel)}</button></div>`, { close: false });
     const buy = (kind, k) => { if (R.buy(run, kind, k)) { SND.play('coin'); save(); renderBar(); openShop(); } else { SND.play('bad'); toast('銭が足りない'); } };
     const W1 = $('#s-words', inn);
@@ -483,7 +487,10 @@
     const wz = KD.wazaById(s.scroll.id);
     $('#s-tools', inn).innerHTML = s.tools.map((o, k) => { const t = KD.TOOLS.find((x) => x.id === o.id); return good('tools', k, o, '具', 'tool', `${t.name}（手持ち${run.tools[t.id] || 0}）`, t.desc); }).join('')
       + good('scroll', 0, s.scroll, '巻', 'scroll', `巻物「${wz.name}」 段位${run.wl[wz.id] || 0}→${(run.wl[wz.id] || 0) + 1}`, `${wz.desc}。段位が上がるほど強い（上限なし）`);
-    $$('.good', inn).forEach((b) => b.addEventListener('click', () => buy(b.dataset.kind, +b.dataset.k)));
+    const U = R.ups(run), now = { hand: `手札 ${R.handSize(run)}枚 → ${R.handSize(run) + 1}枚`, plays: `詠む ${4 + R.relicSum(run, 'plays') + U.plays}回 → ${5 + R.relicSum(run, 'plays') + U.plays}回`, discards: `書き直し ${3 + R.relicSum(run, 'discards') + U.discards}回 → ${4 + R.relicSum(run, 'discards') + U.discards}回` };
+    $('#s-ups', inn).innerHTML = Object.keys(R.UPS).map((k) => `<button type="button" class="good" data-up="${k}"><span class="gi up">机</span><span><b>${esc(R.UPS[k].name)}</b><small>${esc(now[k])}。ずっと続く。買うたびに値が上がる（上限なし）</small><span class="pr">${R.upPrice(run, k)}銭</span></span></button>`).join('');
+    $$('[data-up]', inn).forEach((b) => b.addEventListener('click', () => buy('up', b.dataset.up)));
+    $$('.good[data-kind]', inn).forEach((b) => b.addEventListener('click', () => buy(b.dataset.kind, +b.dataset.k)));
     $('#s-reroll', inn).addEventListener('click', () => { if (R.reroll(run)) { SND.play('paper'); save(); renderBar(); openShop(); } else { SND.play('bad'); toast('銭が足りない'); } });
     $('#s-deck', inn).addEventListener('click', () => openDeck(openShop));
     $('#s-next', inn).addEventListener('click', () => {
@@ -518,6 +525,7 @@
     const tl = KD.TOOLS.filter((t) => run.tools[t.id]);
     sheet(`<h2>御守りと道具</h2><h3>御守り</h3>${rs.length ? `<div class="goods">${rs.map((r) => `<div class="good"><span class="gi relic">守</span><span><b>${esc(r.name)}</b><small>${esc(r.desc)}</small></span></div>`).join('')}</div>` : '<p class="lead">まだない。言の葉屋で手に入る。</p>'}
       <h3>道具</h3>${tl.length ? `<div class="goods">${tl.map((t) => `<div class="good"><span class="gi tool">具</span><span><b>${esc(t.name)} ×${run.tools[t.id]}</b><small>${esc(t.desc)}</small></span></div>`).join('')}</div>` : '<p class="lead">なし</p>'}
+      <h3>文机の手入れ</h3><p class="lead">手札 ${R.handSize(run)}枚・詠む ${4 + R.relicSum(run, 'plays') + R.ups(run).plays}回・書き直し ${3 + R.relicSum(run, 'discards') + R.ups(run).discards}回（言の葉屋で、何度でも広げられる）</p>
       <h3>巻物（技の段位）</h3><p class="lead">${Object.keys(run.wl).length ? Object.entries(run.wl).map(([id, lv]) => `${esc(KD.wazaById(id).name)} 段位${lv}`).join('　') : 'まだない'}</p>`);
   }
 
@@ -647,7 +655,7 @@
       <li>点 ＝ <b>力</b>（言葉の力の合計）×<b>倍</b>。技で倍が増える：五・七・五の<b>俳句</b>（×3）、<b>韻</b>、<b>比喩</b>、<b>擬人法</b>（<span class="ex">月が笑う</span>）、<b>隠喩</b>（<span class="ex">雪は花だ</span>）、<b>体言止め</b>、<b>季語</b>……。まだ隠れている技もある。</li>
       <li>物の怪には<b>苦手</b>がある。その性質を帯びた言葉は力×2。形容詞や「の」でつないだ言葉の性質も帯びる（<span class="ex">赤い石</span>は火を帯びる）。</li>
       <li>動詞には<b>働き</b>がある。<span class="ex">花を育てる</span>と花の力が増え、<span class="ex">鳥を呼ぶ</span>と手札を引く。長押しでしらべられる。</li>
-      <li>同じ言葉を使いすぎると<b>かすれて</b>弱くなる。祓うと銭が入り、<b>言の葉屋</b>で言葉・御守り・道具が買える。</li>
+      <li>同じ言葉を使いすぎると<b>かすれて</b>弱くなる。祓うと銭が入り、<b>言の葉屋</b>で言葉・御守り・道具が買える。<b>文机の手入れ</b>で、手札・詠む・書き直しの数を何度でも増やせる（上限なし）。戦いの中では「呼ぶ」「見る」で引き、「広げる」で手札を増やせる。</li>
       <li><b>はさみ</b>で言葉を切り（<span class="ex">雪だるま→雪・だるま</span>）、<b>のり</b>でつなぐ（辞書になければ新しい言葉）。</li>
       <li>春・夏・秋・冬の物の怪を祓えば旅は一区切り。その先は<b>上限なし</b>。文の長さにも、点にも、上限はない。</li>
       <li><b>気まぐれ</b>で始めると、旅ごとに隠れた「相性」や技の強さが変わる。どの組み合わせが強いか、詠んで見つけるしかない。</li>
