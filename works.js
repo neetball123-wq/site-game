@@ -13,6 +13,67 @@
    ========================================================= */
 window.WORKS = [
   {
+    id: 'unwrite',
+    path: 'works/unwrite/index.html',
+    title: 'UNWRITE',
+    place: '赤ペンで直す、印字されたばかりの一枚',
+    added: '2026-10-01',
+    genre: ['パズル', 'メタ'],
+    minutes: 35,
+    difficulty: 4,
+    accent: '#BD3429',
+    catch: 'プログラムが紙に印字した画面を、赤ペンで直していく。「ロック」の文字を線で消せば、ロックは外れる。消した文字はインクになってペンに戻り、書けばインクが減る。書類も、ボタンも、やがてゲームそのものも、同じインクでできている。',
+    features: ['線・丸・矢印・ぬりつぶし・山形。校正の記号が、そのまま操作になる', '消すとインクが戻り、書くとインクが減る', '全23枚。後半は、ほとんど何も教えてくれない', '詰まったら2回やり直すと、ヒントが出はじめる'],
+    storageKey: 'unwrite.v1',
+    progress(s) {
+      const N = 23;
+      if (s.cleared) return { pct: 100, label: 'さいごの一語まで消した', cleared: true };
+      const at = Math.min(N, (s.stage | 0) + 1), best = Math.min(N, (s.best | 0) + 1);
+      return { pct: Math.max(s.playMs ? 2 : 0, Math.round((best - 1) / N * 100)), label: `${at}枚目（全${N}枚）`, cleared: false };
+    },
+    spoilers: [
+      '1〜5枚目：文字の上を横になぞると消える。「ロック」を消すとカイシが押せる。ハイセンは、ツギ側の点線を消してから、ススムからツギへ矢印（先で折り返す）を引き、ススムを押す。サクインは残す3行を小さな丸で囲んでから、縦に一本。レイガイは処理部をぬりつぶす',
+      '6〜8枚目：空欄の下に山形（＾）を描くと単語が書ける。書くとインクが減る。テイセイは注意書きを消してから書く。ダイチョウは先に署名し、項目を消して金額に近づける。クロヌリは下の3行を先に丸で囲む',
+      '9〜12枚目：ワリアテは「ノコリ センスウ」の数字そのものを消す。レンサは「モト」だけを消す。イキはダイ3ジョウに山形で書き戻し、ダイ2・ダイ5を消す。キャクチュウは指示文の「デナイ」を消してから、アンゼンの項目を消す',
+      '13〜17枚目：フクシャはホゾンをすべて丸で囲んでから、左の列を縦に一本。ゲラは画面左の余白にある空欄に山形。レンドウは2行を縦一本で同時に。テンケンは上から10行目（AClF）。スイコウは「ゼンブ」「イマモ」「デハナイ」を消す',
+      '18〜20枚目：左上のインク計そのものを消してインクを得て、オマエからデグチへ矢印。モーダルはウインドウの枠を消す。ロックは右上のタイトルの「ロック」を消す',
+      '21〜23枚目：モクジは今いる行（21 モクジ）を消す。カンリョウは3行の文をすべて消す。最後は、インク計・インクの文字・右上のタイトルを消してインクを集めてから、まん中の UNWRITE を消す',
+    ],
+    cover: {
+      front: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><linearGradient id="uw-f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5eedb"/><stop offset="1" stop-color="#e8dec4"/></linearGradient></defs>'
+        + '<rect width="400" height="250" fill="url(#uw-f)"/>'
+        + '<g stroke="#d6ccb2" stroke-width="1">' + Array.from({ length: 11 }, (_, i) => `<line x1="0" y1="${22 + i * 22}" x2="400" y2="${22 + i * 22}"/>`).join('') + '</g>'
+        + '<line x1="34" y1="0" x2="34" y2="250" stroke="#c9b9a4" stroke-width="1"/><line x1="37" y1="0" x2="37" y2="250" stroke="#c9b9a4" stroke-width="1"/>'
+        + '<rect x="70" y="52" width="270" height="132" fill="none" stroke="#8a8274" stroke-width="1.4"/>'
+        + '<text x="74" y="46" font-size="11" fill="#8a8274" letter-spacing="2" font-family="sans-serif">キドウ</text>'
+        + '<text x="92" y="100" font-size="21" fill="#837f76" letter-spacing="3" font-family="sans-serif" font-weight="700">ジョウタイ</text>'
+        + '<text x="222" y="100" font-size="21" fill="#26241f" letter-spacing="3" font-family="sans-serif" font-weight="900">ロック</text>'
+        + '<path d="M212 92 C238 89 262 93 288 90 S304 91 312 89" fill="none" stroke="#bd3429" stroke-width="3.4" stroke-linecap="round"/>'
+        + '<g stroke="#2d6944" stroke-width="2" fill="none"><path d="M236 134 h-10 v28 h10"/><path d="M308 134 h10 v28 h-10"/></g>'
+        + '<text x="272" y="154" text-anchor="middle" font-size="17" fill="#2d6944" letter-spacing="3" font-family="sans-serif" font-weight="700">カイシ</text>'
+        + '<text x="92" y="140" font-size="10" fill="#9a9284" letter-spacing="1" font-family="sans-serif">メモリ セイジョウ</text>'
+        + '<text x="92" y="156" font-size="10" fill="#9a9284" letter-spacing="1" font-family="sans-serif">シンゴウ ナシ</text>'
+        + '<text x="200" y="226" text-anchor="middle" font-size="30" fill="#26241f" letter-spacing="8" font-family="sans-serif" font-weight="900">UNWRITE</text>'
+        + '<path d="M98 216 C160 213 240 219 304 214" fill="none" stroke="#bd3429" stroke-width="2.6" stroke-linecap="round" opacity=".85"/>'
+        + '<g stroke="#bd3429" stroke-width="1.6" stroke-linecap="round"><line x1="352" y1="96" x2="360" y2="96"/><line x1="367" y1="96" x2="375" y2="96"/><line x1="363" y1="85" x2="363" y2="92"/><line x1="363" y1="100" x2="363" y2="107"/></g></svg>',
+      back: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><linearGradient id="uw-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#efe6cf"/><stop offset="1" stop-color="#dfd3b6"/></linearGradient></defs>'
+        + '<rect width="400" height="250" fill="url(#uw-b)"/>'
+        + '<g stroke="#d0c5aa" stroke-width="1">' + Array.from({ length: 11 }, (_, i) => `<line x1="0" y1="${22 + i * 22}" x2="400" y2="${22 + i * 22}"/>`).join('') + '</g>'
+        + '<text x="28" y="40" font-size="12" fill="#837f76" letter-spacing="2" font-family="sans-serif">インク</text>'
+        + '<text x="84" y="42" font-size="20" fill="#26241f" font-family="sans-serif" font-weight="900">0</text>'
+        + '<rect x="28" y="52" width="150" height="5" fill="#26241f"/>'
+        + '<path d="M20 55 C70 52 130 58 188 53" fill="none" stroke="#bd3429" stroke-width="3" stroke-linecap="round"/>'
+        + '<text x="372" y="38" text-anchor="end" font-size="11" fill="#837f76" letter-spacing="1" font-family="sans-serif">システム // ？</text>'
+        + '<path d="M300 33 C320 31 350 35 376 32" fill="none" stroke="#bd3429" stroke-width="2.4" stroke-linecap="round"/>'
+        + '<ellipse cx="200" cy="140" rx="74" ry="36" fill="none" stroke="#bd3429" stroke-width="2.4" transform="rotate(-4 200 140)"/>'
+        + '<text x="200" y="148" text-anchor="middle" font-size="22" fill="#26241f" letter-spacing="4" font-family="sans-serif" font-weight="900">ホゾン</text>'
+        + '<path d="M58 206 L150 182 M150 182 l-14 -2 M150 182 l-8 11" fill="none" stroke="#bd3429" stroke-width="2.4" stroke-linecap="round"/>'
+        + '<path d="M262 196 l10 -16 l10 16" fill="none" stroke="#bd3429" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>'
+        + '<text x="272" y="216" text-anchor="middle" font-size="11" fill="#9a9284" letter-spacing="2" font-family="sans-serif">______</text>'
+        + '<text x="200" y="238" text-anchor="middle" font-size="11" fill="#7a6f5e" letter-spacing="3" font-family="sans-serif">ノコリモ、ゼンブ インク ダ</text></svg>',
+    },
+  },
+  {
     id: 'tsubu',
     images: { front: 'works/tsubu/img/front.png', back: 'works/tsubu/img/back.png' },
     path: 'works/tsubu/index.html',
