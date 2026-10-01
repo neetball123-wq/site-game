@@ -106,6 +106,10 @@
     });
     if (haunt && !placed) sections.splice(Math.min(1, sections.length), 0, haunt);
     const table = d.table ? `<section><h3>${d.tableHead || '記録'}</h3><div class="tbl"><table><tbody>${d.table.map(r => `<tr>${r.map(c => `<td>${redact(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>` : '';
+    const v = d.video;
+    if (v) sections.push(`<section class="rec"><h3>記録映像</h3><figure class="cctv" id="cctv"><video src="${v.src}" poster="${v.poster}" muted playsinline loop preload="metadata" aria-label="監視カメラの映像（${esc(v.place)}）"></video>`
+      + `<div class="cc-top"><span>${v.cam}</span><span class="cc-rec"><i></i><b>REC</b></span></div><div class="cc-bot"><span>${v.place}</span><time class="cc-time"></time></div>`
+      + `<button type="button" class="cc-play" hidden>▶ 再生</button></figure><p class="cc-note">${v.note}</p></section>`);
     const stamp = d.cls === '閲覧禁止' ? '<span class="stamp ban">閲覧禁止</span>' : d.level ? `<span class="stamp">LEVEL ${d.level}</span>` : '';
     return `<article class="paper${wasRead ? ' changed' : ''}" id="paper">${stamp}`
       + (wasRead && !opts.clean ? '<p class="diffbar"><b>この文書は、あなたが最後に閲覧した時点から変更されています。</b><button type="button" id="diff-btn">差分を表示</button></p>' : '')
@@ -142,8 +146,37 @@
     if (diff) diff.addEventListener('click', () => { $('#paper').classList.toggle('diffmode'); diff.textContent = $('#paper').classList.contains('diffmode') ? '差分を隠す' : '差分を表示'; });
     $('#back', pane).addEventListener('click', () => history.back());
     if (d.forget) A.bindForget($('#forget', pane));
+    bindRec(d.video ? $('#cctv', pane) : null, d.video);
     renderIndex(id);
     if (A.afterOpen) A.afterOpen(d, prevId);
+  }
+
+  /* ---------- 記録映像：時刻は映像の秒から数える。曝露したあとは「いま」の映像になる ---------- */
+  let recIO = null;
+  function bindRec(fig, v) {
+    if (recIO) { recIO.disconnect(); recIO = null; }
+    if (!fig) return;
+    const vid = $('video', fig), tm = $('.cc-time', fig), rec = $('.cc-rec b', fig), btn = $('.cc-play', fig);
+    const t0 = new Date(v.start).getTime();
+    const ymd = t => { const x = new Date(t); return `${x.getFullYear()}-${pad(x.getMonth() + 1)}-${pad(x.getDate())}`; };
+    let loops = 0, last = 0, held = false, dead = false;
+    const tick = () => {
+      const ct = vid.currentTime || 0;
+      if (ct < last - 1) loops++;
+      last = ct;
+      const t = state.exposed ? Date.now() : t0 + (loops * (vid.duration || 10) + ct) * 1000;
+      tm.textContent = `${ymd(t)} ${hms(t)}`;
+      rec.textContent = state.exposed ? 'LIVE' : 'REC';
+      fig.classList.toggle('live', state.exposed);
+    };
+    tick();
+    const iv = setInterval(() => { if (fig.isConnected) tick(); else clearInterval(iv); }, 250);
+    const play = () => { held = false; vid.play().then(() => { btn.hidden = true; }).catch(() => { btn.hidden = false; }); };
+    fig.addEventListener('click', () => { if (dead) return; if (vid.paused) play(); else { held = true; vid.pause(); btn.hidden = false; } });
+    vid.addEventListener('error', () => { dead = true; const img = new Image(); img.src = v.poster; img.alt = ''; vid.replaceWith(img); btn.hidden = true; });
+    if (reduced) { btn.hidden = false; return; }
+    recIO = new IntersectionObserver(([e]) => { if (e.isIntersecting) { if (!held) play(); } else vid.pause(); }, { threshold: .35 });
+    recIO.observe(fig);
   }
 
   /* ---------- 権限申請 ---------- */

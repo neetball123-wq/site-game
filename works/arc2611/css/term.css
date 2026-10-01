@@ -219,6 +219,20 @@ body.glitch .app { animation: jit .1s steps(2) infinite; filter: contrast(1.35) 
 body.glitch .app::after { content: ""; position: fixed; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .12) 0 2px, transparent 2px 4px); }
 @keyframes jit { 0% { transform: translate(0, 0); } 50% { transform: translate(-2px, 1px); } 100% { transform: translate(2px, -1px); } }
 
+/* 記録映像（監視カメラ） */
+.cctv { position: relative; margin: 8px 0 6px; aspect-ratio: 16 / 9; overflow: hidden; background: #0B0C0C; cursor: pointer; box-shadow: 0 0 0 1px var(--ink); }
+.cctv video, .cctv img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.cctv::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(transparent 0 2px, rgba(0, 0, 0, .16) 2px 3px); }
+.cc-top, .cc-bot { position: absolute; left: 4%; right: 4%; z-index: 1; display: flex; justify-content: space-between; gap: 10px; color: #E8ECE7; font: 500 clamp(10px, 1.6vw, 13px)/1 var(--f-ui); letter-spacing: .08em; font-variant-numeric: tabular-nums; text-shadow: 0 0 2px #000, 0 0 8px rgba(0, 0, 0, .7); pointer-events: none; }
+.cc-top { top: 6%; }
+.cc-bot { bottom: 7%; }
+.cc-rec { display: inline-flex; align-items: center; gap: 6px; }
+.cc-rec i { width: .7em; height: .7em; border-radius: 50%; background: #E5483C; animation: ccblink 1.2s steps(2, jump-none) infinite; }
+.cctv.live .cc-rec b { color: #FF6A5C; }
+@keyframes ccblink { 50% { opacity: 0; } }
+.cc-play { position: absolute; left: 50%; top: 50%; z-index: 2; transform: translate(-50%, -50%); border: 1px solid #E8ECE7; background: rgba(11, 12, 12, .6); color: #E8ECE7; padding: 6px 16px; font: 500 12px var(--f-ui); letter-spacing: .14em; cursor: pointer; }
+.cc-note { font: 400 12px/1.7 var(--f-ui); color: var(--soft); }
+
 /* ---------- 画面が狭いとき ---------- */
 @media (max-width: 960px) {
   .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr) auto; }
