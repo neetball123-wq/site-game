@@ -80,11 +80,11 @@
   KD.addWords(KD.ENEMIES.map((e) => `${e.y} ${e.name} n ${6 + e.tier * 3 + e.ch * 2} ${e.tags.join(',')} p=0`).join('\n'), 'mononoke');
 
   // 必要な点（季節×物の怪の格）。冬の大物のあとは「百鬼夜行」として上限なしに増える
-  KD.TARGETS = [[100, 170, 280], [450, 750, 1250], [2000, 3400, 5600], [9000, 15000, 26000]];
+  KD.TARGETS = [[100, 170, 280], [450, 750, 1250], [2600, 4400, 7300], [12600, 21000, 36400]];
   KD.target = (ch, tier) => {
     if (ch < 4) return KD.TARGETS[ch][tier];
     const k = (ch - 4) * 3 + tier + 1;
-    return 26000 * Math.pow(2.6, k);
+    return 36400 * Math.pow(2.6, k);
   };
   KD.SEASON_NAME = ['春', '夏', '秋', '冬'];
 

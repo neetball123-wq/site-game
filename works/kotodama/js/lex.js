@@ -67,25 +67,30 @@
   // 書き（s）と読み（y）を同じように変える。末尾 n 文字を k に取りかえる
   const swap = (w, n, ks, ky) => ({ s: w.s.slice(0, w.s.length - n) + ks, y: w.y.slice(0, w.y.length - n) + (ky === undefined ? ks : ky) });
   // 動詞を活用させる。戻り値の aux は、うしろにつく「て」「た」「ば」が実際にどう書かれるか
+  // vol（意志：行こう の「行こ」）/ imp（命令：咲け）も
+  const OROW = { 'う': 'お', 'く': 'こ', 'ぐ': 'ご', 'す': 'そ', 'つ': 'と', 'ぬ': 'の', 'ぶ': 'ぼ', 'む': 'も', 'る': 'ろ' };
   function verb(w, form) {
     const end = w.y.slice(-1);
     if (form === 'base') return { s: w.s, y: w.y };
     if (w.vt === 's') {
       const st = w.s.slice(0, -2), sy = w.y.slice(0, -2);
-      const t = { nai: ['し', 'し'], te: ['し', 'し'], ta: ['し', 'し'], ren: ['し', 'し'], ba: ['すれ', 'すれ'] }[form];
-      return { s: st + t[0], y: sy + t[1] };
+      const t = { nai: 'し', te: 'し', ta: 'し', ren: 'し', ba: 'すれ', vol: 'し', imp: 'しろ' }[form];
+      return { s: st + t, y: sy + t };
     }
     if (w.vt === 'k') {
-      const t = { nai: 'こ', te: 'き', ta: 'き', ren: 'き', ba: 'くれ' }[form];
+      const t = { nai: 'こ', te: 'き', ta: 'き', ren: 'き', ba: 'くれ', vol: 'こ', imp: 'こい' }[form];
       const kanji = w.s.endsWith('来る');
-      return { s: kanji ? w.s.slice(0, -2) + (form === 'ba' ? '来れ' : '来') : w.s.slice(0, -2) + t, y: w.y.slice(0, -2) + t };
+      return { s: kanji ? w.s.slice(0, -2) + '来' + t.slice(1) : w.s.slice(0, -2) + t, y: w.y.slice(0, -2) + t };
     }
     if (w.vt === '1') {
       if (form === 'ba') return swap(w, 1, 'れ');
+      if (form === 'imp') return swap(w, 1, 'ろ');
       return swap(w, 1, '');
     }
     const row = G5[end];
     if (!row) return { s: w.s, y: w.y };
+    if (form === 'vol') return swap(w, 1, OROW[end]);
+    if (form === 'imp') return swap(w, 1, row[2]);
     if (form === 'nai') return swap(w, 1, row[0]);
     if (form === 'ren') return swap(w, 1, row[1]);
     if (form === 'ba') return swap(w, 1, row[2]);

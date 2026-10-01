@@ -98,8 +98,8 @@
       if (d.lost) { res.steps.push({ k: 'waza', id: wz.id, name: 'しりとり負け', add: 0, hl: d.hl, note: d.note }); continue; }
       let v = KD.wazaVal(wz, lv, d.n, an);
       const f = relW(wz.id) * (rw[wz.id] || 1);
-      if (wz.kind === 'add') { v *= f; res.add += v; res.steps.push({ k: 'waza', id: wz.id, name: wz.name, add: round(v), hl: d.hl, note: d.note, rf: rw[wz.id] }); }
-      else { v = 1 + (v - 1) * f; res.mul *= v; res.steps.push({ k: 'waza', id: wz.id, name: wz.name, mul: Math.round(v * 100) / 100, hl: d.hl, note: d.note, rf: rw[wz.id] }); }
+      if (wz.kind === 'add') { v *= f; res.add += v; res.steps.push({ k: 'waza', id: wz.id, name: d.label || wz.name, add: round(v), hl: d.hl, note: d.note, rf: rw[wz.id] }); }
+      else { v = 1 + (v - 1) * f; res.mul *= v; res.steps.push({ k: 'waza', id: wz.id, name: d.label || wz.name, mul: Math.round(v * 100) / 100, hl: d.hl, note: d.note, rf: rw[wz.id] }); }
     }
     if (small) { res.add += small; res.steps.push({ k: 'waza', id: 'small', name: '小さきもの', add: small }); }
 

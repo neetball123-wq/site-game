@@ -125,32 +125,67 @@
     renderPalette();
     renderActs(pre);
     renderFoe(pre && pre.an.ok ? pre.res.lg : undefined);
+    fitCols();
   }
+  // 一句が一列に収まるように、長い句は字を小さくする（ほかの欄を描いたあとの紙の高さで）
+  function fitCols() {
+    const P = $('#paper'), H = P.clientHeight - 34;
+    $$('.col:not(.flow)', P).forEach((c) => {
+      const tks = [...c.querySelectorAll('.tk')];
+      const ch = tks.reduce((a, e) => a + Math.max(1, [...e.textContent].length) * (e.classList.contains('p') ? 0.75 : 1), 0);
+      const fs = Math.max(11, Math.min(c.classList.contains('empty') ? 26 : 30, Math.floor((H - tks.length * 4) / (Math.max(1, ch) * 1.1))));
+      c.style.fontSize = fs + 'px';
+    });
+  }
+  addEventListener('resize', () => { if (run && run.phase === 'fight') fitCols(); });
   function renderPaper(pre) {
     const P = $('#paper');
     if (!sen.length) { P.innerHTML = `<p class="paper-hint">${run.stats.plays ? '短冊をえらんで、文をつくる' : '下の短冊をえらぶと、ここに書かれる'}</p>`; $('#cursor-bar').hidden = true; return; }
     const an = pre.an, form = KD.form(an);
     const span = (t) => {
       const cls = ['tk'];
-      if (t.k === 'p') cls.push('p');
+      if (t.k !== 'w') cls.push('p');
       if (t.cat === 'OTO') cls.push('oto');
+      if (t.cat === 'BR') cls.push('br');
       if (t.i === cur) cls.push('sel');
       if (t.bad) cls.push('bad');
       if (t.k === 'w' && pre.res && pre.res.cards[t.i] && pre.res.cards[t.i].notes.includes('苦手')) cls.push('weak');
-      return `<span class="${cls.join(' ')}" data-i="${t.i}">${esc(t.s)}</span>`;
+      return `<span class="${cls.join(' ')}" data-i="${t.i}">${t.cat === 'BR' ? '↵' : esc(t.s)}</span>`;
     };
+    // 句（列）に分ける：改行があればその行、なければ型の区切り
+    let cols = null;
+    if (an.lines) { cols = [[]]; for (const t of an.T) { cols[cols.length - 1].push(t); if (t.cat === 'BR') cols.push([]); } }
+    else if (form) cols = form.lines.map(([a, b]) => an.T.slice(a, b + 1));
     let html = '';
-    if (form) html = form.lines.map(([a, b]) => { const ts = an.T.slice(a, b + 1); return `<div class="col">${ts.map(span).join('')}<span class="col-n">${ts.reduce((s, t) => s + t.m, 0)}</span></div>`; }).join('');
-    else html = `<div class="col flow">${an.T.map(span).join('')}</div>`;
+    if (cols) {
+      let k = 0;
+      html = cols.map((ts) => {
+        const real = ts.some((t) => t.cat !== 'BR');
+        const m = ts.reduce((x, t) => x + t.m, 0), want = real && form && form.pat ? form.pat[k] : null;
+        if (real) k++;
+        const n = `<span class="col-n ${want && m !== want ? 'off' : ''}">${m}${want && m !== want ? `／${want}` : ''}</span>`;
+        return `<div class="col ${real ? '' : 'empty'}">${ts.map(span).join('')}${n}</div>`;
+      }).join('');
+    } else html = `<div class="col flow">${an.T.map(span).join('')}<span class="col-n">${an.mora}</span></div>`;
     P.innerHTML = html;
     $('#cursor-bar').hidden = cur < 0;
     if (P.scrollWidth > P.clientWidth) P.scrollLeft = -P.scrollWidth;
   }
-  const FORMNAME = { haiku: '俳句', tanka: '短歌', katauta: '片歌', dodoitsu: '都々逸', sedoka: '旋頭歌', choka: '長歌', jiamari: '字余り' };
+  const FORMNAME = KD.FORMNAME;
+  // 音の数の見出し（句ごと）と、型へのひとこと
+  function moraLine(an) {
+    const f = KD.form(an);
+    const counts = an.lines ? an.lines.map((l) => l.m) : f ? f.counts : null;
+    let m = counts ? `${counts.join('・')}音` : `${an.mora}音`;
+    if (f) m += `　<b>${FORMNAME[f.id]}${f.over ? (f.short ? '（字足らず）' : '（字余り）') : ''}</b>`;
+    else if (an.lines) { const near = { 3: '俳句は 五・七・五', 4: '都々逸は 七・七・七・五', 5: '短歌は 五・七・五・七・七' }[an.lines.length]; if (near) m += `　<small>（${near}）</small>`; }
+    else if (an.mora >= 13 && an.mora <= 21) m += '　<small>（「改行」で句を区切ると、五・七・五をねらいやすい）</small>';
+    return m;
+  }
   const TIPS = [
     '下の短冊をえらぶと、紙に書かれる。助詞の札（が・を・に…）は何度でも使える。',
     '意味が通らない文は詠めない。赤い波線の理由を見て、並べかえる。紙の言葉をえらぶと、前後に動かせる。',
-    '音の数が五・七・五にぴったり区切れると「俳句」で×3倍。韻・比喩・擬人法でも倍が増える。',
+    '紙の左下の「改行」で句を区切れる。句ごとの音の数が出るので、五・七・五（俳句×3倍）に合わせやすい。少しずれても字余りで半分。',
     '短冊を長押しすると、言葉をしらべられる。物の怪の「苦手」の性質を入れると、その言葉の力×2。',
     '同じ言葉を使いすぎると、かすれて弱くなる。新しい言葉を店で仕入れよう。',
   ];
@@ -163,11 +198,10 @@
     if (!an.ok) {
       msg.className = 'j-msg bad';
       msg.textContent = an.errs[0] ? an.errs[0].msg : '';
-      wz.innerHTML = ''; calc.innerHTML = `<small>${an.mora}音</small>`;
+      wz.innerHTML = ''; calc.innerHTML = `<small>${moraLine(an)}</small>`;
       return;
     }
-    const f = KD.form(an);
-    msg.innerHTML = `${an.mora}音${f ? `　<b>${FORMNAME[f.id]}</b>` : ''}`;
+    msg.innerHTML = moraLine(an);
     wz.innerHTML = pre.res.steps.filter((s) => s.k !== 'card').map(chip).join('');
     const r = pre.res;
     calc.innerHTML = r.zero ? `<span class="t">0</span><small>${esc(r.zero)}</small>` : `<small>力</small><span class="c">${r.chips}</span><small>×</small><span class="m">${fmtMul(r)}</span><small>＝</small><span class="t">${KD.fmt(r.lg)}</span>`;
@@ -189,12 +223,23 @@
     }
     if (!us.length) H.innerHTML = `<p class="hand-empty">${run.hand.length ? '手札は、ぜんぶ紙の上' : '手札がない'}</p>`;
   }
+  // 札の説明（長押し）
+  const TILE_HELP = {
+    'が': '「〜が」だれが・何が', 'は': '「〜は」話のテーマ', 'を': '「〜を」何を（動詞が受ける）', 'に': '「〜に」どこに・何に・何になる', 'で': '「〜で」何で・どこで', 'と': '「〜と」いっしょに・並べる',
+    'の': '「〜の」持ち主・ようす。「雪の降る夜」の「の」、「咲くのを待つ」の「の」にも', 'も': '「〜も」', 'へ': '「〜へ」行き先', 'や': '「〜や」並べる。うたでは切れ字（古池や）', 'から': '「〜から」', 'まで': '「〜まで」', 'より': '「〜より」くらべる', 'だけ': '「〜だけ」',
+    '、': '読点。文をいったん区切る（音には数えない）', 'て': '「〜て」つなぐ（咲いて・白くて）', 'た': '「〜た」過ぎたこと（咲いた）', 'ない': '「〜ない」打ち消し。「雪がない」のようにも使える', 'たい': '「〜たい」（会いたい）',
+    'う': '「〜う／よう」さそい・つもり（行こう・見よう）', '命令': '命令の形にする（咲け・来い）', 'ば': '「〜ば」（降れば）', 'たら': '「〜たら」（咲いたら）', 'ながら': '「〜ながら」（歌いながら）', 'ので': '「〜ので」わけ', 'けど': '「〜けど」',
+    'だ': '「〜だ」言い切る（雪は花だ）', 'だろう': '「〜だろう」', 'ように': '「〜のように」たとえる（直喩）', 'いる': '自由に使える動詞（咲いている・猫がいる）。力は0', 'ある': '自由に使える動詞（花がある）。力は0', 'する': '自由に使える動詞（音がする）。力は0', 'なる': '自由に使える動詞（雨になる・白くなる）。力は0',
+    'けり': '「〜けり」切れ字（咲きけり）', 'よ': '文の終わり・呼びかけ（雪よ）', 'ね': '文の終わり', 'か': '問いかけ。答えを探して一枚引く', 'ぞ': '文の終わり', 'かな': '切れ字（〜かな）',
+  };
   function renderPalette() {
     const P = $('#palette');
     const e = enemy(), ban = e.trick && e.trick.id === 'ban_p' && !run.fight.sealed ? e.trick.p : [];
     if (P.dataset.ban === ban.join() && P.childElementCount) return;
     P.dataset.ban = ban.join();
-    P.innerHTML = KD.PALETTE.map((g, gi) => g.map((p) => `<button type="button" class="pt ${gi === 1 ? 'aux' : gi === 2 ? 'end' : ''} ${ban.includes(p) ? 'banned' : ''}" data-p="${p}">${p}</button>`).join('')).join('<span class="pt-sep"></span>');
+    const cls = (p) => { const c = (KD.TILES[p] || {}).c; return c === 'end' ? 'end' : c === 'fv' ? 'fv' : c === 'soft' ? 'soft' : c === 'case' ? '' : 'aux'; };
+    P.innerHTML = KD.PALETTE.map((g) => `<div class="pal-row">${g.map((p) => `<button type="button" class="pt ${cls(p)} ${ban.includes(p) ? 'banned' : ''}" data-p="${p}">${p}</button>`).join('')}</div>`).join('');
+    $$('.pt', P).forEach((b) => longPress(b, () => pop(`<h4>${esc(b.dataset.p)}<small>何度でも使える札</small></h4><p>${esc(TILE_HELP[b.dataset.p] || '')}</p>`, 3200)));
   }
   function renderActs(pre) {
     const f = run.fight;
@@ -227,6 +272,7 @@
   }
   $('#palette').addEventListener('click', (e) => {
     const b = e.target.closest('.pt'); if (!b || busy || mode) return;
+    if (lpFired) { lpFired = false; return; }
     if (b.classList.contains('banned')) { toast(`「${b.dataset.p}」は、いまは使えない`); SND.play('bad'); return; }
     insert({ p: b.dataset.p }); SND.play('put'); renderComp();
   });
@@ -239,6 +285,9 @@
   $('#cur-down').addEventListener('click', () => { if (cur >= 0 && cur < sen.length - 1) { [sen[cur + 1], sen[cur]] = [sen[cur], sen[cur + 1]]; cur++; SND.play('tap'); renderComp(); } });
   $('#cur-del').addEventListener('click', () => { if (cur >= 0) { sen.splice(cur, 1); cur = Math.min(cur, sen.length - 1); if (!sen.length) cur = -1; SND.play('back'); renderComp(); } });
   $('#cur-off').addEventListener('click', () => { cur = -1; renderComp(); });
+  // 改行：句を区切る（音には数えない）
+  const addBreak = () => { if (busy || mode || !sen.length) return; insert({ p: '↵' }); SND.play('paper'); renderComp(); };
+  $('#a-br').addEventListener('click', addBreak);
   $('#a-clear').addEventListener('click', () => { if (busy) return; sen = []; cur = -1; SND.play('paper'); renderComp(); });
   $('#a-disc').addEventListener('click', () => {
     if (busy) return;
@@ -259,7 +308,8 @@
   $('#app').addEventListener('pointerdown', () => { if (busy) fast = true; });
   addEventListener('keydown', (e) => {
     if (!$('#ov').hidden || !run || run.phase !== 'fight' || busy) return;
-    if (e.key === 'Enter' && !$('#a-play').disabled) { e.preventDefault(); doPlay(); }
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); if (!$('#a-play').disabled) doPlay(); return; }
+    if (e.key === 'Enter') { e.preventDefault(); addBreak(); }
     if (e.key === 'Backspace' && sen.length) { e.preventDefault(); if (cur >= 0) { sen.splice(cur, 1); cur = Math.min(cur, sen.length - 1); } else sen.pop(); renderComp(); }
   });
 
@@ -290,7 +340,7 @@
     const tok = (i) => P.querySelector(`.tk[data-i="${i}"]`);
     // 1. 読み上げ（拍ごとに琴、句の切れ目で拍子木）
     const form = KD.form(an);
-    const ends = form ? form.lines.map((l) => l[1]) : [];
+    const ends = an.lines ? an.lines.map((l) => l.to) : form ? form.lines.map((l) => l[1]) : [];
     let chips = 0, k = 0;
     const calc = $('#j-calc');
     $('#j-waza').innerHTML = '';
@@ -589,7 +639,8 @@
   }
   function openHelp() {
     sheet(`<h2>遊び方</h2><div class="howto"><ol>
-      <li>下の<b>短冊</b>（言葉）と、<b>助詞の札</b>（が・を・に…何度でも使える）を並べて、文をつくる。紙の上の言葉をえらぶと、前後に動かしたり、もどしたりできる。</li>
+      <li>下の<b>短冊</b>（言葉）と、<b>札</b>（が・を・に、て・た・ない、いる・ある・する・なる…何度でも使える）を並べて、文をつくる。札を長押しすると使い方が出る。紙の上の言葉をえらぶと、前後に動かしたり、もどしたりできる。</li>
+      <li>紙の左下の<b>改行</b>で句を区切れる（パソコンなら Enter。詠むのは Ctrl＋Enter）。句ごとの音の数が出る。五・七・五なら<b>俳句</b>、少しずれても<b>字余り・字足らず</b>で半分の効き目。「、」でも文を区切れる（音には数えない）。</li>
       <li><b>意味が通らない文は詠めない</b>。<span class="ex">石を燃やす</span>は×（石は燃えない）。ただし形のないものは、たとえとして通る：<span class="ex">悲しみを燃やす</span>は「比喩」。</li>
       <li>点 ＝ <b>力</b>（言葉の力の合計）×<b>倍</b>。技で倍が増える：五・七・五の<b>俳句</b>（×3）、<b>韻</b>、<b>比喩</b>、<b>擬人法</b>（<span class="ex">月が笑う</span>）、<b>隠喩</b>（<span class="ex">雪は花だ</span>）、<b>体言止め</b>、<b>季語</b>……。まだ隠れている技もある。</li>
       <li>物の怪には<b>苦手</b>がある。その性質を帯びた言葉は力×2。形容詞や「の」でつないだ言葉の性質も帯びる（<span class="ex">赤い石</span>は火を帯びる）。</li>

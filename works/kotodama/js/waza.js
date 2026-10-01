@@ -10,25 +10,9 @@
   const WAZA = KD.WAZA = [];
   KD.addWaza = (w) => { WAZA.push(w); return w; };
 
-  /* ---------- 音の区切り ---------- */
-  // 短冊のさかいめで、音の数がちょうど区切れるか
-  function cuts(an) {
-    const at = [0]; let s = 0;
-    for (const t of an.T) { s += t.m; at.push(s); }
-    return at;
-  }
-  function fits(an, pat) {
-    const at = cuts(an), total = at[at.length - 1];
-    if (pat.reduce((a, b) => a + b, 0) !== total) return null;
-    const lines = []; let s = 0, from = 0;
-    for (const p of pat) {
-      s += p;
-      const k = at.indexOf(s);
-      if (k < 0) return null;
-      lines.push([from, k - 1]); from = k;
-    }
-    return lines;
-  }
+  /* ---------- 音の区切り（句） ----------
+     改行があれば、その行がそのまま句。なければ、短冊のさかいめで区切れる場所をさがす。
+     ぴったりなら満点、各句が少しずれていれば「字余り／字足らず」（効き目は半分）。 */
   const FORMS = [
     { id: 'tanka', pat: [5, 7, 5, 7, 7] },
     { id: 'sedoka', pat: [5, 7, 7, 5, 7, 7] },
@@ -36,31 +20,77 @@
     { id: 'haiku', pat: [5, 7, 5] },
     { id: 'katauta', pat: [5, 7, 7] },
   ];
-  // 型を一つ決める（いちばん長い型を優先）。長歌は 五七 を三回以上くりかえして七で結ぶ
+  const chokaPat = (k) => { const p = []; for (let i = 0; i < k; i++) p.push(5, 7); p.push(7); return p; };
+  const dev = (cs, pat) => cs.reduce((a, c, i) => a + Math.abs(c - pat[i]), 0);
+  // 短冊のさかいめ（音の数の累計）で、pat に近い区切りを探す（各句 ±tol、ずれの合計が最小のもの）
+  function split(an, pat, tol) {
+    const T = an.T, at = [0]; let s = 0;
+    for (const t of T) { s += t.m; at.push(s); }
+    const n = T.length;
+    let best = null;
+    const go = (line, k, acc, cs) => {
+      if (best && acc >= best.d) return;
+      if (line === pat.length) { if (k === n) best = { d: acc, cuts: cs.slice() }; return; }
+      for (let j = k + 1; j <= n; j++) {
+        const m = at[j] - at[k];
+        if (m > pat[line] + tol) break;
+        if (m < pat[line] - tol) continue;
+        if (line === pat.length - 1 && j !== n) continue;
+        // 句の頭が助詞になる区切りは、なるべく選ばない
+        const head = T.slice(k, j).find((x) => x.m > 0);
+        const pen = head && head.cat === 'P' ? 0.5 : 0;
+        cs.push(j); go(line + 1, j, acc + Math.abs(m - pat[line]) + pen, cs); cs.pop();
+      }
+    };
+    go(0, 0, 0, []);
+    if (!best) return null;
+    const lines = []; let from = 0;
+    best.d = Math.floor(best.d);
+    for (const j of best.cuts) { lines.push([from, j - 1]); from = j; }
+    return { d: best.d, lines, counts: lines.map(([a, b]) => T.slice(a, b + 1).reduce((x, t) => x + t.m, 0)) };
+  }
   function form(an) {
     if (an._form !== undefined) return an._form;
     let f = null;
-    const total = an.mora;
-    if (total >= 43 && (total - 7) % 12 === 0) {
-      const k = (total - 7) / 12, pat = [];
-      for (let i = 0; i < k; i++) pat.push(5, 7);
-      pat.push(7);
-      const L = fits(an, pat);
-      if (L) f = { id: 'choka', k, lines: L };
-    }
-    if (!f) for (const F of FORMS) { const L = fits(an, F.pat); if (L) { f = { id: F.id, lines: L }; break; } }
-    if (!f) {
-      for (const pat of [[6, 7, 5], [5, 8, 5], [5, 7, 6], [4, 7, 5], [5, 6, 5], [5, 7, 4]]) { const L = fits(an, pat); if (L) { f = { id: 'jiamari', lines: L, pat }; break; } }
+    if (an.lines) {
+      // 改行で区切った句：句の数が同じ型と見くらべる（各句 ±2、合計のずれ3まで）
+      const cs = an.lines.map((l) => l.m), L = an.lines.map((l) => [l.from, l.to]);
+      const cands = FORMS.map((F) => F.pat);
+      if (cs.length >= 7 && cs.length % 2) cands.push(chokaPat((cs.length - 1) / 2));
+      for (const pat of cands) {
+        if (pat.length !== cs.length || cs.some((c, i) => Math.abs(c - pat[i]) > 2)) continue;
+        const d = dev(cs, pat);
+        if (d > 3) continue;
+        const id = pat.length >= 7 ? 'choka' : FORMS.find((F) => F.pat === pat).id;
+        if (!f || d < f.over) f = { id, lines: L, counts: cs, pat, over: d, k: (pat.length - 1) / 2, short: cs.reduce((a, b) => a + b, 0) < pat.reduce((a, b) => a + b, 0) };
+      }
+    } else {
+      // 改行なし：まずぴったり、なければ各句 ±1・ずれ合計2まで
+      const total = an.mora;
+      const cands = FORMS.map((F) => ({ id: F.id, pat: F.pat }));
+      for (let k = 3; k <= 12; k++) if (Math.abs(total - (12 * k + 7)) <= 2) cands.unshift({ id: 'choka', pat: chokaPat(k), k });
+      for (const tol of [0, 1]) {
+        for (const c of cands) {
+          const sum = c.pat.reduce((a, b) => a + b, 0);
+          if (Math.abs(total - sum) > (tol ? 2 : 0)) continue;
+          const r = split(an, c.pat, tol);
+          if (r && r.d <= (tol ? 2 : 0)) { f = { id: c.id, lines: r.lines, counts: r.counts, pat: c.pat, over: r.d, k: c.k, short: total < sum }; break; }
+        }
+        if (f) break;
+      }
     }
     an._form = f;
     return f;
   }
   KD.form = form;
+  KD.FORMNAME = { haiku: '俳句', tanka: '短歌', katauta: '片歌', dodoitsu: '都々逸', sedoka: '旋頭歌', choka: '長歌' };
+  KD.FORMPAT = { haiku: '五・七・五', tanka: '五・七・五・七・七', katauta: '五・七・七', dodoitsu: '七・七・七・五', sedoka: '五・七・七・五・七・七' };
 
   const words = (an) => an.T.filter((t) => t.k === 'w' && t.cat !== 'OTO');
   const rhet = (an, k) => an.rhet.filter((r) => r.t === k);
 
   /* ---------- 型 ---------- */
+  // ぴったりなら満点。字余り・字足らずなら、効き目は半分
   const FORM_W = [
     ['haiku', '俳句', '五・七・五', 3, 1, false],
     ['tanka', '短歌', '五・七・五・七・七', 5, 1.5, false],
@@ -68,15 +98,16 @@
     ['dodoitsu', '都々逸', '七・七・七・五', 4, 1, true],
     ['sedoka', '旋頭歌', '五・七・七／五・七・七', 5, 1.5, true],
   ];
+  const half = (full, f) => (f.over ? 1 + (full - 1) * 0.5 : full);
+  const tag = (f) => (f.over ? (f.short ? '（字足らず）' : '（字余り）') : '');
   for (const [id, name, desc, base, per, hide] of FORM_W) {
-    WAZA.push({ id, name, desc: `音の数が ${desc} にぴったり区切れる（短冊のさかいめで）`, kind: 'mul', base, per, hide, group: '型',
-      detect: (an) => { const f = form(an); return f && f.id === id ? { n: 1, note: desc } : null; } });
+    WAZA.push({ id, name, desc: `音の数が ${desc} に区切れる（改行で区切るか、短冊のさかいめで）。少しずれると字余り・字足らずで半分`, kind: 'mul', base, per, hide, group: '型',
+      val: (lv, n, an) => half(base + per * lv, form(an)),
+      detect: (an) => { const f = form(an); return f && f.id === id ? { n: 1, note: f.counts.join('・'), label: name + tag(f) } : null; } });
   }
   WAZA.push({ id: 'choka', name: '長歌', desc: '五・七を三回以上くりかえし、七で結ぶ。くりかえすほど強い', kind: 'mul', base: 1, per: 0.25, hide: true, group: '型',
-    val: (lv, n) => 1 + n * (1 + 0.25 * lv),
-    detect: (an) => { const f = form(an); return f && f.id === 'choka' ? { n: f.k, note: `五七×${f.k}` } : null; } });
-  WAZA.push({ id: 'jiamari', name: '字余り', desc: '五・七・五から一音だけはみ出す（足りない）', kind: 'mul', base: 1.5, per: 0.25, group: '型',
-    detect: (an) => { const f = form(an); return f && f.id === 'jiamari' ? { n: 1, note: f.pat.join('・') } : null; } });
+    val: (lv, n, an) => half(1 + n * (1 + 0.25 * lv), form(an)),
+    detect: (an) => { const f = form(an); return f && f.id === 'choka' ? { n: f.k, note: `五七×${f.k}`, label: '長歌' + tag(f) } : null; } });
 
   /* ---------- 音あそび ---------- */
   WAZA.push({ id: 'rhyme', name: '韻', desc: 'おしりの母音（二音）がそろう言葉が二つ以上。三音そろえばもっと強い', kind: 'add', base: 2, per: 1, group: '音',
