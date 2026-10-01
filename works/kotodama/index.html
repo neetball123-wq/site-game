@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ことだま短冊｜無料で遊べる言葉遊びゲーム - ヨリミチ</title>
+<meta name="description" content="無料・登録なしで遊べる言葉遊びゲーム（約30分）。言葉をつないで文にして、物の怪を祓う。五・七・五、韻、比喩、だじゃれ、回文。組み合わせで力が変わる、上限のない言葉のローグライク。">
+<link rel="canonical" href="https://neetball123-wq.github.io/site-game/works/kotodama/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ヨリミチ">
+<meta property="og:title" content="ことだま短冊">
+<meta property="og:description" content="言葉をつないで文にして、物の怪を祓う。五・七・五、韻、比喩、だじゃれ、回文。組み合わせで力が変わる、上限のない言葉のローグライク。">
+<meta property="og:url" content="https://neetball123-wq.github.io/site-game/works/kotodama/">
+<meta property="og:image" content="https://neetball123-wq.github.io/site-game/works/kotodama/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ことだま短冊｜夜の文机、物の怪の出る四季の道">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#10131f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&family=Zen+Old+Mincho:wght@400;700;900&display=swap">
+<link rel="stylesheet" href="css/desk.css?v=1">
+<!-- seo:ld -->
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"ことだま短冊","url":"https://neetball123-wq.github.io/site-game/works/kotodama/","description":"言葉の短冊をつないで文にすると、言霊になって物の怪を祓う。意味が通らない文は詠めない。五・七・五、韻、比喩、だじゃれ、回文。組み合わせで力が変わり、はさみで切ればべつの言葉になる。文の長さにも点にも、上限はない。","image":"https://neetball123-wq.github.io/site-game/works/kotodama/img/og.jpg","genre":["ことば遊び","ローグライク","デッキ構築"],"gamePlatform":["Web browser","PC","スマートフォン"],"applicationCategory":"Game","operatingSystem":"Any","inLanguage":"ja","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},"timeRequired":"PT30M","datePublished":"2026-10-01","isPartOf":{"@type":"WebSite","name":"ヨリミチ","url":"https://neetball123-wq.github.io/site-game/"}}</script>
+<!-- /seo:ld -->
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="kd-ink" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="2.2"/></filter>
+    <filter id="kd-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+</svg>
+
+<div id="app" class="app" data-season="0">
+  <!-- 上の帯 -->
+  <header class="bar">
+    <p class="where"><b id="b-season">春</b><span id="b-fight">一の戦</span></p>
+    <p class="zeni" title="銭"><i aria-hidden="true">銭</i><b id="b-zeni">0</b></p>
+    <div class="bar-btns">
+      <button type="button" class="ib" id="b-relic" aria-label="御守り"><span>守</span><em id="b-relic-n">0</em></button>
+      <button type="button" class="ib" id="b-book" aria-label="言霊帖"><span>帖</span></button>
+      <button type="button" class="ib" id="b-menu" aria-label="ほかの操作"><span>≡</span></button>
+    </div>
+  </header>
+
+  <!-- 物の怪 -->
+  <section class="foe" id="foe" aria-label="物の怪">
+    <div class="foe-art" id="foe-art"></div>
+    <div class="foe-txt">
+      <h2 class="foe-name" id="foe-name"></h2>
+      <p class="foe-weak" id="foe-weak"></p>
+      <p class="foe-trick" id="foe-trick" hidden></p>
+      <div class="gauge" id="gauge" role="meter" aria-label="祓い">
+        <div class="gauge-bar"><i id="g-fill"></i><i id="g-ghost"></i></div>
+        <p class="gauge-num"><b id="g-got">0</b><span>／</span><span id="g-target">0</span></p>
+      </div>
+    </div>
+    <div class="left">
+      <p class="left-row"><span>詠む</span><b id="l-plays"></b></p>
+      <p class="left-row"><span>書き直し</span><b id="l-disc"></b></p>
+    </div>
+  </section>
+
+  <!-- 懐紙（ここに文を書く） -->
+  <section class="paper-wrap">
+    <div class="paper" id="paper" aria-live="polite"></div>
+    <div class="cursor-bar" id="cursor-bar" hidden>
+      <button type="button" id="cur-up" aria-label="前へ">前へ</button>
+      <button type="button" id="cur-down" aria-label="後ろへ">後ろへ</button>
+      <button type="button" id="cur-del" aria-label="もどす">もどす</button>
+      <button type="button" id="cur-off" aria-label="選ぶのをやめる">✓</button>
+    </div>
+  </section>
+
+  <!-- 判定 -->
+  <section class="judge" id="judge" aria-live="polite">
+    <p class="j-msg" id="j-msg"></p>
+    <div class="j-waza" id="j-waza"></div>
+    <p class="j-calc" id="j-calc"></p>
+  </section>
+
+  <!-- 助詞（何度でも使える） -->
+  <section class="palette" id="palette" aria-label="助詞の札"></section>
+
+  <!-- 手札 -->
+  <section class="hand" id="hand" aria-label="手札"></section>
+
+  <footer class="acts">
+    <button type="button" class="act" id="a-disc">書き直し</button>
+    <button type="button" class="act" id="a-tool">道具</button>
+    <button type="button" class="act" id="a-clear">白紙</button>
+    <button type="button" class="act main" id="a-play">詠む</button>
+  </footer>
+
+  <!-- 演出の層 -->
+  <div class="fx" id="fx" aria-hidden="true"></div>
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+</div>
+
+<!-- 重ねて出す画面 -->
+<div class="ov" id="ov" hidden><div class="ov-in" id="ov-in" role="dialog" aria-modal="true"></div></div>
+<div class="pop" id="pop" hidden></div>
+
+<script src="js/lex.js?v=1"></script>
+<script src="js/dict.js?v=1"></script>
+<script src="js/gram.js?v=1"></script>
+<script src="js/waza.js?v=1"></script>
+<script src="js/data.js?v=1"></script>
+<script src="js/score.js?v=1"></script>
+<script src="js/run.js?v=1"></script>
+<script src="js/art.js?v=1"></script>
+<script src="js/snd.js?v=1"></script>
+<script src="js/app.js?v=1"></script>
+</body>
+</html>

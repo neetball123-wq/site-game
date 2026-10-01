@@ -8,3 +8,6 @@ _og/
 # ツブの制作用（絵の確認・撮影・自動プレイ）
 works/tsubu/_*
 works/tsubu/img/_*
+
+# ことだま短冊の制作用（テスト・撮影）
+works/kotodama/_*

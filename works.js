@@ -13,6 +13,56 @@
    ========================================================= */
 window.WORKS = [
   {
+    id: 'kotodama',
+    path: 'works/kotodama/index.html',
+    title: 'ことだま短冊',
+    place: '物の怪の出る、夜の文机',
+    added: '2026-10-01',
+    genre: ['ことば遊び', 'ローグライク', 'デッキ構築'],
+    minutes: 30,
+    difficulty: 3,
+    accent: '#C23A28',
+    catch: '言葉の短冊をつないで文にすると、言霊になって物の怪を祓う。意味が通らない文は詠めない。五・七・五、韻、比喩、だじゃれ、回文。組み合わせで力が変わり、はさみで切ればべつの言葉になる。文の長さにも点にも、上限はない。',
+    features: ['短冊と助詞を並べて文をつくる。意味が通らないと詠めない', '五・七・五、韻、比喩、擬人法、だじゃれ、回文……隠れた技も', 'はさみで切り、のりでつなぐ。辞書にない言葉は造語になる', '使いすぎた言葉はかすれる。「気まぐれ」は旅ごとに相性が変わる'],
+    storageKey: 'kotodama.v1',
+    progress(s) {
+      const m = s.meta || {}, SN = ['春', '夏', '秋', '冬'], T = ['小物', '中物', '大物'];
+      if (m.clears) return { pct: 100, label: m.clears > 1 ? `四季を${m.clears}回めぐった` : '四季をめぐった', cleared: true };
+      const r = s.run;
+      if (r && r.fight) return { pct: Math.min(95, Math.max(3, Math.round((r.ch * 3 + r.tier) / 12 * 100))), label: `${SN[r.ch % 4]}・${T[r.tier]}${r.mode === 'random' ? '（気まぐれ）' : ''}`, cleared: false };
+      if (m.far) { const k = m.far - 1; return { pct: Math.min(90, Math.round(m.far / 12 * 100)), label: `いちばん遠く：${SN[Math.floor(k / 3) % 4]}・${T[k % 3]}`, cleared: false }; }
+      return { pct: s.playMs ? 2 : 0, label: s.playMs ? 'まだ旅のとちゅう' : '白紙の短冊', cleared: false };
+    },
+    spoilers: [
+      '基本の形：「白い 雪 が そっと 降る」のように、形容詞＋名詞＋助詞＋動詞。意味が通らないと詠めないので、赤い波線の理由を見て、助詞を足したり並べかえたりする。紙の上の言葉をえらぶと前後に動かせる',
+      '五・七・五：音の数が短冊のさかいめで五・七・五に区切れると俳句で×3倍。助詞（の・が・や）で一音ずつ合わせる。「や」「かな」「けり」を入れると切れ字でさらに×1.5。五・七・五・七・七は短歌',
+      '倍を増やす技：韻（おしりの母音二つがそろう）、比喩（形のないものを「を」に：悲しみを投げる）、擬人法（月が歌う）、隠喩（雪は花だ：その戦いのあいだ雪が花の性質を帯びる）、体言止め、季語（季節は一つに）。物の怪の苦手の性質を入れると、その言葉の力×2',
+      '動詞の働き：育てる・磨く・咲く＝力がずっと増える／増やす・写す・書く＝同じ言葉が束に増える／呼ぶ・見る・歩く＝手札を引く／祈る・歌う＝次の一句が強い／休む・眠る＝かすれが戻る／封じる・縛る・止める＝物の怪の技を止める',
+      'はさみとのり：雪だるま→雪＋達磨、かみなり→神（紙・髪）＋なり。辞書にない切れはしは「ただの音」で、音の数と韻にだけ使える。のりで辞書にない組み合わせを作ると、性質を全部もった造語になる。花→鳥→風→月とつなぐと四字熟語に',
+      '隠れた技：回文（竹藪 焼けた）、だじゃれ（布団が 吹っ飛んだ）、都々逸（七七七五）、長歌（五七をくり返して七）、対句、数え歌、名指し（物の怪の名の短冊で呼ぶ）、ことわざ・名句（猫に小判、古池や 蛙飛び込む 水の音）',
+      '物の怪の技：唐傘＝雨の言葉は0／化け桜＝手札が散る／大蝦蟇＝九音未満は0／海坊主＝「を」が使えない／鎌鼬＝四音以上は半分／土蜘蛛＝二度目の言葉は0／鵺＝苦手が変わる・型がないと半分／白うねり＝書き直しなし／がしゃどくろ＝力3未満は数えない／言霊喰い＝使いこんだ言葉から喰われる。回文を詠むと、秋に別の物の怪が出ることも',
+    ],
+    cover: {
+      front: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><radialGradient id="kd-f" cx=".55" cy="0" r="1.1"><stop offset="0" stop-color="#2f3a5e"/><stop offset=".55" stop-color="#1a2033"/><stop offset="1" stop-color="#10131f"/></radialGradient><radialGradient id="kd-fm" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff7da" stop-opacity=".55"/><stop offset="1" stop-color="#fff7da" stop-opacity="0"/></radialGradient><linearGradient id="kd-fs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbf5e6"/><stop offset="1" stop-color="#e6d8b8"/></linearGradient></defs>'
+        + '<rect width="400" height="250" fill="url(#kd-f)"/><circle cx="330" cy="58" r="60" fill="url(#kd-fm)"/><circle cx="330" cy="58" r="24" fill="#f3ead0"/>'
+        + '<line x1="196" y1="0" x2="196" y2="30" stroke="#c9a24c" stroke-width="1.5"/>'
+        + '<g transform="rotate(2 196 30)"><rect x="170" y="28" width="52" height="200" rx="2" fill="url(#kd-fs)"/><circle cx="196" cy="38" r="3.5" fill="#10131f"/>'
+        + [[178, 60], [210, 92], [184, 130], [214, 170], [180, 204], [202, 214]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.3" fill="#c9a24c"/>`).join('')
+        + '<text x="196" y="52" writing-mode="tb" font-size="22" fill="#1e1a16" font-family="serif" letter-spacing="1" text-anchor="start">ことだま短冊</text>'
+        + '<rect x="202" y="206" width="15" height="15" fill="none" stroke="#c23a28" stroke-width="1.6"/><text x="209.5" y="217.5" text-anchor="middle" font-size="10" fill="#c23a28" font-family="serif">祓</text></g>'
+        + '<g opacity=".95"><path d="M70 92C80 112 86 124 80 138 76 148 62 148 58 138 52 124 62 112 70 92Z" fill="#7fe0d0"/><path d="M70 116C74 124 75 130 73 135 71 139 67 139 66 135 64 130 67 124 70 116Z" fill="#effffb"/><path d="M38 128C44 140 47 147 43 155 40 161 32 161 30 155 26 147 32 140 38 128Z" fill="#4fb7b0"/><path d="M104 120C110 132 113 139 109 147 106 153 98 153 96 147 92 139 98 132 104 120Z" fill="#62c9be"/><circle cx="66" cy="132" r="2" fill="#1e1a16"/><circle cx="74" cy="132" r="2" fill="#1e1a16"/></g>'
+        + '<g font-family="serif" fill="#1e1a16"><g transform="translate(266 170) rotate(-14)"><rect width="26" height="64" rx="1.5" fill="#efe3c7"/><text x="13" y="16" writing-mode="tb" font-size="13">ゆき</text></g><g transform="translate(300 160) rotate(9)"><rect width="26" height="64" rx="1.5" fill="#f4ecd9"/><text x="13" y="16" writing-mode="tb" font-size="13">はな</text></g><g transform="translate(336 176) rotate(-4)"><rect width="26" height="58" rx="1.5" fill="#e9dcbc"/><text x="13" y="16" writing-mode="tb" font-size="13">つき</text></g></g>'
+        + '<path d="M240 228q40-14 80 0t70 0" stroke="#c23a28" stroke-width="2" fill="none" opacity=".5"/></svg>',
+      back: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><linearGradient id="kd-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7f0df"/><stop offset="1" stop-color="#e8dbbd"/></linearGradient></defs>'
+        + '<rect width="400" height="250" fill="#141827"/><rect x="18" y="16" width="364" height="218" rx="4" fill="url(#kd-b)"/>'
+        + '<g font-family="serif" fill="#1e1a16"><text x="336" y="40" writing-mode="tb" font-size="22" letter-spacing="3">古池や</text><text x="304" y="58" writing-mode="tb" font-size="22" letter-spacing="3">蛙飛び込む</text><text x="272" y="76" writing-mode="tb" font-size="22" letter-spacing="3">水の音</text></g>'
+        + '<g transform="translate(150 70) rotate(-8)"><rect x="-48" y="-18" width="96" height="36" rx="4" fill="none" stroke="#c23a28" stroke-width="3"/><text x="0" y="8" text-anchor="middle" font-size="20" fill="#c23a28" font-family="serif">名句×20</text></g>'
+        + '<g transform="translate(110 150) rotate(6)"><rect x="-40" y="-16" width="80" height="32" rx="4" fill="none" stroke="#c23a28" stroke-width="2.6"/><text x="0" y="7" text-anchor="middle" font-size="18" fill="#c23a28" font-family="serif">俳句×3</text></g>'
+        + '<text x="44" y="214" font-size="13" fill="#4a4238" font-family="serif">力 20 × 倍 450 ＝</text><text x="166" y="216" font-size="26" fill="#1e1a16" font-family="serif">9000</text>'
+        + '<g stroke="#4a4238" stroke-width="1.4" stroke-dasharray="4 4"><line x1="236" y1="190" x2="236" y2="228"/></g><text x="250" y="216" font-size="12" fill="#8d8471" font-family="serif">上限は、ない</text></svg>',
+    },
+  },
+  {
     id: 'unwrite',
     path: 'works/unwrite/index.html',
     title: 'UNWRITE',
