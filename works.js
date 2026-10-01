@@ -33,15 +33,6 @@ window.WORKS = [
       if (m.far) { const k = m.far - 1; return { pct: Math.min(90, Math.round(m.far / 12 * 100)), label: `いちばん遠く：${SN[Math.floor(k / 3) % 4]}・${T[k % 3]}`, cleared: false }; }
       return { pct: s.playMs ? 2 : 0, label: s.playMs ? 'まだ旅のとちゅう' : '白紙の短冊', cleared: false };
     },
-    spoilers: [
-      '基本の形：「白い 雪 が そっと 降る」のように、形容詞＋名詞＋助詞＋動詞。意味が通らないと詠めないので、赤い波線の理由を見て、助詞を足したり並べかえたりする。紙の上の言葉をえらぶと前後に動かせる',
-      '五・七・五：紙の左下の「改行」で句を区切ると、句ごとの音の数が出る。五・七・五ぴったりなら俳句で×3倍、少しずれても字余り・字足らずで×2倍。助詞（の・が・や）で一音ずつ合わせる。「や」「かな」「けり」を入れると切れ字でさらに×1.5。五・七・五・七・七は短歌',
-      '倍を増やす技：韻（おしりの母音二つがそろう）、比喩（形のないものを「を」に：悲しみを投げる）、擬人法（月が歌う）、隠喩（雪は花だ：その戦いのあいだ雪が花の性質を帯びる）、体言止め、季語（季節は一つに）。句に区切ったうたなら、句を名詞で切って別の景色を並べる取り合わせ、言いさしの余韻、順番を入れかえる倒置法も。物の怪の苦手の性質を入れると、その言葉の力×2',
-      '動詞の働き：育てる・磨く・咲く＝力がずっと増える／増やす・写す・書く＝同じ言葉が束に増える／呼ぶ・見る・歩く＝手札を引く／祈る・歌う＝次の一句が強い／休む・眠る＝かすれが戻る／封じる・縛る・止める＝物の怪の技を止める',
-      'はさみとのり：雪だるま→雪＋達磨、かみなり→神（紙・髪）＋なり。辞書にない切れはしは「ただの音」で、音の数と韻にだけ使える。のりで辞書にない組み合わせを作ると、性質を全部もった造語になる。花→鳥→風→月とつなぐと四字熟語に',
-      '隠れた技：回文（竹藪 焼けた）、だじゃれ（布団が 吹っ飛んだ）、都々逸（七七七五）、長歌（五七をくり返して七）、対句、数え歌、名指し（物の怪の名の短冊で呼ぶ）、ことわざ・名句（猫に小判、古池や 蛙飛び込む 水の音）',
-      '物の怪の技：唐傘＝雨の言葉は0／化け桜＝手札が散る／大蝦蟇＝九音未満は0／海坊主＝「を」が使えない／鎌鼬＝四音以上は半分／土蜘蛛＝二度目の言葉は0／鵺＝苦手が変わる・型がないと半分／白うねり＝書き直しなし／がしゃどくろ＝力3未満は数えない／言霊喰い＝使いこんだ言葉から喰われる。回文を詠むと、秋に別の物の怪が出ることも',
-    ],
     cover: {
       front: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><radialGradient id="kd-f" cx=".55" cy="0" r="1.1"><stop offset="0" stop-color="#2f3a5e"/><stop offset=".55" stop-color="#1a2033"/><stop offset="1" stop-color="#10131f"/></radialGradient><radialGradient id="kd-fm" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff7da" stop-opacity=".55"/><stop offset="1" stop-color="#fff7da" stop-opacity="0"/></radialGradient><linearGradient id="kd-fs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbf5e6"/><stop offset="1" stop-color="#e6d8b8"/></linearGradient></defs>'
         + '<rect width="400" height="250" fill="url(#kd-f)"/><circle cx="330" cy="58" r="60" fill="url(#kd-fm)"/><circle cx="330" cy="58" r="24" fill="#f3ead0"/>'
@@ -53,13 +44,6 @@ window.WORKS = [
         + '<g opacity=".95"><path d="M70 92C80 112 86 124 80 138 76 148 62 148 58 138 52 124 62 112 70 92Z" fill="#7fe0d0"/><path d="M70 116C74 124 75 130 73 135 71 139 67 139 66 135 64 130 67 124 70 116Z" fill="#effffb"/><path d="M38 128C44 140 47 147 43 155 40 161 32 161 30 155 26 147 32 140 38 128Z" fill="#4fb7b0"/><path d="M104 120C110 132 113 139 109 147 106 153 98 153 96 147 92 139 98 132 104 120Z" fill="#62c9be"/><circle cx="66" cy="132" r="2" fill="#1e1a16"/><circle cx="74" cy="132" r="2" fill="#1e1a16"/></g>'
         + '<g font-family="serif" fill="#1e1a16"><g transform="translate(266 170) rotate(-14)"><rect width="26" height="64" rx="1.5" fill="#efe3c7"/><text x="13" y="16" writing-mode="tb" font-size="13">ゆき</text></g><g transform="translate(300 160) rotate(9)"><rect width="26" height="64" rx="1.5" fill="#f4ecd9"/><text x="13" y="16" writing-mode="tb" font-size="13">はな</text></g><g transform="translate(336 176) rotate(-4)"><rect width="26" height="58" rx="1.5" fill="#e9dcbc"/><text x="13" y="16" writing-mode="tb" font-size="13">つき</text></g></g>'
         + '<path d="M240 228q40-14 80 0t70 0" stroke="#c23a28" stroke-width="2" fill="none" opacity=".5"/></svg>',
-      back: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><linearGradient id="kd-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7f0df"/><stop offset="1" stop-color="#e8dbbd"/></linearGradient></defs>'
-        + '<rect width="400" height="250" fill="#141827"/><rect x="18" y="16" width="364" height="218" rx="4" fill="url(#kd-b)"/>'
-        + '<g font-family="serif" fill="#1e1a16"><text x="336" y="40" writing-mode="tb" font-size="22" letter-spacing="3">古池や</text><text x="304" y="58" writing-mode="tb" font-size="22" letter-spacing="3">蛙飛び込む</text><text x="272" y="76" writing-mode="tb" font-size="22" letter-spacing="3">水の音</text></g>'
-        + '<g transform="translate(150 70) rotate(-8)"><rect x="-48" y="-18" width="96" height="36" rx="4" fill="none" stroke="#c23a28" stroke-width="3"/><text x="0" y="8" text-anchor="middle" font-size="20" fill="#c23a28" font-family="serif">名句×20</text></g>'
-        + '<g transform="translate(110 150) rotate(6)"><rect x="-40" y="-16" width="80" height="32" rx="4" fill="none" stroke="#c23a28" stroke-width="2.6"/><text x="0" y="7" text-anchor="middle" font-size="18" fill="#c23a28" font-family="serif">俳句×3</text></g>'
-        + '<text x="44" y="214" font-size="13" fill="#4a4238" font-family="serif">力 20 × 倍 450 ＝</text><text x="166" y="216" font-size="26" fill="#1e1a16" font-family="serif">9000</text>'
-        + '<g stroke="#4a4238" stroke-width="1.4" stroke-dasharray="4 4"><line x1="236" y1="190" x2="236" y2="228"/></g><text x="250" y="216" font-size="12" fill="#8d8471" font-family="serif">上限は、ない</text></svg>',
     },
   },
   {
@@ -125,7 +109,7 @@ window.WORKS = [
   },
   {
     id: 'tsubu',
-    images: { front: 'works/tsubu/img/front.png', back: 'works/tsubu/img/back.png' },
+    images: { front: 'works/tsubu/img/front.png' },
     path: 'works/tsubu/index.html',
     title: 'ツブのとっておき',
     place: 'ひと粒の光が落ちてきた、あなたの部屋',
@@ -149,12 +133,11 @@ window.WORKS = [
     },
     cover: {
       front: '<svg viewBox="0 0 400 250" aria-hidden="true"><rect width="400" height="250" fill="#2c4f97"/><rect x="14" y="14" width="236" height="222" rx="10" fill="#f4e4cf"/><rect x="266" y="14" width="120" height="222" rx="10" fill="#22407e"/><rect x="118" y="120" width="40" height="70" rx="6" fill="#f59ac8"/><circle cx="138" cy="100" r="30" fill="#7a4a3a"/><circle cx="138" cy="106" r="20" fill="#ffe3cf"/><circle cx="146" cy="62" r="4" fill="#fff3c4"/></svg>',
-      back: '<svg viewBox="0 0 400 250" aria-hidden="true"><rect width="400" height="250" fill="#07060d"/><rect x="198" y="90" width="4" height="4" fill="#fffbe6"/><circle cx="200" cy="92" r="12" fill="#fff3c4" opacity=".12"/><text x="200" y="160" text-anchor="middle" font-size="16" fill="#d9cfe8" font-family="sans-serif">ひと粒の光</text></svg>',
     },
   },
   {
     id: 'hakoikusa',
-    images: { front: 'works/hakoikusa/img/front.png', back: 'works/hakoikusa/img/back.png' },
+    images: { front: 'works/hakoikusa/img/front.png' },
     path: 'works/hakoikusa/index.html',
     title: 'ハコイクサ',
     place: 'からくり職人の、夜の作業台',
@@ -174,15 +157,6 @@ window.WORKS = [
       if (m.bestWins) return { pct: Math.min(90, Math.round(m.bestWins / 8 * 100)), label: `いちばん遠く：${m.bestWins}勝`, cleared: false };
       return { pct: s.playMs ? 2 : 0, label: s.playMs ? '流派えらび' : 'まだ箱は空っぽ', cleared: false };
     },
-    spoilers: [
-      '置き場所の基本：火鉢・炉・竈は「上」に効く（熱は上へ）。下に置いて、真上に武器を積む。水桶は「下」に効く：真下の木の道具が速くなり、鉄は錆びて遅くなる',
-      '高さと段そろい：高い段ほど効き目が+10%ずつ上がる。段のマスを全部うめると、その段の道具が20%速くなり、戦いのはじめに盾（1マス2）。下の段を安い道具でうめて、その上に武器を積むのが基本',
-      '歯車は同じ段の前後左右でつながり、列の枚数×6%ぶん、ふれている道具を速くする。上下に重ねただけではかみ合わない。縦に立てた軸や水車（真上に水で5枚ぶん）が段をつなぐ',
-      '合体：刀の真下に炉・となりに砥石→名刀・火群／同じ段に歯車を2×2→大歯車／木の板をぴったり2枚重ね→樫の大盾／大筒のとなりに焙烙玉→焙烙砲／立てた竹槍の真上に水桶→若竹槍（戦うたびに育つ）／手裏剣を縦に3つ→風車手裏剣',
-      '相性：燃焼は盾を無視してけずる。急須を火の上に置くと、回復が増えて燃焼を消す。雷は道具がいちばん多い縦一列をしびれさせるが、最上段の避雷針が受け止める。錆は油で打ち消せる',
-      '天守（5×5×5の箱）は体力も多い。勝ち星7つまでに、段そろいを2つ以上と、合体を1つは作っておきたい。負けても命が残っていれば、組み直して何度でも挑める',
-      'ほかにも：0文で出陣すると、次の品書きに招き猫が混じることがある。前の合戦の箱が、ふらりと相手として現れることも。箱をからっぽにすると底に焼き印、タイトルの箱をつつき続けると……',
-    ],
     cover: {
       front: (() => {
         const C = (x, y, z, c, ox, oy) => {
@@ -201,13 +175,6 @@ window.WORKS = [
           + '<circle cx="268" cy="96" r="11" fill="#fff4dc" stroke="#2a211b" stroke-width="2"/><text x="268" y="101" text-anchor="middle" font-size="12" font-weight="900" fill="#2a211b" font-family="sans-serif">火</text>'
           + '<g transform="translate(26 58) rotate(-3)"><rect width="176" height="118" rx="12" fill="#fbf5ea" stroke="#2a211b" stroke-width="3"/><text x="18" y="30" font-size="12" font-weight="900" fill="#c8452d" letter-spacing="3" font-family="sans-serif">からくり箱合戦</text><text x="16" y="70" font-size="38" font-weight="900" fill="#2a211b" font-family="sans-serif">ハコ</text><text x="16" y="106" font-size="38" font-weight="900" fill="#c8452d" stroke="#2a211b" stroke-width="1" font-family="sans-serif">イクサ</text></g></svg>';
       })(),
-      back: '<svg viewBox="0 0 400 250" aria-hidden="true"><rect width="400" height="250" fill="#efe2c8"/>'
-        + '<g stroke="#2a211b" stroke-width="2"><polygon points="70,150 120,122 170,150 120,178" fill="#dcc39b"/><polygon points="230,150 280,122 330,150 280,178" fill="#8e7a66"/></g>'
-        + '<g stroke="#2a211b" stroke-width="1.6"><rect x="96" y="110" width="30" height="40" fill="#e4582f"/><rect x="126" y="122" width="26" height="30" fill="#d1a332"/><rect x="258" y="102" width="30" height="48" fill="#9a74e0"/><rect x="288" y="118" width="24" height="32" fill="#6e8fb5"/></g>'
-        + '<circle cx="120" cy="70" r="20" fill="#e4582f" stroke="#2a211b" stroke-width="3"/><text x="120" y="77" text-anchor="middle" font-size="18" font-weight="900" fill="#fff" font-family="sans-serif">炎</text>'
-        + '<circle cx="280" cy="70" r="20" fill="#7a6552" stroke="#2a211b" stroke-width="3"/><text x="280" y="77" text-anchor="middle" font-size="18" font-weight="900" fill="#fff" font-family="sans-serif">鳴</text>'
-        + '<path d="M150 64 Q200 20 252 60" fill="none" stroke="#ff8a3d" stroke-width="3" stroke-dasharray="4 6"/><path d="M300 10 L290 50 L304 52 L292 96" fill="none" stroke="#9d7cff" stroke-width="3"/>'
-        + '<text x="200" y="232" text-anchor="middle" font-size="14" font-weight="900" fill="#5b4a3a" font-family="sans-serif">箱と箱の合戦</text></svg>',
     },
   },
   {
@@ -230,16 +197,6 @@ window.WORKS = [
       const isl = ['はじまりの岬', 'しおみ浜', '流木の入り江', 'うず潮の瀬戸', '貝がらの磯', '月かげの岩礁', 'ともしび島'][Math.min(6, Math.max(0, (s.cur || 1) - 1))];
       return { pct: Math.min(98, Math.max(1, Math.round(n / 41 * 100))), label: `${isl}・灯った入り江 ${n}`, cleared: false };
     },
-    spoilers: [
-      'はじまりの岬：石は、押して動かないときは足場になる。海に落とせば、うまって一段高くなる。',
-      'しおみ浜：流木の箱を海に浮かべて乗り、ほら貝で満ち潮にすると、箱ごと一段高いところへ届く。',
-      '流木の入り江：押すと動いてしまう箱に乗りたいときは、満ち潮で浮かせてから乗る。引き潮にすれば、その上に立ったまま下りられる。',
-      'うず潮の瀬戸：流れの先に何があるかを見てから、箱に乗って潮を満たす。先に箱だけ流すと、戻ってこない。',
-      '貝がらの磯：貝の板は、水に沈んでいても押さえられる。満ち潮にすると、同じ色の杭が沈む。',
-      '月かげの岩礁・ともしび島：すべての仕組みを使う。行き詰まったら、カモメの三段目で手順を最後まで見せてもらえる。',
-      '物語：びんの絵は、灯台守のじいちゃんと孫の「みお」が描いたもの。最後の船で帰ってきたのは、大人になったみお。',
-      'ほかにも：各島にガラスのかけらが一つ（全部拾うと、ひみつの島）。いちばん少ない手数の貝がら、海図のくじら、タイトルのヤドカリ……',
-    ],
     cover: {
       front: (() => {
         const B = (c, r, h, t, f) => { const x = 70 + c * 42, y = 104 + r * 27 - h * 14; return `<rect x="${x}" y="${y + 27}" width="43" height="${h * 14 + 1}" fill="${f}"/><rect x="${x}" y="${y}" width="43" height="28" fill="${t}"/>`; };
@@ -256,12 +213,6 @@ window.WORKS = [
           + '<g transform="translate(176 146)"><ellipse cx="4" cy="4" rx="16" ry="4" fill="#000" opacity=".2"/><path d="M8 -4 q8 -2 10 4" stroke="#b8432f" stroke-width="2" fill="none"/><ellipse cx="12" cy="-4" rx="8" ry="5" fill="#d85a3e"/><path d="M12 -10 v-8 M16 -10 v-7" stroke="#a63a28" stroke-width="1.6"/><circle cx="12" cy="-18" r="2.2" fill="#fff" stroke="#222" stroke-width=".8"/><circle cx="16" cy="-17" r="2.2" fill="#fff" stroke="#222" stroke-width=".8"/><path d="M8 0 C12 -16 -2 -24 -12 -16 C-19 -10 -16 2 -8 3Z" fill="#f2b99a" stroke="#9a5845" stroke-width="1.5"/><path d="M-3 -12 l1.4 3 3.2 .3 -2.4 2 .8 3.2 -3 -1.8 -3 1.8 .8 -3.2 -2.4 -2 3.2 -.3z" fill="#ffd84a"/></g>'
           + '<text x="200" y="224" text-anchor="middle" font-size="24" font-weight="900" fill="#fff" letter-spacing="3" font-family="sans-serif" style="paint-order:stroke" stroke="#1d5f80" stroke-width="3">ヤドカリと七つの灯台</text></svg>';
       })(),
-      back: '<svg viewBox="0 0 400 250" aria-hidden="true"><rect width="400" height="250" fill="#efe2c4"/>'
-        + [0, 1, 2, 3, 4, 5].map((i) => `<path d="M0 ${20 + i * 42} H400" stroke="#d2bf96" stroke-width="1"/>`).join('') + [0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => `<path d="M${20 + i * 48} 0 V250" stroke="#d2bf96" stroke-width="1"/>`).join('')
-        + '<path d="M50 200 L110 180 L90 128 L160 98 L230 128 L270 70 L330 40" fill="none" stroke="#8c6a45" stroke-width="2" stroke-dasharray="2 6"/>'
-        + [[50, 200], [110, 180], [90, 128], [160, 98], [230, 128], [270, 70], [330, 40]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="20" ry="13" fill="#e7d3a4" stroke="#b39463" stroke-width="2"/><ellipse cx="${x}" cy="${y}" rx="13" ry="8" fill="#c3d69c"/><rect x="${x - 2.5}" y="${y - 14}" width="5" height="12" fill="#fbf7ee" stroke="#5b4020" stroke-width="1"/><rect x="${x - 3}" y="${y - 18}" width="6" height="4" fill="#ffd24a" stroke="#5b4020" stroke-width="1"/>`).join('')
-        + '<g transform="translate(330 190) rotate(-18)"><rect x="-6" y="-38" width="12" height="9" rx="2" fill="#b9854e"/><path d="M-7 -29 h14 v8 c8 4 12 10 12 18 v24 a7 7 0 0 1 -7 7 h-24 a7 7 0 0 1 -7 -7 v-24 c0 -8 4 -14 12 -18z" fill="rgba(150,210,200,.55)" stroke="#5c8f88" stroke-width="2"/><rect x="-10" y="-6" width="20" height="24" fill="#fbf2dc" transform="rotate(-8)"/><path d="M-5 6 l2 -6 2 6 M-7 12 h14" stroke="#e0564a" stroke-width="1.5" fill="none"/></g>'
-        + '<text x="24" y="238" font-size="13" fill="#5b4020" font-family="serif">灯台守の海図</text></svg>',
     },
   },
   {

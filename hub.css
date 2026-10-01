@@ -85,7 +85,7 @@ button { font: inherit; color: inherit; }
   content: ""; position: absolute; right: 0; bottom: 0; width: 34px; height: 34px;
   background: linear-gradient(135deg, transparent 50%, rgba(0, 0, 0, .55) 50%); transition: opacity .3s; pointer-events: none;
 }
-.cover.flipped::after { opacity: 0; }
+.cover.flipped::after, .cover.single::after { opacity: 0; }
 .badges { position: absolute; top: 12px; left: 12px; display: flex; gap: 6px; z-index: 1; }
 .badge { font: 500 11px/1 var(--f-mono); letter-spacing: .1em; padding: 5px 8px; background: var(--ura); color: #fff; }
 .badge.clear { background: #111; color: #F2EFE8; border: 1px solid #F2EFE8; }

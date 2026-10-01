@@ -47,6 +47,8 @@
 
   /* ---------- 表紙（写真があれば写真、なければ絵） ---------- */
   const face = (w, side) => (w.images && w.images[side] ? `<img src="${esc(w.images[side])}" alt="" data-side="${side}">` : w.cover[side]);
+  // 裏側（めくると見える表紙）は、作品が用意しているときだけ出す
+  const hasBack = (w) => !!((w.images && w.images.back) || (w.cover && w.cover.back));
   document.addEventListener('error', e => {
     const img = e.target;
     if (!(img instanceof HTMLImageElement) || !img.dataset.side) return;
@@ -62,9 +64,9 @@
     const verb = p.cleared ? 'もう一度遊ぶ' : p.started ? '続きから遊ぶ' : '遊ぶ';
     const diff = Array.from({ length: 5 }, (_, i) => `<i class="${i < w.difficulty ? '' : 'off'}">●</i>`).join('');
     return `<li class="work" style="--wa:${w.accent}" data-id="${w.id}">`
-      + `<div class="cover"><div class="face front">${face(w, 'front')}</div><div class="face back">${face(w, 'back')}</div>`
+      + `<div class="cover${hasBack(w) ? '' : ' single'}"><div class="face front">${face(w, 'front')}</div>${hasBack(w) ? `<div class="face back">${face(w, 'back')}</div>` : ''}`
       + `<div class="badges">${isNew(w) ? '<span class="badge">NEW</span>' : ''}${p.cleared ? '<span class="badge clear">CLEAR</span>' : ''}</div>`
-      + '<button type="button" class="flip" data-flip aria-pressed="false">裏を見る</button></div>'
+      + (hasBack(w) ? '<button type="button" class="flip" data-flip aria-pressed="false">裏を見る</button>' : '') + '</div>'
       + '<div class="work-body">'
       + `<p class="meta"><span class="tags">${w.genre.map(g => `<span class="tag">${esc(g)}</span>`).join('')}</span><span class="mins">約${w.minutes}分</span><span class="diff" aria-label="難しさ ${w.difficulty}／5">${diff}</span></p>`
       + `<h2 class="work-title">${esc(w.title)}</h2><p class="catch">${esc(w.catch)}</p>`
