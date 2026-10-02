@@ -74,7 +74,7 @@ class Battle {
     if (d.tier === 'boss' && alert >= 4) hp = Math.round(hp * 1.2);
     const e = {
       uid: UID++, id, def: d, hp, maxhp: hp, hpLag: hp, block: 0, st: Object.assign({}, d.start || {}), fresh: {}, x: 360, y: GY - (d.fly ? 0 : 0), w: d.w, h: d.h,
-      alive: true, dying: 0, last: null, next: null, rng: new RNG(this.rng.int(1, 1e9)), stopCount: 0, stopNeed: d.tier === 'boss' ? 3 : d.tier === 'elite' ? 2 : 1, stopped: false,
+      alive: true, dying: 0, last: null, next: null, rng: new RNG(this.rng.int(1, 1e9)), stopCount: 0, stopNeed: d.tier === 'boss' ? 3 : d.tier === 'elite' ? 2 : 1, stopped: 0, stopT: 0,
       pose: 'idle', pt: 0, sx: 1, sy: 1, flash: 0, phase: 1, variant: d.variant || 0, t: rnd(100), tier: d.tier || 'normal', ix: 0, enter: fresh ? 1 : 0,
     };
     if (alert >= 2) e.dmgBonus = 1;
@@ -86,10 +86,10 @@ class Battle {
   alive() { return this.enemies.filter(e => e.alive); }
   layout(snap) {
     const list = this.enemies.filter(e => e.alive || e.dying > 0);
-    const tot = list.reduce((s, e) => s + e.w, 0) + (list.length - 1) * 16;
+    const tot = list.reduce((s, e) => s + e.w, 0) + (list.length - 1) * 22;
     let x = Math.max(250, 356 - tot / 2) + (list.length === 1 ? 0 : 0);
     if (x + tot > W - 22) x = W - 22 - tot;
-    for (const e of list) { e.tx = x + e.w / 2; if (snap) e.x = e.tx; x += e.w + 16; }
+    for (const e of list) { e.tx = x + e.w / 2; if (snap) e.x = e.tx; x += e.w + 22; }
   }
   intent(e) {
     if (!e.alive) return;
@@ -102,6 +102,7 @@ function hasRelicIn(run, id) { return run.relics.includes(id); }
 
 // ---------- visuals helper objects in B.vis ----------
 function vis(o) { o.t = 0; if (B) B.vis.push(o); return o; }
+function stopSignX(e) { return e.x - e.w / 2 - 10; }
 function label(x, y, s, c) { Fx.label(x, y, s, c); }
 
 // ============================================================
@@ -166,14 +167,19 @@ const A = {
     if (!t || !t.alive) { t = B.rng.pick(B.alive()); if (!t) return; }
     const P = B.P;
     if (!quick) { P.spr.act('stop'); yield 10; }
-    vis({ k: 'stopsign', x: t.x, y: t.y, h: t.h, life: 46 }); yield 6;
-    Snd.play('stop', { x: t.x }); Cam.shake(0.3); Cam.kick(0, 3); Scr.stop(4); Fx.dust(t.x - 10, t.y, 5, 1.2); Fx.dust(t.x + 10, t.y, 5, 1.2); Fx.ring(t.x, t.y - t.h / 2, 4, 30, 14, '#ffffff', 2);
-    t.stopCount += n;
-    if (t.stopCount >= t.stopNeed) {
-      t.stopCount = 0; t.stopped = true; t.flash = 6; label(t.x, t.y - t.h - 20, 'STOP!', '#ff4d5a');
+    // the sign drops onto the road just in front of the enemy (never through its body)
+    const sx = stopSignX(t), was = t.stopped || 0;
+    t.stopCount += n; let gained = 0;
+    while (t.stopCount >= t.stopNeed) { t.stopCount -= t.stopNeed; gained++; }
+    vis({ k: 'stopdrop', e: t, x: sx, plant: gained > 0, life: gained > 0 ? 8 : 30 }); yield 7;
+    Snd.play('stop', { x: t.x }); Cam.shake(0.22); Cam.kick(0, 2); Scr.stop(3);
+    Fx.dust(sx - 4, GY, 4, 1.1); Fx.dust(sx + 4, GY, 4, 1.1); Fx.flatRing(sx, GY, 3, 22, 14, '#ffffff');
+    if (gained) {
+      t.stopped = was + gained; t.stopT = was ? t.stopT : 0; t.sx = 1.12; t.sy = 0.9;
+      label(sx, GY - 58, t.stopped > 1 ? `STOP x${t.stopped}` : 'STOP!', '#ff4d5a');
       if (hasRelic('jumper')) B.after.push(A.draw(1));
-      B.run.stats.stops = (B.run.stats.stops || 0) + 1;
-    } else label(t.x, t.y - t.h - 20, `${t.stopCount}/${t.stopNeed}`, '#ffb0b0');
+      B.run.stats.stops = (B.run.stats.stops || 0) + gained;
+    } else label(sx, GY - 58, `${t.stopCount}/${t.stopNeed}`, '#ffb0b0');
     yield quick ? 10 : 16;
     while (B.after.length) yield* B.after.shift();
   },
@@ -279,7 +285,8 @@ function* reflectBack(e) { if (!e.alive) return; yield 4; Fx.star(e.x, e.y - e.h
 function* afterHit() { while (B.after.length) yield* B.after.shift(); checkWin(); }
 function killEnemy(e) {
   if (!e.alive) return;
-  e.alive = false; e.hp = 0; e.dying = 1; e.stopped = false;
+  if (e.stopped && !SIM.on) vis({ k: 'stopleave', x: stopSignX(e), life: 22 });
+  e.alive = false; e.hp = 0; e.dying = 1; e.stopped = 0;
   B.run.stats.kills = (B.run.stats.kills || 0) + 1;
   const x = e.x, y = e.y - e.h / 2, s = e.tier === 'boss' ? 3 : e.tier === 'elite' ? 2 : 1;
   if (!SIM.on) {
@@ -455,7 +462,11 @@ function* enemyTurn() {
   for (const e of [...B.alive()]) {
     if (!e.alive || B.over) continue;
     if (e.stopped) {
-      e.stopped = false; e.last = 'stopped'; vis({ k: 'stopsign', x: e.x, y: e.y, h: e.h, life: 28, small: 1 }); label(e.x, e.y - e.h - 16, '...', '#c7ccd6'); Snd.play('beep', { x: e.x, pitch: 0.6 }); yield SIM.on ? 0 : 24;
+      // the skipped move is used up, so the enemy's pattern carries on from the next one
+      e.last = e.next;
+      if (!SIM.on) { e.bumpT = 0; Snd.play('beep', { x: e.x, pitch: 0.6 }); yield 10; Snd.play('clink', { x: e.x, pitch: 0.7 }); label(stopSignX(e), GY - 58, 'SKIP', '#ffb0b0'); yield 14; }
+      e.stopped--;
+      if (!e.stopped && !SIM.on) { vis({ k: 'stopleave', x: stopSignX(e), life: 22 }); Snd.play('whoosh', { x: e.x, p: 0.4 }); yield 10; }
       continue;
     }
     const mv = e.def.moves[e.next]; e.acting = true;

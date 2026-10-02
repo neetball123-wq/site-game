@@ -3,6 +3,7 @@
 //  ui: card faces, hand interaction, battle HUD, tooltips, overlays
 // ============================================================
 const CW = 56, CH = 78;
+const HAS_FILTER = typeof CanvasRenderingContext2D !== 'undefined' && 'filter' in CanvasRenderingContext2D.prototype;
 const TYPEC = {
   atk: { f: '#c8404f', l: '#ef7080', d: '#8a2432', bg: ['#ffd6c8', '#f4a08e'] },
   def: { f: '#3a6ec8', l: '#78a6f0', d: '#23488a', bg: ['#d8ecff', '#a6c8ee'] },
@@ -185,7 +186,7 @@ const BV = {
     const keys = ['Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9', 'Digit0'];
     for (let i = 0; i < keys.length; i++) if (In.key(keys[i]) && B.hand[i]) {
       const c = B.hand[i];
-      if (this.sel && this.sel.c === c) { this.tryPlay(c, this.hovEnemy || B.alive()[0]); } else this.select(c);
+      if (this.sel && this.sel.c === c) { this.tryPlay(c, this.hovEnemy || (this.selTarget && this.selTarget.alive ? this.selTarget : B.alive()[0])); } else this.select(c);
     }
     if (In.anyKey('KeyE', 'Space') && !this.sel) { if (endTurn()) { Snd.play('uiok'); this.hover = -1; } }
     if (In.key('Tab') && this.sel) { const al = B.alive(); if (al.length) { const i = (al.indexOf(this.selTarget) + 1) % al.length; this.selTarget = al[i]; } }
@@ -256,15 +257,19 @@ const BV = {
     for (const e of B.enemies) {
       if (!e.alive && e.dying <= 0) continue;
       const lift = (e.launch ? -Math.sin(Math.min(1, e.launch) * Math.PI) * 30 : 0) - (e.dropT > 0 ? Math.pow(e.dropT / 22, 2) * 160 : 0);
-      const X = e.x - ox, Y = e.y - oy + lift;
+      const X = e.x - ox + this.bumpOff(e), Y = e.y - oy + lift;
       if (e.dying > 0) { G.globalAlpha = Math.max(0, 1 - e.dying / 26); }
       if (e.flash > 0 && (e.flash | 0) % 3 !== 2) SIL = '#ffffff';
-      if (e.stopped && !SIL) { /* drawn greyed below */ }
+      // stopped: drawn desaturated (the eyes already go grey in the sprite code)
+      const grey = e.stopped && e.alive && !SIL && HAS_FILTER; if (grey) G.filter = 'grayscale(0.85) brightness(1.04) contrast(0.92)';
       (EDRAW[e.def.draw] || drawEnemyGeneric)(e, X, Y, e.t);
+      if (grey) G.filter = 'none';
       SIL = null; G.globalAlpha = 1;
-      if (e.stopped && e.alive) { G.globalAlpha = 0.35; SIL = '#8a8aa8'; (EDRAW[e.def.draw] || drawEnemyGeneric)(e, X, Y, e.t); SIL = null; G.globalAlpha = 1; }
+      if (e.stopped && e.alive && !HAS_FILTER) { G.globalAlpha = 0.22; SIL = '#9a9aa6'; (EDRAW[e.def.draw] || drawEnemyGeneric)(e, X, Y, e.t); SIL = null; G.globalAlpha = 1; }
       if (tgtHi && e.alive && this.hovEnemy === e) this.drawBrackets(X, Y - (e.def.fly ? 20 : 0), e.w, e.h, t);
     }
+    // planted stop signs stand on the road in front of stopped enemies
+    for (const e of B.enemies) if (e.alive && e.stopped) this.drawStopPost(stopSignX(e) - ox, GY - oy, e);
     // player
     B.P.spr.draw(ox, oy);
     // visuals
@@ -276,6 +281,16 @@ const BV = {
     // glows
     for (const e of B.enemies) if (e.alive && e._eye) glow(e._eye[0], e._eye[1], 10, e.stopped ? '#8a8aa8' : '#ffd23f', PSTAGE.key === 'night' ? 0.5 : 0.2);
     drawParts(ox, oy, 'glow');
+  },
+  // skipped turn: the enemy leans toward the sign, hits it, and settles back
+  bumpOff(e) { const k = e.bumpT; if (k == null) return 0; return k < 8 ? -easeIn(k / 8) * 5 : -5 * (1 - easeOut(Math.min(1, (k - 8) / 14))); },
+  drawStopPost(X, Y, e, dy = 0) {
+    const k = e ? e.stopT : 99, land = k < 8 ? -Math.round(Math.sin(k / 8 * Math.PI) * 3) : 0;
+    const shake = e && e.bumpT != null && e.bumpT > 7 && e.bumpT < 18 ? ((e.bumpT | 0) % 2 ? 1 : -1) : 0;
+    X = Math.round(X + shake); const top = Y - 32 + land + dy;
+    if (!dy) ditherEllipse(X, Y + 1, 6, 1.5, '#000000', 0.35);
+    sPole(X, top, Y + dy); sStopSign(X, top - 6, 9);
+    if (e && e.stopped > 1) { const s = 'x' + e.stopped, w = textW(s) + 4; rectF(X - w / 2 - 1, top + 4, w + 2, 9, OUT); rectF(X - w / 2, top + 5, w, 7, '#f6f4ee'); textC(s, X + 0.5, top + 6, OUT); }
   },
   drawBrackets(X, Y, w, h, t) {
     const b = 3 + Math.round(Math.sin(t * 0.2)); const x0 = X - w / 2 - b - 2, x1 = X + w / 2 + b + 2, y0 = Y - h - b - 2, y1 = Y + b;
@@ -331,7 +346,7 @@ const BV = {
     }
     // intent
     const top = Y - e.h - (e.def.fly ? 26 : 8) - 12 + Math.round(Math.sin(t * 0.08 + e.uid) * 1.5);
-    if (e.stopped) { drawIntent('stopped', X - 6, top, t); text('SKIP', X + 8, top + 4, '#ffb0b0'); }
+    if (e.stopped) textO('SKIP', X - textW('SKIP') / 2, top + 3, '#ffb0b0', OUT);
     else if (e.intent && B.phase !== 'enemy' || e.intent && !e.acting) {
       const it = e.intent; const big = it.type === 'atk' && it.d * it.n >= 15;
       let s = ''; if (it.type === 'atk') s = it.n > 1 ? `${it.d}x${it.n}` : `${it.d}`;
@@ -358,12 +373,16 @@ const BV = {
     for (let i = 0; i < L.length; i++) {
       const v = L[i]; const u = v.t / v.life;
       switch (v.k) {
-        case 'stopsign': {
-          const X = v.x - ox, Y = GY - oy; const drop = Math.min(1, v.t / 6); const yy = lerp(-120, 0, easeIn(drop));
-          const s = v.small ? 0.7 : 1; const fade = u > 0.75 ? 1 - (u - 0.75) / 0.25 : 1;
-          if ((u < 0.75 || (v.t | 0) % 2) && fade > 0) { sPole(X, Y - 46 * s + yy, Y + yy); sStopSign(X, Y - 54 * s + yy, 14 * s); }
+        case 'stopdrop': {
+          // falls onto the road; if it doesn't stop the enemy (boss/elite count) it bounces off and blinks out
+          const X = v.x - ox, Y = GY - oy; let dy;
+          if (v.t < 7) dy = lerp(-110, 0, easeIn(v.t / 7));
+          else if (v.plant) break; // the planted post takes over
+          else { const k = (v.t - 7) / (v.life - 7); dy = -Math.sin(Math.min(1, k * 1.6) * Math.PI) * 10 + k * 4; if (k > 0.5 && (v.t | 0) % 2) break; }
+          const s = Math.round(dy); sPole(X, Y - 32 + s, Y + Math.min(0, s)); sStopSign(X, Y - 38 + s, 9);
           break;
         }
+        case 'stopleave': { if (u > 0.55 && (v.t | 0) % 2) break; const k = easeOut(u); this.drawStopPost(v.x - ox + k * 8, GY - oy, null, -Math.round(k * 26)); break; }
         case 'proj': {
           const k = clamp(v.t / v.life, 0, 1); const x = lerp(v.sx, v.ex, k) - ox, y = lerp(v.sy, v.ey, k) - Math.sin(k * Math.PI) * v.arc - oy;
           if (v.kind === 'cone') { G.save(); resetFs(); sCone(x, y + 7, 12); G.restore(); resetFs(); }
@@ -451,7 +470,7 @@ const BV = {
       const e = this.hovEnemy;
       if (e) {
         const it = e.intent; const lines = [];
-        if (e.stopped) lines.push({ h: 1, s: '止まっている：次の行動をしない', c: '#ff9fb0' });
+        if (e.stopped) lines.push({ h: 1, s: e.stopped > 1 ? `止まっている：あと ${e.stopped} 回 行動しない` : '止まっている：次の行動をしない', c: '#ff9fb0' });
         else if (it) lines.push({ h: 1, s: intentText(e), c: it.type === 'atk' ? '#ff9fb0' : '#9fd0ff' });
         if (it && it.note && !e.stopped) lines.push(it.note);
         if (e.stopNeed > 1) lines.push({ h: 1, s: `止まれ ${e.stopCount}/${e.stopNeed}`, icon: 'stop', c: '#ffb0b0' }, `止まれを ${e.stopNeed} 回当てると止まる。`);

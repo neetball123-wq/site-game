@@ -283,7 +283,10 @@ SCENES.battle = {
     // actors
     B.P.spr.update(ts); B.P.x = B.P.spr.x;
     for (const e of B.enemies) {
-      e.t += ts; e.pt += ts; e.flash = Math.max(0, e.flash - ts); e.sx = lerp(e.sx, 1, 0.2); e.sy = lerp(e.sy, 1, 0.2);
+      // a stopped enemy freezes its idle motion; stopT drives the planted sign, bumpT the "tries to move and bumps" on a skipped turn
+      if (e.stopped && e.alive) e.stopT += ts; else e.t += ts;
+      e.pt += ts;
+      if (e.bumpT != null) { e.bumpT += ts; if (e.bumpT > 24) e.bumpT = null; } e.flash = Math.max(0, e.flash - ts); e.sx = lerp(e.sx, 1, 0.2); e.sy = lerp(e.sy, 1, 0.2);
       if (e.tx != null) e.x = lerp(e.x, e.tx, 0.12);
       if (e.dropT > 0) { e.dropT -= ts; if (e.dropT <= 0) { e.dropT = 0; e.sy = 0.6; e.sx = 1.35; Fx.dust(e.x, GY, 6, 1.2); Cam.shake(0.1); Snd.play('land', { x: e.x, p: 0.8 }); } }
       if (e.pose === 'hurt' && e.pt > 14) e.pose = 'idle';
