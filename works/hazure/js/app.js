@@ -7,7 +7,8 @@
   const $ = (s, r) => (r || document).querySelector(s);
   const $$ = (s, r) => [...(r || document).querySelectorAll(s)];
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  let TURBO = false;   // テスト用：待ち時間を0にして、演出の処理だけを通す
+  const wait = (ms) => (TURBO ? new Promise((r) => setTimeout(r, 0)) : new Promise((r) => setTimeout(r, ms)));
   const N = HZ.fmt;
   // 戦いの表示は整数で（HPは切り上げ、ダメージは四捨五入。1未満だけ小数）
   const NH = (x) => (x > 0 && x < 1 ? '1' : N(Math.ceil(x - 1e-9)));
@@ -79,16 +80,27 @@
   }
 
   /* ---------- 画面の切りかえ ---------- */
+  let lockUntil = 0;
+  const lock = (ms) => { lockUntil = Math.max(lockUntil, performance.now() + ms); };
+  const guard = (e) => { if (performance.now() < lockUntil && !TURBO) { e.stopPropagation(); e.preventDefault(); } };
+  view.addEventListener('click', guard, true);
+  sheet.addEventListener('click', guard, true);
   function show(name, html) {
+    lock(300);
     view.dataset.s = name;
     view.innerHTML = html;
     view.scrollTop = 0;
     hud();
   }
   function go() {
+    try { route(); }
+    catch (err) { report(err); try { title(); } catch (e2) { /* noop */ } }
+  }
+  function route() {
     closeSheet();
     app.classList.remove('dark');
     if (!run) return title();
+    if (run.phase === 'battle' && !(run.node && run.node.foes)) { run.phase = 'map'; R.advance(run, false); }
     setBg(Math.min(run.ch, 99));
     switch (run.phase) {
       case 'start': return pickStart();
@@ -108,7 +120,7 @@
   /* ---------- タイトル ---------- */
   function title() {
     setBg(0);
-    const can = run && !['over', 'clear'].includes(run.phase);
+    const can = run && run.phase !== 'over';
     show('title', `<section class="title">
       <div class="win title-win">
         <p class="title-kicker">STATUS OPEN</p>
@@ -257,7 +269,7 @@
       R.choose(run, +b.dataset.i);
       save(); go();
     }));
-    if ($('#m-stat')) $('#m-stat').onclick = () => openStatus();
+    if ($('#m-stat')) $('#m-stat').onclick = () => statusFresh();
   }
   const TIPS = [
     'スキルは「きっかけ」で自動に発動する。発動がほかのスキルのきっかけになると、連鎖する。',
@@ -281,7 +293,7 @@
       <div class="sk-list" style="margin-top:12px">${foes.map((f) => `<div class="node" style="cursor:default" data-k="${run.node.kind === 'battle' ? 'battle' : run.node.kind}"><span class="node-foes" style="margin:0">${ART.foe(f.id)}</span><span class="node-b"><span class="node-k">${esc(f.name)}</span><span class="node-d">HP ${N(f.hp)}・攻撃 ${N(f.atk)}${foeNote(f.id) ? '・' + foeNote(f.id) : ''}</span>${trText(f.tr).length ? `<span class="node-d" style="color:var(--gold)">${esc(trText(f.tr).join('／'))}</span>` : ''}</span></div>`).join('')}</div>
       <div class="preview" style="margin-top:12px"><p class="note">1ターン目の試算（いまの装備）</p><p><span class="big">${N(t1)}</span> <span class="note">ダメージ・連鎖 ${pv.stat.maxCombo}</span></p><p class="note">${pv.over === 'win' ? '1ターンで倒しきれる見こみ。' : `前の敵の残りHP ${N(Math.max(0, pv.foes.find((f) => f.alive) ? pv.foes.find((f) => f.alive).hp : 0))}`}</p></div>
       <div class="row end" style="margin-top:14px"><button type="button" class="btn ghost" id="pb-stat">ステータス</button><button type="button" class="btn" id="pb-go">戦う</button></div></div></section>`);
-    $('#pb-stat').onclick = () => openStatus(() => preBattle());
+    $('#pb-stat').onclick = () => statusFresh(() => preBattle());
     $('#pb-go').onclick = () => { SND.play('sys'); battle(); };
   }
 
@@ -316,18 +328,24 @@
     if (B.log.length) { for (const e of B.log) if (e.t === 'seal') blog(`【${HZ.name(B.sk[e.i].s)}】が封印された（2ターン）`); B.log = []; }
     loop(my);
   }
+  // 表示用の敵の状態。分裂・召喚で増えた敵のぶんがまだなければ、その場で作る（ないまま読むと戦いが止まる）
+  function dOf(i) {
+    if (!disp.foes[i]) { const f = B.foes[i]; disp.foes[i] = { hp: f ? f.max : 0, max: f ? f.max : 1, sh: 0, st: {}, alive: !!f }; }
+    return disp.foes[i];
+  }
   function renderFoes() {
     const box = $('#foes');
     if (!box) return;
     box.innerHTML = B.foes.map((f, i) => {
-      const d = disp.foes[i];
+      const d = dOf(i);
       return `<div class="foe${f.boss ? ' boss' : ''}${d.alive ? '' : ' dead'}" data-f="${i}"><p class="foe-intent"></p>${ART.foe(f.id, f.name)}<p class="foe-name">${esc(f.name)}</p><div class="bar"><i></i><b></b></div><p class="foe-hp"></p><div class="chips"></div></div>`;
     }).join('');
     B.foes.forEach((f, i) => { updFoe(i); intent(i); });
   }
   function updFoe(i) {
-    const el = $(`[data-f="${i}"]`), d = disp.foes[i];
-    if (!el) return;
+    const el = $(`[data-f="${i}"]`);
+    if (!el || !B.foes[i]) return;
+    const d = dOf(i);
     $('.bar i', el).style.width = Math.max(0, Math.min(100, d.hp / d.max * 100)) + '%';
     $('.bar b', el).style.width = Math.min(100, d.sh / d.max * 100) + '%';
     $('.foe-hp', el).textContent = `${NH(Math.max(0, d.hp))} / ${NH(d.max)}`;
@@ -338,7 +356,7 @@
   function intent(i) {
     const el = $(`[data-f="${i}"] .foe-intent`), f = B.foes[i];
     if (!el) return;
-    if (!f.alive || !disp.foes[i].alive) { el.textContent = ''; return; }
+    if (!f || !f.alive || !dOf(i).alive) { el.textContent = ''; return; }
     const it = HZ.intent(f);
     el.textContent = it.text + (it.dmg ? ' ' + ND(it.dmg) + (it.n ? '×' + it.n : '') : '');
   }
@@ -368,9 +386,11 @@
     return { x: b.left - a.left + b.width / 2 + (Math.random() - 0.5) * b.width * 0.5, y: b.top - a.top + (i === 'p' ? -10 : b.height * 0.25 + (Math.random() - 0.5) * 20) };
   }
   const stack = {};
+  // 1ターンに画面へ出す数字・文字の数（連鎖が数千回になっても重くならないように）
+  let popBudget = 60, wordBudget = 14;
   function pop(i, text, cls, col) {
     const fx = $('#fx');
-    if (!fx) return;
+    if (!fx || popBudget-- <= 0) return;
     const p = pos(i), n = document.createElement('div');
     const now = performance.now(), st = stack[i] && now - stack[i].t < 450 ? stack[i] : { k: 0 };
     p.y -= (st.k % 4) * 22; stack[i] = { t: now, k: st.k + 1 };
@@ -383,7 +403,7 @@
   }
   function word(i, text, col, cls) {
     const fx = $('#fx');
-    if (!fx) return;
+    if (!fx || wordBudget-- <= 0) return;
     const p = pos(i), n = document.createElement('div');
     n.className = cls || 'react';
     n.style.left = p.x + 'px'; n.style.top = (p.y - 20) + 'px';
@@ -405,12 +425,13 @@
   async function playLog(log, my) {
     const n = log.length;
     const scale = n > 70 ? 70 / n : 1;
+    popBudget = 60; wordBudget = 14;
     let debt = 0;
     for (let k = 0; k < n; k++) {
       if (my !== gen) return;
       const e = log[k];
       const fast = skipAll;
-      apply(e, fast, scale, k, n);
+      try { apply(e, fast, scale, k, n); } catch (err) { report(err); }
       if (fast) continue;
       debt += (BASE[e.t] || 0) * (scale < 1 && e.t !== 'react' && e.t !== 'kill' && e.t !== 'phase' && e.t !== 'inf' ? scale : 1) / speed;
       if (debt >= 16) { await wait(debt); debt = 0; }
@@ -497,10 +518,14 @@
     while (!B.over && B.t < 60) {
       if (my !== gen) return;
       B.log = [];
-      HZ.turn(B);
+      try { HZ.turn(B); }
+      catch (err) {
+        // 計算の不具合で止まらないように、この戦いは勝ちとして先へ進める
+        report(err); B.over = 'win'; B.log = []; toast('処理に失敗したため、この戦いは勝ちとして進めます'); break;
+      }
       await playLog(B.log, my);
       if (my !== gen) return;
-      sync();
+      try { sync(); } catch (err) { report(err); }
       if (!skipAll && !B.over) await wait(380 / speed);
     }
     if (my !== gen) return;
@@ -509,10 +534,11 @@
   }
   async function finish(my) {
     const win = B.over === 'win';
-    sync();
+    try { sync(); } catch (err) { report(err); }
     banner(win ? '勝利' : '敗北', win ? '#ffd36b' : '#ff5a6a');
     SND.play(win ? 'win' : 'lose');
-    const res = R.endBattle(run, B);
+    let res = {};
+    try { res = R.endBattle(run, B) || {}; } catch (err) { report(err); if (run.phase === 'battle') { run.phase = 'map'; R.advance(run, false); } }
     S.pre = null;
     const m = S.meta;
     m.best.hit = Math.max(m.best.hit, run.stats.maxHit);
@@ -561,6 +587,7 @@
     </section>`);
     $$('[data-i]').forEach((b) => (b.onclick = () => {
       const r = R.takeReward(run, +b.dataset.i);
+      if (!r) return;
       SND.play('sys');
       toast(r.up ? `【${esc(HZ.name(r.s))}】が Lv.${r.s.lv} になりました` : `スキル【${esc(HZ.name(r.s))}】を習得しました${run.eq.includes(r.s.u) ? '' : '<br><small>装備枠がいっぱい。ステータスで装備か合成を</small>'}`);
       save(); go();
@@ -595,7 +622,7 @@
     }));
     $$('[data-svc]').forEach((b) => (b.onclick = () => {
       const k = b.dataset.svc;
-      if (k === 'stat') return openStatus(() => shop());
+      if (k === 'stat') return statusFresh(() => shop());
       if (k === 'book') return chooseSkill('スキル書を使うスキルを選んでください', (u) => { const s = R.buy(run, 'book', 0, u); if (s) { SND.play('lvup'); toast(`【${esc(HZ.name(s))}】が Lv.${s.lv} になりました`); save(); } shop(); });
       const r = R.buy(run, k);
       if (!r) { SND.play('bad'); return; }
@@ -669,6 +696,7 @@
   /* ---------- 下の窓 ---------- */
   let onClose = null;
   function openSheet(html, after) {
+    lock(200);
     sheet.innerHTML = `<div class="win sheet-in">${html}</div>`;
     sheet.hidden = false;
     onClose = after || null;
@@ -697,7 +725,11 @@
     return { t1: B2.stat.dmg, combo: B2.stat.maxCombo, reacts: Object.keys(B2.stat.reacts), per, t3: B3.stat.dmg, inf: B2.inf || B3.inf };
   }
   let fz = null;   // 合成の選択中 { a: 土台, b: 素材 }
+  // 外から開くときは、選びかけの合成を取り消す
+  const statusFresh = (back) => { fz = null; openStatus(back); };
   function openStatus(back) {
+    // 選びかけの合成のスキルが、もう手元にないとき（売った・合成した・旅が変わった）は取り消す
+    if (fz && (!R.sk(run, fz.a) || (fz.b && !R.sk(run, fz.b)))) fz = null;
     const after = back || (() => go());
     const tr = trial(run);
     const eq = R.eqSkills(run), box = run.skills.filter((s) => !run.eq.includes(s.u));
@@ -755,7 +787,7 @@
       re();
     };
   }
-  $('#h-stat').onclick = () => { if (view.dataset.s === 'battle') return; fz = null; openStatus(curBack()); };
+  $('#h-stat').onclick = () => { if (view.dataset.s === 'battle') return; statusFresh(curBack()); };
   const curBack = () => (view.dataset.s === 'pre' ? () => preBattle() : view.dataset.s === 'shop' ? () => shop() : () => go());
 
   /* ---------- メニュー ---------- */
@@ -804,6 +836,17 @@
     $$('[data-tab]', sheet).forEach((b) => (b.onclick = () => dex(b.dataset.tab)));
   }
 
+  /* ---------- 不具合の知らせ ---------- */
+  const errs = [];
+  function report(err) {
+    const m = (err && (err.stack || err.message)) || String(err);
+    errs.push(m);
+    if (G.console) console.error(err);
+    if (errs.length <= 3) toast('不具合が起きました（' + esc(String((err && err.message) || err).slice(0, 60)) + '）');
+  }
+  G.addEventListener && G.addEventListener('error', (e) => report(e.error || e.message));
+  G.addEventListener && G.addEventListener('unhandledrejection', (e) => report(e.reason));
+
   /* ---------- テスト用の口 ---------- */
   G.__hz = {
     get run() { return run; }, get B() { return B; }, S: () => S,
@@ -811,7 +854,8 @@
     give: (id) => { const r = R.gain(run, id); save(); return r; },
     fuse: (a, b) => { const r = R.fuse(run, a, b); save(); return r; },
     fast: () => { skipAll = true; },
-    go, status: () => openStatus(), title,
+    turbo: (on) => { TURBO = on !== false; }, errs,
+    go, status: () => statusFresh(), title,
     to: (ch, step) => { run.ch = ch; run.step = step || 0; R.advance(run, false); run.step = step || 0; save(); go(); },
   };
   const q = new URLSearchParams(location.search);

@@ -42,6 +42,7 @@
     return run;
   };
   R.pickStarter = (run, id) => {
+    if (run.phase !== 'start' || !HZ.SKILLS[id]) return;
     const s = HZ.make(run, id);
     run.skills.push(s); run.eq.push(s.u);
     run.starter = id;
@@ -51,6 +52,7 @@
     run.phase = 'start2';
   };
   R.pickSecond = (run, id) => {
+    if (run.phase !== 'start2' || !HZ.SKILLS[id]) return;
     R.gain(run, id);
     run.phase = 'map';
     genOpts(run);
@@ -119,6 +121,7 @@
   };
 
   R.choose = (run, i) => {
+    if (run.phase !== 'map') return;
     const o = run.opts[i];
     if (!o) return;
     run.node = o;
@@ -226,12 +229,13 @@
     return { s, up: false };
   };
   R.takeReward = (run, i) => {
+    if (run.phase !== 'reward' || !run.reward || !run.reward.choices[i]) return null;
     const id = run.reward.choices[i];
     const r = R.gain(run, id);
     afterReward(run);
     return r;
   };
-  R.skipReward = (run) => { run.gold += 6; afterReward(run); };
+  R.skipReward = (run) => { if (run.phase !== 'reward' || !run.reward) return; run.gold += 6; afterReward(run); };
   function afterReward(run) {
     const wasBoss = run.reward && run.reward.kind === 'boss';
     const clear = run.reward && run.reward.res && run.reward.res.clear;
@@ -248,7 +252,7 @@
     genOpts(run);
   }
   R.advance = advance;
-  R.endless = (run) => { advance(run, true); };
+  R.endless = (run) => { if (run.phase !== 'clear') return; advance(run, true); };
 
   /* ---------- 合成・装備 ---------- */
   R.fusePreview = (run, ua, ub) => {
@@ -314,6 +318,8 @@
     return 0;
   };
   R.buy = (run, kind, i, target) => {
+    if (run.phase !== 'shop' || !run.shop) return null;
+    if (kind === 'skill' && !run.shop.items[i]) return null;
     const p = R.price(run, kind, i);
     if (run.gold < p) return null;
     let r = true;
@@ -329,10 +335,11 @@
   };
   R.sellPrice = (run, u) => { const s = sk(run, u); return s ? 4 + s.rank * 4 + (s.lv - 1) * 3 : 0; };
   R.sell = (run, u) => { const g = R.sellPrice(run, u); R.forget(run, u); run.gold += g; return g; };
-  R.leaveShop = (run) => { run.shop = null; advance(run, false); };
+  R.leaveShop = (run) => { if (run.phase !== 'shop') return; run.shop = null; advance(run, false); };
 
   /* ---------- 宿 ---------- */
   R.rest = (run, how, u) => {
+    if (run.phase !== 'rest') return;
     if (how === 'sleep') run.hp = run.max;
     else if (how === 'train') { const s = sk(run, u); if (s) s.lv++; run.hp = Math.min(run.max, run.hp + Math.round(run.max * 0.3)); }
     advance(run, false);
@@ -342,7 +349,8 @@
   R.eventOf = (run) => HZ.EVENTS.find((e) => e.id === run.event.id);
   R.canOpt = (run, o) => (!o.need || run.skills.some((s) => s.parts.includes(o.need))) && (!o.cost || run.gold >= o.cost);
   R.resolve = (run, i) => {
-    const E = R.eventOf(run), o = E.opts[i];
+    if (run.phase !== 'event' || !run.event || run.event.done) return null;
+    const E = R.eventOf(run), o = E && E.opts[i];
     if (!o || !R.canOpt(run, o)) return null;
     const fx = o.fx, out = { text: o.r, battle: false, skill: 0 };
     if (o.cost) run.gold -= o.cost;
@@ -361,6 +369,7 @@
     return out;
   };
   R.leaveEvent = (run) => {
+    if (run.phase !== 'event') return;
     const d = run.event && run.event.done;
     run.event = null;
     if (d && d.battle) { run.phase = 'battle'; return; }
