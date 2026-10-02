@@ -13,6 +13,43 @@
    ========================================================= */
 window.WORKS = [
   {
+    id: 'hazure',
+    path: 'works/hazure/index.html',
+    title: 'ハズレスキル【合成】',
+    place: '追放されたばかりの、異世界のギルド',
+    added: '2026-10-02',
+    genre: ['異世界', 'ローグライク', 'スキル合成'],
+    minutes: 45,
+    difficulty: 3,
+    accent: '#3aa8e8',
+    catch: '異世界で授かったのは、役に立たないと言われたスキル【合成】。くしゃみ、昼寝、水やり、土下座……ハズレスキルどうしを合成すると、効き目が混ざり、発動が次の発動を呼ぶ。組み合わせは自由。ダメージにも装備枠にも、上限はない。',
+    features: ['スキルは自動で発動し、発動が次のきっかけになって連鎖する', '2つを【合成】：きっかけは土台から、効き目は両方から', '水→火で蒸発、雷で感電。属性の反応と、名前の変わる隠しレシピ', '魔王の先は上限のない深淵。冒険はラノベの題名になる'],
+    storageKey: 'hazure.v1',
+    progress(s) {
+      const m = s.meta || {}, r = s.run, CH = ['はじまりの草原', '迷いの森', '灼熱の火山', '氷の峡谷', '魔王城'];
+      if (m.clears) return { pct: 100, label: m.best && m.best.deep ? `魔王を倒した・深淵${m.best.deep}層` : m.clears > 1 ? `魔王を${m.clears}回倒した` : '魔王を倒した', cleared: true };
+      if (r && r.phase && !['over', 'start', 'start2'].includes(r.phase)) return { pct: Math.min(95, Math.max(3, Math.round((r.ch * 7 + r.step) / 35 * 100))), label: `${CH[Math.min(r.ch, 4)]}・${r.step + 1}歩目`, cleared: false };
+      if (m.far) return { pct: Math.min(90, Math.round(m.far / 35 * 100)), label: `いちばん遠く：${CH[Math.min(4, Math.floor(Math.max(0, m.far - 1) / 7))]}`, cleared: false };
+      return { pct: s.playMs ? 2 : 0, label: s.playMs ? 'まだ旅のとちゅう' : 'まだ転生していない', cleared: false };
+    },
+    cover: {
+      front: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><linearGradient id="hz-f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#121e40"/><stop offset=".62" stop-color="#46629e"/><stop offset="1" stop-color="#e6a274"/></linearGradient><linearGradient id="hz-fw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0e1e38" stop-opacity=".93"/><stop offset="1" stop-color="#050d1a" stop-opacity=".96"/></linearGradient><radialGradient id="hz-fg" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffd36b" stop-opacity=".85"/><stop offset="1" stop-color="#ffd36b" stop-opacity="0"/></radialGradient></defs>'
+        + '<rect width="400" height="250" fill="url(#hz-f)"/>'
+        + [[30, 20], [80, 34], [140, 14], [210, 28], [300, 12], [360, 30], [250, 50], [110, 60]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 3 ? 0.9 : 1.4}" fill="#fff" opacity=".7"/>`).join('')
+        + '<path d="M0 200Q60 176 120 190T240 184T400 192V250H0Z" fill="#2c3c62"/><path d="M300 190v-30h7v-10h6v10h8v-18h7v18h8v-10h6v10h7v30z" fill="#1c2846"/><path d="M0 222Q80 206 170 218T400 214V250H0Z" fill="#151f38"/>'
+        + '<g transform="translate(20 44)"><rect width="218" height="124" rx="4" fill="url(#hz-fw)" stroke="#7fdcff" stroke-width="1.2"/><path d="M-3 9V-3H9M215 127H221V115" stroke="#7fdcff" stroke-width="2.4" fill="none"/>'
+        + '<text x="14" y="22" font-family="monospace" font-size="9" letter-spacing="3" fill="#7fdcff">◆ STATUS OPEN</text>'
+        + '<text x="14" y="64" font-family="sans-serif" font-weight="900" font-size="31" fill="#ffffff">ハズレスキル</text>'
+        + '<text x="8" y="104" font-family="sans-serif" font-weight="900" font-size="31" fill="#7fdcff">【合成】</text></g>'
+        + '<g font-family="sans-serif" font-weight="700" font-size="11"><g transform="translate(258 34)"><rect width="122" height="28" rx="3" fill="#0e1e38" stroke="#7fdcff" stroke-opacity=".5"/><rect width="3" height="28" fill="#cfd8e6"/><text x="12" y="18" fill="#e9f5ff">【くしゃみ】</text><text x="104" y="18" font-size="8" fill="#ff9aa8">ハズレ</text></g>'
+        + '<text x="319" y="78" text-anchor="middle" font-size="14" fill="#7fdcff">＋</text>'
+        + '<g transform="translate(258 84)"><rect width="122" height="28" rx="3" fill="#0e1e38" stroke="#7fdcff" stroke-opacity=".5"/><rect width="3" height="28" fill="#ff6b4a"/><text x="12" y="18" fill="#e9f5ff">【火球】</text></g>'
+        + '<path d="M319 118v12l-5-5M319 130l5-5" stroke="#ffd36b" stroke-width="1.6" fill="none"/>'
+        + '<circle cx="319" cy="152" r="34" fill="url(#hz-fg)"/><g transform="translate(250 138)"><rect width="138" height="30" rx="3" fill="#1a1406" stroke="#ffd36b" stroke-width="1.2"/><rect width="3" height="30" fill="#ff6b4a"/><text x="11" y="19" fill="#ffd36b">【火炎くしゃみ・改】</text></g></g>'
+        + '<text x="236" y="236" font-family="sans-serif" font-size="9" fill="#e9f5ff" opacity=".7">《合成に成功しました》</text></svg>',
+    },
+  },
+  {
     id: 'kotodama',
     path: 'works/kotodama/index.html',
     title: 'ことだま短冊',

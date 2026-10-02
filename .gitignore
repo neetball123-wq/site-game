@@ -11,3 +11,6 @@ works/tsubu/img/_*
 
 # ことだま短冊の制作用（テスト・撮影）
 works/kotodama/_*
+
+# ハズレスキル【合成】の制作用（自動プレイ・テスト）
+works/hazure/_*
