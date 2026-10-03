@@ -399,6 +399,9 @@
     say(S, r, S.f.eye ? 'ふとん。……まだ、ねむれない。イトと話してから。' : 'まるめたふとん。……今夜は、ねむれそうにない。');
   };
   T.a_phone = (S, r) => phoneTap(S, r);
+  T.a_bag = (S, r) => { say(S, r, G.lit(S, 'a') ? '机のフックのランドセル。黒い革は、すり傷だらけだ。六年生まで、あと半年。……来年の春、イトはもう、となりの窓にいない。' : '手さぐりでさわると、つるつるした革。ランドセルだ。'); };
+  T.a_poster = (S, r) => { say(S, r, G.lit(S, 'a') ? 'ロケットのポスター。「宇宙飛行士になる」と言ったとき、笑わなかったのはイトだけだった。' : '壁に、大きな紙。'); };
+  T.a_zabu = (S, r) => { say(S, r, G.lit(S, 'a') ? '座布団の上に、読みかけの漫画と、野球のグローブ。今日は、一ページも進まなかった。' : '床に、やわらかいもの。座布団だ。'); };
   T.a_cat = (S, r, item) => {
     if (item === 'niboshi') { say(S, r, 'ボタンは、煮干しをぺろりと食べた。'); drop(S, r, 'niboshi'); return; }
     say(S, r, S.f.eye ? 'ボタンが、窓ぎわで星を見ている。（かごに入れれば、イトのところへ送れる）' : 'ボタンが、のどを鳴らしている。');
@@ -511,6 +514,8 @@
     say(S, r, '段ボールにかけたシーツのスクリーン。' + (S.f.filmOn && S.aim === 'glass' && torchA(S) ? (S.f.candle ? '光が当たっているけど、ろうそくの灯りで、ぼんやりしている。' : '光が当たって、ぼんやり何かがうつっている。虫めがねで、ピントを合わせれば……。') : '白くて、うすい。'));
   };
   T.b_phone = (S, r) => phoneTap(S, r);
+  T.b_rug = (S, r) => { const lv = G.lit(S, 'b', 'box'); say(S, r, lv === true || S.f.candle ? '丸めて、ひもでしばったラグ。この上で、ソウと何百回もトランプをした。' : lv === 'dim' ? '部屋のすみに、筒のような影。' : 'まっくらで、何も見えない。'); };
+  T.b_marks = (S, r) => { say(S, r, S.f.candle || G.has(S, 'b', 'torch') ? 'ドアのわくに、えんぴつの線。「6」から「11」まで、少しずつ上へ。……この線は、持っていけない。' : 'ドアのわくに手をはわせると、でこぼこした細い傷がある。'); };
   T.b_cat = (S, r, item) => {
     if (item === 'niboshi') { say(S, r, 'ボタンは、煮干しをぺろりと食べた。'); drop(S, r, 'niboshi'); return; }
     say(S, r, S.f.eye ? 'ボタンが、ベッドの上でまるくなっている。（かごに入れれば、ソウのところへ送れる）' : 'ボタンが、ベッドの上で毛づくろいをしている。');
@@ -552,6 +557,8 @@
   T.c_cushion = (S, r) => { say(S, r, S.f.cLamp ? '小さな座布団。三毛の毛が、たくさんついている。ボタンの場所だ。' : '床に、やわらかいもの。'); };
   T.c_wall = (S, r) => { say(S, r, !S.f.cLamp ? 'カチ……とも、コチ……とも言わない。' : S.f.cWound ? '壁いっぱいの時計。柱時計だけが、動いている。' : '壁いっぱいの時計。どれも、止まっている。'); };
   T.c_win = () => 'win';
+  T.c_hat = (S, r) => { say(S, r, S.f.cLamp ? '壁のフックに、ハンチング帽。じいちゃんが店先で、いつもかぶっていた。' : '壁の上のほうに、何かかかっている。'); };
+  T.c_tools = (S, r) => { say(S, r, S.f.cLamp ? '工具の板。ドライバー、ピンセット、やすり。どれも、すぐ手にとれる場所に、きちんとかけてある。' : '壁に、穴のたくさんあいた板。'); };
 
   /* 糸電話 */
   const pendingTalk = (S) => {
@@ -701,7 +708,7 @@
     const f = T[h];
     if (!f) return;
     // 使い道のない物を持ってさわったときは、そう言う
-    if (item && /^(a_cur|b_cur|a_oshi|a_bank|a_cal|a_shelf|a_drawer|b_door|b_can|b_pins|b_camera|c_drawer|c_note|c_cushion|c_wall|c_box|a_futon)$/.test(h)) { say(S, r, `${I[item] ? I[item].name : 'それ'}は、ここでは使えない。`); return; }
+    if (item && /^(a_cur|b_cur|a_oshi|a_bank|a_cal|a_shelf|a_drawer|b_door|b_can|b_pins|b_camera|c_drawer|c_note|c_cushion|c_wall|c_box|a_futon|a_bag|a_poster|a_zabu|b_rug|b_marks|c_hat|c_tools)$/.test(h)) { say(S, r, `${I[item] ? I[item].name : 'それ'}は、ここでは使えない。`); return; }
     return f(S, r, item);
   };
 
