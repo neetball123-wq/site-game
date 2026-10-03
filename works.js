@@ -13,6 +13,57 @@
    ========================================================= */
 window.WORKS = [
   {
+    id: 'mado',
+    path: 'works/mado/index.html',
+    title: 'ふたつの窓',
+    place: '台風の夜の、路地をはさんだ二階の窓',
+    added: '2026-10-03',
+    genre: ['謎解き', '2画面', 'ヒューマンドラマ'],
+    minutes: 35,
+    difficulty: 3,
+    accent: '#d9a441',
+    catch: '台風の夜、町じゅうが停電した。路地をはさんでむかいあう、ふたつの部屋。二週間カーテンを閉めたままの窓に、光を、糸を、声をとどける。ブラウザのタブをふたつ使って遊ぶ、2画面の謎解き。',
+    features: ['ブラウザのタブひとつに、部屋ひとつ', '懐中電灯の光が、むかいのタブに差しこむ', '路地に糸をわたして、かごで物を送る', 'スマホは、ひとつの画面にならべて遊べる'],
+    storageKey: 'mado.v1',
+    progress(s) {
+      if (s.ended) return { pct: 100, label: s.ending === 'stay' ? '朝・ここで、まってる' : '朝・いっしょに、いく', cleared: true };
+      if (!s.started) return { pct: 0, label: 'まだ停電の前', cleared: false };
+      const f = s.f || {}, t = s.talks || {};
+      const box = ['kit', 'pho', 'boo', 'ito'].some((k) => f['box_' + k]);
+      const steps = [f.torchOn, f.beamed, f.contact, f.lineB === 2, box, f.candleEver, f.phone && t.t1, s.cat !== 'eave' && t.t2, f.eye, t.t3];
+      let n = 0; while (n < steps.length && steps[n]) n++;
+      const L = ['停電', 'むかいの窓', '光をかえす', '糸', 'かご', '灯り', '糸電話', 'ボタン', 'じいちゃんのフィルム', '台風の目', '朝を待つ'];
+      return { pct: Math.round((n / 11) * 100), label: L[n], cleared: false };
+    },
+    spoilers: [
+      '明かり：机の引き出しの懐中電灯に、ラジオの電池を入れる',
+      'むかいの窓：イトが手さぐりでカーテンをあけ、ソウが窓の外を見て、イトの部屋の段ボールの山を照らす',
+      '光をかえす：照らされた段ボールの上のカメラをイトがとり、窓の外を撮る（フラッシュ）',
+      '糸：イトは「部屋を撮る」で撮った写真で、ドアの横のフックの鍵を見つけて窓をあける。ソウは凧糸＋五円玉を、雨がまっすぐ落ちる「風の息つぎ」に投げ、イトが糸を結ぶ',
+      'かご：ねこ缶の煮干しを出し、空き缶＋洗濯ばさみでかご。ソウの机のカッターを送って段ボールをあける',
+      '灯り：ソウの蚊やりぶたのマッチを送り、ろうそく＋ジャムの瓶でランタンにして火をつける',
+      '糸電話：たからもの箱の缶をふたつに分け、「そう」の缶をソウへ。ソウが凧糸を結び、糸巻きをイトへ。イトも「いと」の缶に結ぶ',
+      'ボタン：ソウが時計店のひさしを照らす。イトは手鏡を窓に立て、上の段ボールをたたんだ板をひさしへ渡し、煮干しを置いて風の息つぎを待つ',
+      'フィルム：フィルムをガムテープで窓に、シーツをスクリーンに、ランタンを消す。ソウが窓のフィルムを照らし、イトが虫めがねでピント。フィルムの上下を入れかえ、六コマ見る',
+      '朝：台風の目で話したあと、わたしたいものをかごで送り、ねむる。ボタンは朝にいる部屋の家の子になる',
+    ],
+    cover: {
+      front: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><linearGradient id="md-s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a1022"/><stop offset="1" stop-color="#1f2a4a"/></linearGradient><linearGradient id="md-b" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff6d6" stop-opacity=".8"/><stop offset="1" stop-color="#fff6d6" stop-opacity=".06"/></linearGradient><radialGradient id="md-c" cx=".45" cy=".75" r=".75"><stop offset="0" stop-color="#ffc06a"/><stop offset=".6" stop-color="#b8612a"/><stop offset="1" stop-color="#3a2416"/></radialGradient><radialGradient id="md-g"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="#fffbe2" stop-opacity=".8"/><stop offset="1" stop-color="#fff3c4" stop-opacity="0"/></radialGradient></defs>'
+        + '<rect width="400" height="250" fill="url(#md-s)"/>'
+        + '<path d="M0 0h132l-10 16H0z" fill="#20232a"/><rect y="16" width="122" height="234" fill="#55493c"/>' + [30, 46, 62, 78, 94, 110].map((x) => `<path d="M${x} 16v234" stroke="#4b4035" stroke-width="1.2"/>`).join('')
+        + '<path d="M400 0H268l10 16h122z" fill="#20232a"/><rect x="278" y="16" width="122" height="234" fill="#5f564b"/>' + [36, 52, 68, 84, 100, 116, 132, 148, 164, 180, 196, 212, 228, 244].map((y) => `<path d="M278 ${y}h122" stroke="#544c42" stroke-width="1.2"/>`).join('')
+        + '<rect x="34" y="60" width="72" height="70" fill="#33261a"/><rect x="39" y="65" width="62" height="60" fill="#3b3a3e"/><path d="M70 65v60M39 95h62" stroke="#33261a" stroke-width="2"/>'
+        + '<rect x="294" y="60" width="72" height="70" fill="#3a2c20"/><rect x="299" y="65" width="62" height="60" fill="url(#md-c)"/><path d="M330 65v60M299 95h62" stroke="#3a2c20" stroke-width="2"/>'
+        + '<polygon points="82,104 82,118 300,108 300,82" fill="url(#md-b)"/><circle cx="80" cy="112" r="22" fill="url(#md-g)"/>'
+        + '<path d="M106 136L296 128" stroke="#e8e0cc" stroke-width="1.2"/><path d="M28 140h80M28 147h80" stroke="#8a9096" stroke-width="2"/>'
+        + '<g transform="translate(196 131)"><path d="M-8-8l-3-6M8-8l3-6" stroke="#d9d0bf" stroke-width="1.2"/><rect x="-10" y="-8" width="20" height="14" rx="2" fill="#3d7fa8"/><rect x="-10" y="-6" width="20" height="3" fill="#e9c35a"/></g>'
+        + '<g stroke="#c8d6eb" stroke-opacity=".38" stroke-width="1">' + [[150, 10], [176, 44], [214, 22], [240, 66], [160, 92], [204, 150], [250, 170], [150, 190], [190, 212], [236, 218], [138, 56], [262, 112], [180, 120], [224, 96]].map(([x, y]) => `<path d="M${x} ${y}l-6 18"/>`).join('') + '</g>'
+        + '<g transform="translate(312 128)"><path d="M8 0q12 2 12-9" stroke="#2b2622" stroke-width="2.6" fill="none"/><path d="M-9 0q-2-19 9-22q10 3 9 22z" fill="#f1ece2"/><path d="M-8-5q2-10 7-12l2 12z" fill="#d9833c"/><circle cx="1" cy="-24" r="7.5" fill="#f1ece2"/><path d="M-6-27l1-7 5 4zM4-30l5-4 1 7z" fill="#2b2622"/></g>'
+        + '<text x="200" y="226" text-anchor="middle" font-family="\'Kaisei HarunoUmi\', \'Shippori Mincho B1\', serif" font-weight="700" font-size="30" letter-spacing="10" fill="#f6efdc">ふたつの窓</text>'
+        + '<text x="200" y="244" text-anchor="middle" font-family="sans-serif" font-size="9" letter-spacing="4" fill="#cfd6e4" opacity=".75">タブを、ふたつ。</text></svg>',
+    },
+  },
+  {
     id: 'hazure',
     path: 'works/hazure/index.html',
     title: 'ハズレスキル【合成】',
