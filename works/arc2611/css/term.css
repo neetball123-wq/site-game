@@ -199,7 +199,7 @@ body.exposed #help-title { text-decoration: line-through; text-decoration-color:
 .chat-pill b:empty { display: none; }
 
 /* ---------- 結末・演出 ---------- */
-.endcard { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 24px 16px; background: rgba(18, 20, 19, .95); color: #EEF1EC; animation: fade .8s ease both; }
+.endcard { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; overflow-y: auto; padding: 24px 16px; background: rgba(18, 20, 19, .95); color: #EEF1EC; animation: fade .8s ease both; }
 .endcard.white { background: var(--paper); color: var(--ink); }
 .ec-inner { width: min(520px, 100%); text-align: center; display: grid; gap: 12px; font: 400 15px/1.9 var(--f-doc); }
 .ec-no { margin: 0; font: 500 12px var(--f-ui); letter-spacing: .5em; color: #E07A70; }
@@ -247,6 +247,18 @@ body.glitch .app::after { content: ""; position: fixed; inset: 0; pointer-events
   .bar-btn { margin-left: auto; }
   .p-title { padding-right: 0; margin-top: 48px; }
   .chat, .chat-pill { bottom: calc(60px + env(safe-area-inset-bottom, 0px)); }
+  /* 右下の「送信者」の丸ボタンが、タブのいちばん下（質問の送信など）にかぶらないように、下に余白をあける */
+  .side, .index { padding-bottom: 56px; }
+  /* 「記録」タブ：監査記録と質問欄を上下に並べ、収まらないとき（キーボードが出たときなど）はタブの中でスクロール。2つが重ならないように */
+  .side { overflow-y: auto; grid-template-rows: auto minmax(min-content, 1fr); }   /* 少ないときは質問欄がいちばん下、多いときはスクロール */
+  .audit, .help { min-height: auto; }   /* 押しつぶされて中身が重ならないように */
+  .audit { grid-template-rows: auto auto auto; }
+  .audit ol { max-height: 34vh; }
+  .help { grid-template-rows: auto minmax(96px, 1fr) auto; }
+  .help-log { max-height: 40vh; min-height: 96px; }
+  .doc { padding-bottom: 120px; }
+  /* 開いた「送信者」の窓は、見出しのすぐ下に出す。下の質問欄やタブに触れられるように、返信欄がキーボードに隠れないように */
+  .chat { top: calc(121px + env(safe-area-inset-top, 0px)); bottom: auto; height: max(200px, min(340px, calc(100dvh - 301px))); }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }

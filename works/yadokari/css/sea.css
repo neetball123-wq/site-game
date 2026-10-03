@@ -148,7 +148,7 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
 }
 
 /* ---------- 重ねる画面 ---------- */
-.ov { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 16px; background: rgba(20,40,55,.45); animation: fade .3s; }
+.ov { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; overflow-y: auto; padding: 16px; background: rgba(20,40,55,.45); animation: fade .3s; }
 .ov.dark { background: rgba(8,16,30,.82); }
 @keyframes fade { from { opacity: 0; } }
 .ov > .card { max-height: calc(100dvh - 32px); overflow-y: auto; overscroll-behavior: contain; }

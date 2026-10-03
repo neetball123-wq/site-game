@@ -13,7 +13,7 @@ html { scroll-behavior: smooth; }
 body {
   margin: 0; color: var(--ink); font: 400 16px/1.95 var(--f-ui); letter-spacing: .03em;
   background: var(--paper);
-  padding-bottom: 120px; overflow-x: hidden; -webkit-font-smoothing: antialiased;
+  padding-bottom: 170px; overflow-x: hidden;   /* 下の年代ダイヤルと右下のむぎに、ページの最後の文が隠れないように */ -webkit-font-smoothing: antialiased;
 }
 a { color: var(--red); text-underline-offset: 3px; }
 h1, h2 { font-weight: 500; line-height: 1.4; }

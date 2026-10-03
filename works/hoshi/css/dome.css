@@ -79,7 +79,7 @@ body.opened .curtain i:first-child { transform: translateY(-100%); }
 body.opened .curtain i:last-child { transform: translateY(100%); }
 
 /* ---------- 表紙 ---------- */
-.title { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; text-align: center; padding: 6vh 6vw;
+.title { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; overflow-y: auto; text-align: center; padding: 6vh 6vw;
   background: radial-gradient(90% 70% at 50% 40%, #0C1220 0%, #05070C 70%); animation: fadein 2.4s var(--ease); }
 @keyframes fadein { from { opacity: 0; } }
 .t-sup { margin: 0 0 10px; font-size: 12px; letter-spacing: .5em; color: var(--dim); }
@@ -97,7 +97,7 @@ body.opened .curtain i:last-child { transform: translateY(100%); }
 .t-note { margin: 22px 0 0; font-size: 11px; color: #5F7186; line-height: 1.9; animation: fadein 3s 2.6s var(--ease) both; }
 
 /* ---------- 字幕 ---------- */
-.sub { position: fixed; z-index: 24; left: 50%; bottom: 13vh; transform: translateX(-50%); width: min(760px, 88vw); text-align: center; pointer-events: none; }
+.sub { position: fixed; z-index: 24; left: 50%; bottom: max(13vh, calc(var(--con-h, 0px) + 10px)); transform: translateX(-50%); width: min(760px, 88vw); text-align: center; pointer-events: none; }
 .sub-line { margin: 0; min-height: 3.4em; font: 400 clamp(16px, 2.3vw, 21px)/2 var(--f-m); letter-spacing: .12em; text-shadow: 0 2px 20px rgba(0, 0, 0, .9), 0 0 40px rgba(0, 0, 0, .6); white-space: pre-wrap; }
 .sub-line .ch { opacity: 0; animation: ch 1.1s var(--ease) forwards; }
 @keyframes ch { from { opacity: 0; filter: blur(8px); transform: translateY(6px); } to { opacity: 1; filter: none; transform: none; } }
@@ -138,7 +138,7 @@ body.opened .curtain i:last-child { transform: translateY(100%); }
 .sketch text { fill: #9DAEBF; font: 300 11px/1 var(--f); }
 
 /* ---------- 名前をつける ---------- */
-.ask { position: fixed; inset: 0; z-index: 36; display: grid; place-items: center; background: rgba(3, 5, 9, .75); animation: fadein 2s var(--ease); }
+.ask { position: fixed; inset: 0; z-index: 36; display: grid; place-items: center; overflow-y: auto; background: rgba(3, 5, 9, .75); animation: fadein 2s var(--ease); }
 .ask-in { text-align: center; }
 .ask-in p { margin: 0 0 18px; font: 400 clamp(17px, 2.6vw, 22px)/2 var(--f-m); letter-spacing: .2em; }
 .ask-in input { width: min(320px, 70vw); background: none; border: 0; border-bottom: 1px solid rgba(232, 201, 138, .5); color: var(--gold); font: 400 24px/2 var(--f-d); text-align: center; letter-spacing: .3em; }
@@ -161,7 +161,7 @@ body.lit .console { opacity: 0; transition: opacity 2s; }
 .end-btns button { border: 1px solid #C3B296; background: none; padding: 7px 20px; font-size: 13px; letter-spacing: .2em; border-radius: 2px; }
 
 @media (max-width: 720px) {
-  .sub { bottom: 16vh; }
+  .sub { bottom: max(16vh, calc(var(--con-h, 0px) + 10px)); }   /* 下の操作盤が2段に折り返しても、字幕の「▼」が隠れないように */
   .c-year { font-size: 20px; }
   .figname { top: 8%; }
 }

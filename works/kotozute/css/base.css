@@ -287,12 +287,16 @@ body[data-top] .owner { color: rgba(251, 248, 242, .9); text-shadow: 0 1px 6px r
   .page-head > .title, .page-head > .eyebrow { writing-mode: horizontal-tb; white-space: normal; }
   .hero-copy { right: 20px; }
   .greet { margin-top: -60px; }
+  .hero-sub { bottom: 84px; }   /* 上にかぶさる「はじめまして」の巻紙に隠れないように */
   .view-grid { grid-template-columns: 1fr; }
   .rack { width: calc(100% - 100px); }
   .rack-slots a span { font-size: 10.5px; letter-spacing: .06em; }
   .about-grid { grid-template-columns: 1fr; }
   .notices li, .diary-list a { grid-template-columns: 1fr; gap: 0; }
   .paper { height: 26em; padding: 28px 26px; }
+  /* 左上の判子・右上の店主名（どちらも固定表示）が、ページの見出しや本文の端に重ならないように */
+  body:not([data-top]) .page { padding-top: calc(80px + env(safe-area-inset-top, 0px)); }
+  .owner { right: 4px; font-size: 10px; letter-spacing: .3em; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

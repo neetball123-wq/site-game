@@ -370,7 +370,7 @@ h2.mid{font:700 clamp(21px,3.2vw,30px)/1.5 var(--f-h);letter-spacing:.2em;color:
 .hcard[hidden]{display:none}
 
 /* ---------- 転換幕 ---------- */
-.maku{position:fixed;inset:0;z-index:60;background:#070605;display:grid;place-items:center;
+.maku{position:fixed;inset:0;z-index:60;background:#070605;display:grid;place-items:center;overflow-y:auto;
   opacity:0;pointer-events:none;transition:opacity .5s ease}
 .maku.on{opacity:1;pointer-events:all}
 .maku-t{font:400 clamp(44px,11vw,104px)/1.2 var(--f-h);letter-spacing:.3em;color:#E9DEC7;
@@ -379,7 +379,7 @@ h2.mid{font:700 clamp(21px,3.2vw,30px)/1.5 var(--f-h);letter-spacing:.2em;color:
 @keyframes makut{0%{opacity:0;letter-spacing:.9em}30%{opacity:1;letter-spacing:.3em}75%{opacity:1}100%{opacity:.85}}
 
 /* ---------- 確認 ---------- */
-.ask{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;background:rgba(6,5,4,.74);backdrop-filter:blur(2px)}
+.ask{position:fixed;inset:0;z-index:80;display:grid;place-items:center;overflow-y:auto;padding:20px;background:rgba(6,5,4,.74);backdrop-filter:blur(2px)}
 .ask-in{width:100%;max-width:360px;padding:26px 22px 22px;text-align:center;border-radius:3px;
   background:linear-gradient(#211B16,#120F0C);border:1px solid #4A3E30;box-shadow:0 22px 60px rgba(0,0,0,.8);
   animation:pop .3s cubic-bezier(.2,1.5,.4,1)}

@@ -23,6 +23,8 @@
   }
   function next() { if (waiting) { const w = waiting; waiting = null; if (HS.snd) HS.snd.tick(); w(); } }
   $('#sub-next').addEventListener('click', next);
+  // 操作盤の高さを測って、字幕をその上に出す（小さい画面で操作盤が2段になると「▼」が隠れていた）
+  { const con = $('#console'); const fit = () => document.documentElement.style.setProperty('--con-h', (con ? con.offsetHeight : 0) + 'px'); fit(); if (con && window.ResizeObserver) new ResizeObserver(fit).observe(con); addEventListener('resize', fit); }
   addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { if (waiting) { e.preventDefault(); next(); } } });
   $('#sub').addEventListener('click', next);
   async function lines(arr) {

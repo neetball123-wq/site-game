@@ -199,7 +199,7 @@ body.walking .view { touch-action: none; cursor: pointer; }
 .card.fly { animation: none; transition: transform .55s cubic-bezier(.5,0,.7,1), opacity .55s; }
 
 /* ---------- 重ね（できごと） ---------- */
-.ov { position: fixed; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center; background: rgba(20,14,30,.55); padding: 16px; animation: fade .3s; }
+.ov { position: fixed; inset: 0; z-index: 20; display: flex; align-items: flex-start; overflow-y: auto; justify-content: center; background: rgba(20,14,30,.55); padding: 16px; animation: fade .3s; }
 .ov[hidden] { display: none; }
 @keyframes fade { from { opacity: 0; } }
 .ov-in { width: 100%; max-width: 440px; background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; box-shadow: 0 6px 0 var(--ink); padding: 20px 18px 18px; max-height: 92%; overflow: auto; }
@@ -211,7 +211,7 @@ body.walking .view { touch-action: none; cursor: pointer; }
 .sw { display: inline-block; width: 14px; height: 14px; border-radius: 4px; border: 2px solid var(--ink); vertical-align: -2px; margin-right: 6px; }
 
 /* ---------- 物の説明 ---------- */
-.peek { position: fixed; inset: 0; z-index: 25; display: flex; align-items: center; justify-content: center; background: rgba(20,14,30,.5); padding: 16px; animation: fade .2s; }
+.peek { position: fixed; inset: 0; z-index: 25; display: flex; align-items: flex-start; overflow-y: auto; justify-content: center; background: rgba(20,14,30,.5); padding: 16px; animation: fade .2s; }
 .peek[hidden] { display: none; }
 .peek-card { width: 100%; max-width: 320px; background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; box-shadow: 0 6px 0 var(--ink); padding: 18px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .peek-card canvas { width: 96px; height: auto; }
@@ -219,7 +219,9 @@ body.walking .view { touch-action: none; cursor: pointer; }
 .peek-s { margin: 0; font-size: 14px; line-height: 1.8; text-align: center; }
 .peek-b { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 6px; }
 
-.ask { position: fixed; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center; background: rgba(20,14,30,.5); padding: 16px; }
+.ask { position: fixed; inset: 0; z-index: 40; display: flex; align-items: flex-start; overflow-y: auto; justify-content: center; background: rgba(20,14,30,.5); padding: 16px; }
+/* 画面が低くても窓の中身が上下に切れないように：中身は自動の余白で中央、はみ出すときはスクロール */
+.ov > *, .peek > *, .ask > * { margin: auto; }
 .ask[hidden] { display: none; }
 .ask-in { max-width: 320px; background: var(--paper); border: 2px solid var(--ink); border-radius: 14px; box-shadow: 0 5px 0 var(--ink); padding: 18px; text-align: center; }
 .ask-in p { margin: 0 0 14px; line-height: 1.7; }

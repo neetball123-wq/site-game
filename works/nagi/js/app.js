@@ -151,7 +151,7 @@
     $$('#panel-tabs button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.t === t)));
     $('#panel-body').innerHTML = panelViews[t]();
   }
-  const openPanel = on => { $('#panel').hidden = !on; if (on) panelTab('css'); };
+  const openPanel = on => { $('#panel').hidden = !on; document.body.classList.toggle('panel-open', !!on); if (on) panelTab('css'); };
   $('#panel-btn').addEventListener('click', () => openPanel($('#panel').hidden));
   $('#panel-close').addEventListener('click', () => openPanel(false));
   $('#panel-tabs').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (b) panelTab(b.dataset.t); });
