@@ -99,7 +99,8 @@
 
   // 作品の中で「見てしまった」ものが、この一覧にも漏れ出す（works.js の haunt が返す内容を当てる）
   function haunt() {
-    const hs = works.map(w => { const s = readState(w); return s && w.haunt ? w.haunt(s) : null; }).filter(Boolean);
+    // 作品の保存データが壊れていても、一覧ごと止まらないように
+    const hs = works.map(w => { const s = readState(w); if (!s || !w.haunt) return null; try { return w.haunt(s); } catch (e) { return null; } }).filter(h => h && h.tagline);
     const tag = $('.tagline');
     if (!tag.dataset.orig) tag.dataset.orig = tag.textContent;
     tag.textContent = hs.length ? hs[0].tagline : tag.dataset.orig;

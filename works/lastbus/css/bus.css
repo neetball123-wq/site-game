@@ -63,7 +63,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .talk .t-note { font-size: 12px; color: var(--sub); }
 
 /* ---------- 下の段 ---------- */
-.deck { display: grid; grid-template-columns: 300px 1fr 1.25fr; gap: 14px; padding: 14px 16px 0; align-items: start; }
+.deck { display: grid; grid-template-columns: 300px minmax(0, 1fr) minmax(0, 1.25fr); gap: 14px; padding: 14px 16px 0; align-items: start; }
 .ctrl { display: grid; gap: 10px; }
 .cord { position: relative; display: grid; justify-items: center; gap: 2px; padding: 42px 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: linear-gradient(#1c2433, #151b28); }
 .cord-rope { position: absolute; top: 0; left: 50%; width: 4px; height: 34px; margin-left: -2px; background: repeating-linear-gradient(180deg, #c8b890 0 4px, #a89870 4px 8px); border-radius: 2px; transition: height .12s; }
@@ -78,7 +78,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .ctrl-b { display: flex; gap: 6px; }
 .ctrl-b button { flex: 1; border: 1px solid var(--line); background: var(--panel); border-radius: 99px; padding: 5px 8px; font-size: 12px; font-weight: 700; }
 
-.seats { display: grid; gap: 8px; }
+.seats { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; }
 .seats h3, .tools h3 { margin: 0; font-size: 12px; color: var(--sub); letter-spacing: .15em; font-weight: 700; }
 .pax { display: grid; grid-template-columns: 44px 1fr auto; gap: 10px; align-items: center; width: 100%; text-align: left; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px;
   background: linear-gradient(90deg, rgba(45, 90, 85, .35), rgba(21, 27, 40, .9)); }
@@ -93,7 +93,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .pax.new { animation: glowin 2s; }
 @keyframes glowin { from { box-shadow: 0 0 0 4px rgba(200, 164, 90, .7); } to { box-shadow: 0 0 0 0 rgba(200, 164, 90, 0); } }
 
-.tools { display: grid; gap: 8px; min-width: 0; }
+.tools { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; }
 .tabs { display: flex; flex-wrap: wrap; gap: 4px; }
 .tabs button { border: 1px solid var(--line); background: var(--panel); border-radius: 6px 6px 0 0; padding: 5px 12px; font-size: 13px; font-weight: 700; color: var(--sub); }
 .tabs button.on { background: var(--paper); color: var(--ink); border-color: var(--paper); }
@@ -150,7 +150,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .foot { margin: 18px 16px 0; text-align: center; font-size: 11px; color: #5a6480; }
 
 @media (max-width: 1100px) {
-  .deck { grid-template-columns: 1fr 1fr; }
+  .deck { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .tools { grid-column: 1 / -1; }
 }
 @media (max-width: 700px) {
@@ -163,7 +163,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .talk { grid-template-columns: 64px 1fr; bottom: 6px; left: 6px; width: calc(100% - 12px); padding: 10px; }
   .talk .t-face { width: 64px; height: 76px; }
   .talk .t-line { font-size: 14px; min-height: 0; }
-  .deck { grid-template-columns: 1fr; padding: 10px 10px 0; }
+  .deck { grid-template-columns: minmax(0, 1fr); padding: 10px 10px 0; }
   .cord { padding-top: 38px; }
   .bag { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .look { bottom: 6px; right: 6px; }

@@ -296,11 +296,11 @@
   $('#a-disc').addEventListener('click', () => {
     if (busy) return;
     if (mode) { mode = null; marks = []; renderComp(); return; }
-    if (run.fight.discards <= 0) return;
+    if (!run || !run.fight || run.fight.discards <= 0) return;
     mode = 'disc'; marks = []; sen = []; cur = -1; renderComp();
   });
   $('#a-play').addEventListener('click', () => {
-    if (busy) return;
+    if (busy || !run || !run.fight) return;
     if (mode === 'disc') { if (R.discard(run, marks)) { SND.play('paper'); toast(`${marks.length}枚を書き直した`); } mode = null; marks = []; save(); renderComp(); return; }
     doPlay();
   });
@@ -521,6 +521,7 @@
 
   // 御守り
   function openRelics() {
+    if (!run) return;   // 旅の前（タイトル）には開かない
     const rs = run.relics.map((id) => KD.RELICS.find((r) => r.id === id));
     const tl = KD.TOOLS.filter((t) => run.tools[t.id]);
     sheet(`<h2>御守りと道具</h2><h3>御守り</h3>${rs.length ? `<div class="goods">${rs.map((r) => `<div class="good"><span class="gi relic">守</span><span><b>${esc(r.name)}</b><small>${esc(r.desc)}</small></span></div>`).join('')}</div>` : '<p class="lead">まだない。言の葉屋で手に入る。</p>'}
@@ -538,6 +539,7 @@
     return `<b>${esc(t.name)}</b>：${n === 2 ? `つなぐ短冊を順に二枚えらぶ（${marks.length}/2）` : '使う短冊をえらぶ'}`;
   }
   function openTools() {
+    if (!run || !run.fight) return;
     const ts = KD.TOOLS;
     const inn = sheet(`<h2>道具</h2><div class="tools">${ts.map((t) => `<button type="button" class="good" data-t="${t.id}" ${run.tools[t.id] ? '' : 'disabled'}><span class="gi tool">具</span><span><b>${esc(t.name)} ×${run.tools[t.id] || 0}</b><small>${esc(t.desc)}</small></span></button>`).join('')}</div>`);
     $$('[data-t]', inn).forEach((b) => b.addEventListener('click', () => {

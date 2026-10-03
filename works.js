@@ -28,7 +28,7 @@ window.WORKS = [
     progress(s) {
       const m = s.meta || {}, r = s.run, CH = ['はじまりの草原', '迷いの森', '灼熱の火山', '氷の峡谷', '魔王城'];
       if (m.clears) return { pct: 100, label: m.best && m.best.deep ? `魔王を倒した・深淵${m.best.deep}層` : m.clears > 1 ? `魔王を${m.clears}回倒した` : '魔王を倒した', cleared: true };
-      if (r && r.phase && !['over', 'start', 'start2'].includes(r.phase)) return { pct: Math.min(95, Math.max(3, Math.round((r.ch * 7 + r.step) / 35 * 100))), label: `${CH[Math.min(r.ch, 4)]}・${r.step + 1}歩目`, cleared: false };
+      if (r && r.phase && !['over', 'start', 'start2'].includes(r.phase)) { const ch = r.ch || 0, st = r.step || 0; return { pct: Math.min(95, Math.max(3, Math.round((ch * 7 + st) / 35 * 100))), label: `${CH[Math.min(ch, 4)]}・${st + 1}歩目`, cleared: false }; }
       if (m.far) return { pct: Math.min(90, Math.round(m.far / 35 * 100)), label: `いちばん遠く：${CH[Math.min(4, Math.floor(Math.max(0, m.far - 1) / 7))]}`, cleared: false };
       return { pct: s.playMs ? 2 : 0, label: s.playMs ? 'まだ旅のとちゅう' : 'まだ転生していない', cleared: false };
     },
