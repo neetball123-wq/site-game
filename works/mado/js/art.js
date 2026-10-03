@@ -514,7 +514,6 @@
       s += `<g transform="translate(318 452)"><rect x="-12" y="-26" width="24" height="30" rx="5" fill="#cfe0e6" opacity=".55" stroke="#9fb6bf"/><rect x="-4" y="-16" width="8" height="18" fill="#f3ead2"/>`
         + (S.f.candle ? `<path class="flame" d="M0-30q6 8 0 13q-6-5 0-13z" fill="#ffcf5a"/>` : '<path d="M0-18v-4" stroke="#333" stroke-width="1.5"/>') + '</g>';
     }
-    if (S.f.lineB === 1 && !end) s += `<g transform="translate(246 366)"><path d="M-30 4q20-14 40 0t30-4" stroke="#e8e0cc" stroke-width="1.5" fill="none"/>${[0, 6, 12].map((d) => `<circle cx="${18 + d}" cy="${2 - d / 4}" r="4" fill="#d6b04a" stroke="#9c7c2a"/>`).join('')}</g>`;
     // スクリーン（シーツ）
     if (S.f.screen && !end) {
       const show = lens(S) && !S.f.candle;
@@ -548,6 +547,7 @@
         s += `<polygon points="${pt([[226, 170], [254, 170], [tg[0] + 50, tg[1] + 40], [tg[0] - 50, tg[1] - 30]])}" fill="#fffbe6" opacity=".12"/>`;
       }
     }
+    if (S.f.lineB === 1 && !end) s += `<g transform="translate(246 366)" class="glint"><path d="M-30 4q20-14 40 0t30-4" stroke="#e8e0cc" stroke-width="1.5" fill="none"/>${[0, 6, 12].map((d) => `<circle cx="${18 + d}" cy="${2 - d / 4}" r="4" fill="#d6b04a" stroke="#9c7c2a"/>`).join('')}</g>`;
     // さわれる所
     if (!end) {
       if (S.f.bCur) s += hsR('b_win', 156, 116, 168, 142, '窓') + hsR('b_cur', 128, 104, 28, 166, 'カーテン') + hsR('b_cur', 324, 104, 28, 166, 'カーテン');

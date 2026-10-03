@@ -265,7 +265,8 @@
     drop(S, 'a', 'weighted'); give(S, 'a', 'reel');
     S.f.lineB = 1; fx(S, 'throw', 'a');
     say(S, 'a', 'えいっ！　風がやんだ一瞬、五円玉は雨の中をまっすぐ飛んで、イトの窓に吸いこまれた！　糸巻きのほうを、物干しの手すりに結んだ。');
-    say(S, 'b', 'チャリン！　五円玉のついた糸が、窓から飛びこんできた！　床に落ちている。');
+    say(S, 'b', 'チャリン！　五円玉のついた糸が、窓から飛びこんできた！　窓の下の床に落ちている。ひろって、窓に結ぼう。');
+    say(S, 'a', 'えいっ！　風がやんだ一瞬、五円玉は雨の中をまっすぐ飛んで、イトの窓に吸いこまれた！　あとは、イトが糸を結んでくれれば。');
   };
 
   /* ---- 窓に使う（イト） ---- */
@@ -278,6 +279,7 @@
     if (item === 'camera') return G.shoot(S, r, 'out');
     if (!S.f.bCur) { say(S, r, 'カーテンが閉まっている。'); return; }
     if (item === 'basketItem') {
+      if (S.f.lineB === 1) { say(S, r, '糸はとどいているけど、まだ床に落ちたままだ。先に、糸をひろって窓に結ぼう。'); return; }
       if (S.f.lineB !== 2) { say(S, r, 'ひっかける糸が、まだない。'); return; }
       if (!S.f.bWin) { say(S, r, '窓をあけないと。'); return; }
       drop(S, r, 'basketItem'); S.f.basket = true; at(S, 'basket');
@@ -414,6 +416,7 @@
     say(S, r, 'カーテンは、あけてある。');
   };
   T.b_win = (S, r, item) => {
+    if (S.f.lineB === 1 && !item) return T.b_string(S, r);
     if (item) return useOnWindowB(S, item);
     if (!S.f.bCur) { say(S, r, 'カーテンが閉まっている。'); return; }
     return 'win';
@@ -680,6 +683,7 @@
       if (h === 'vb_tree') { say(S, r, S.f.eye ? '空き地の木が、しずかに立っている。' : '空き地の木が、風で大きくしなっている。ときどき、ふっと止まる。'); return; }
       if (h === 'vb_sign') { say(S, r, '「みなもと酒店」。ソウの家。シャッターに、雨がたたきつけている。'); return; }
       if (h === 'vb_frame' || h === 'vb_glass') {
+        if (S.f.lineB === 1 && !item) return T.b_string(S, r);
         if (item) return useOnWindowB(S, item);
         if (!S.f.bLock) { say(S, r, '補助錠がかかっていて、窓があかない。'); return; }
         say(S, r, S.f.bWin ? '窓わく。糸を結ぶ手すりがある。' : '窓は閉まっている。'); return;

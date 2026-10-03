@@ -58,6 +58,8 @@ button:disabled { cursor: default; opacity: .45; }
   .hs:hover { fill: rgba(255, 240, 200, .07); stroke: rgba(255, 240, 200, .4); stroke-width: 1.5; stroke-dasharray: 5 4; }
   .hs.can:hover { stroke: var(--gold); stroke-dasharray: none; stroke-width: 2.5; }
 }
+.glint { animation: glint 1.6s ease-in-out infinite; filter: drop-shadow(0 0 4px #ffe9a0); }
+@keyframes glint { 50% { opacity: .55; } }
 .dial { animation: dial 2.4s ease-in-out infinite; }
 @keyframes dial { 50% { opacity: .75; } }
 .flame { transform-box: fill-box; transform-origin: 50% 100%; animation: flame .5s ease-in-out infinite alternate; }
