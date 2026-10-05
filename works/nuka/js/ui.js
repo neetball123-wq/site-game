@@ -51,10 +51,10 @@
   /* ---- 台所 ---- */
   UI.scene = (force) => {
     const now = new Date();
-    const key = [S.cont, ['konbu', 'kara', 'tetsu', 'sansho', 'beer', 'kaki', 'togarashi', 'mise', 'mina', 'haitatsu', 'mazebo'].map((k) => NK.lv(S, k) > 0 ? 1 : 0).join(''), S.pres.count > 0, now.getHours(), now.getMinutes() >> 2, now.getDate()].join('|');
+    const key = [S.cont, ['konbu', 'kara', 'tetsu', 'sansho', 'beer', 'kaki', 'togarashi', 'mise', 'mina', 'haitatsu', 'mazebo'].map((k) => NK.on(S, k) ? 1 : 0).join(''), S.pres.count > 0, now.getHours(), now.getMinutes() >> 2, now.getDate()].join('|');
     if (!force && key === UI.sceneKey) return;
     UI.sceneKey = key;
-    $('#sc').innerHTML = A.kitchen(S, now) + (NK.lv(S, 'mazebo') ? A.mazebo(S.cont) : '');
+    $('#sc').innerHTML = A.kitchen(S, now) + (NK.on(S, 'mazebo') ? A.mazebo(S.cont) : '');
     UI.bed = A.BED[S.cont];
     UI.veg(true);
   };
@@ -315,8 +315,14 @@
     UI.drawTabs();
   };
   const cost = (n) => `¥${F(n)}`;
+  const helpers = () => {
+    const hs = [['mazebo', 'まぜ棒', '自動でまぜる'], ['mina', 'いとこのミナ', '自動で取り出す'], ['haitatsu', '八百屋の配達', '自動で漬けなおす']].filter(([id]) => NK.lv(S, id) > 0);
+    if (!hs.length) return '';
+    const all = hs.every(([id]) => S.off && S.off[id]);
+    return `<div class="sec help"><h3>手伝い<button type="button" class="h-all" data-offall="${all ? 0 : 1}">${all ? 'みんな、はたらく' : 'みんな休ませる'}</button></h3><ul class="helps">${hs.map(([id, n, what]) => { const on = NK.on(S, id); return `<li><span><b>${n}</b><small>${what}</small></span><button type="button" class="sw${on ? ' on' : ''}" data-off="${id}" aria-pressed="${on}">${on ? 'はたらいている' : '休み'}</button></li>`; }).join('')}</ul><p class="hint">野菜を選びなおすときは、休ませてから。マスの入れかえが終わったら、またはたらいてもらう。</p></div>`;
+  };
   const tabTsukeru = (d) => {
-    let h = `<div class="sec"><h3>いま漬ける野菜</h3><p class="hint">選んだ野菜を、ぬか床の空いている所（＋）をタップして漬ける。光ったら、タップで取り出し。</p><ul class="vlist">`;
+    let h = helpers() + `<div class="sec"><h3>いま漬ける野菜</h3><p class="hint">選んだ野菜を、ぬか床の空いている所（＋）をタップして漬ける。光ったら、タップで取り出し。</p><ul class="vlist">`;
     let shownLock = 0;
     for (const v of VEG) {
       const un = NK.unlocked(S, v);
@@ -333,8 +339,8 @@
     const pk = S.pick || 'kyuri', other = S.slots.filter((x) => x.veg && x.veg !== pk).length;
     if (other) h += `<button type="button" class="swap" data-swap="1">いま選んでいる${VEG[VEGI[pk]].name}に、ぜんぶ入れかえる（${other}か所）</button><p class="hint">漬かっているものは取り出して売り、まだのものは仕入れ値の半分を返して抜く。</p>`;
     h += `</div>`;
-    if (NK.lv(S, 'haitatsu')) h += `<div class="sec"><h3>八百屋の配達で漬けなおす野菜</h3><div class="seg">${[['pick', 'いま選んでいる野菜'], ['same', '取り出したのと同じ野菜']].map(([k, n]) => `<button type="button" class="${(S.replant || 'pick') === k ? 'on' : ''}" data-replant="${k}">${n}</button>`).join('')}</div></div>`;
-    if (NK.lv(S, 'mina')) h += `<div class="sec"><h3>ミナが取り出すころあい</h3><div class="seg">${['asa', 'tabe', 'furu'].map((k) => `<button type="button" class="${S.auto === k ? 'on' : ''}" data-auto="${k}">${NK.STAGE[k].name}</button>`).join('')}</div><p class="hint">注文で、ちがう漬かり具合がほしいときは、自分で取り出そう。</p></div>`;
+    if (NK.on(S, 'haitatsu') && NK.on(S, 'mina')) h += `<div class="sec"><h3>ミナが取り出したあとに漬けなおす野菜</h3><div class="seg">${[['same', 'そのマスの野菜のまま'], ['pick', 'いま選んでいる野菜']].map(([k, n]) => `<button type="button" class="${(S.refill || 'same') === k ? 'on' : ''}" data-refill="${k}">${n}</button>`).join('')}</div><p class="hint">自分でタップして取り出したマスには、いつも「いま漬ける」の野菜が入る。</p></div>`;
+    if (NK.on(S, 'mina')) h += `<div class="sec"><h3>ミナが取り出すころあい</h3><div class="seg">${['asa', 'tabe', 'furu'].map((k) => `<button type="button" class="${S.auto === k ? 'on' : ''}" data-auto="${k}">${NK.STAGE[k].name}</button>`).join('')}</div><p class="hint">注文で、ちがう漬かり具合がほしいときは、自分で取り出そう。</p></div>`;
     const q = 0.85 + 0.3 * S.O + d.qBonus;
     h += `<div class="sec toko"><h3>床のようす</h3><dl class="kv">`
       + `<div><dt>入れもの</dt><dd>${d.cont.name}（${S.slots.length}か所）</dd></div>`
@@ -492,7 +498,7 @@
       + (sm.rep > 0.5 ? `<li>評判 <b>+${F(sm.rep)}</b></li>` : '')
       + (sm.tree ? `<li>ぬか床がひろがった <b>+${sm.tree}軒</b></li>` : '')
       + (sm.ripe ? `<li>漬かって待っている野菜 <b>${sm.ripe}本</b></li>` : '')
-      + `</ul>${sm.capped ? `<p class="sm">（留守のあいだに進むのは、${NK.fmtTime(sm.dt)}まで）</p>` : ''}${!NK.lv(S, 'mina') && sm.ripe ? '<p class="sm">漬かりすぎた野菜は、古漬けになっている。古漬けにも、ほしい人がいる。</p>' : ''}<div class="md-acts"><button type="button" class="pri" data-md="close">ぬか床をまぜる</button></div></div>`);
+      + `</ul>${sm.capped ? `<p class="sm">（留守のあいだに進むのは、${NK.fmtTime(sm.dt)}まで）</p>` : ''}${!NK.on(S, 'mina') && sm.ripe ? '<p class="sm">漬かりすぎた野菜は、古漬けになっている。古漬けにも、ほしい人がいる。</p>' : ''}<div class="md-acts"><button type="button" class="pri" data-md="close">ぬか床をまぜる</button></div></div>`);
   };
   UI.settings = () => {
     UI.modal(`<div class="md-in md-paper"><h2>設定</h2><div class="md-acts col"><button type="button" data-set="snd">音：${S.snd ? 'あり' : 'なし'}</button><button type="button" data-set="export">記録を書き出す（控えをとる）</button><button type="button" data-set="import">記録を読みこむ</button><button type="button" data-set="reset">はじめから</button><button type="button" class="pri" data-md="close">とじる</button></div><p class="sm">記録はこのブラウザに保存されます。本作品はフィクションです。</p></div>`);
@@ -525,7 +531,9 @@
       if ((b = q('[data-tab]'))) { UI.tab = b.dataset.tab; UI.dirty = true; return; }
       if ((b = q('[data-pick]'))) { S.pick = b.dataset.pick; UI.dirty = true; UI.header(); return; }
       if ((b = q('[data-auto]'))) { S.auto = b.dataset.auto; UI.dirty = true; return; }
-      if ((b = q('[data-replant]'))) { S.replant = b.dataset.replant; UI.dirty = true; return; }
+      if ((b = q('[data-refill]'))) { S.refill = b.dataset.refill; UI.dirty = true; return; }
+      if ((b = q('[data-off]'))) { const id = b.dataset.off; S.off = S.off || {}; S.off[id] = !S.off[id]; UI.toast(`${NK.UPI[id].name}は${S.off[id] ? '休み' : '、またはたらく'}`); UI.dirty = true; save(); return; }
+      if ((b = q('[data-offall]'))) { S.off = S.off || {}; const v = b.dataset.offall === '1'; for (const id of ['mazebo', 'mina', 'haitatsu']) if (NK.lv(S, id)) S.off[id] = v; UI.toast(v ? '手伝いは、みんな休み' : '手伝いが、またはたらきはじめた'); UI.dirty = true; save(); return; }
       if ((b = q('[data-swap]'))) {
         const pk = S.pick || 'kyuri', r = NK.swapAll(S, pk);
         for (const [i, res] of r.out) if (res) UI.onHarvest(i, res);

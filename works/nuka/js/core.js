@@ -7,7 +7,7 @@
   NK.fresh = (now) => ({
     v: 1, t: now || Date.now(), born: now || Date.now(),
     coins: 60, rep: 0, repMax: 0, earned: 0,
-    kg: 1, cont: 0, C: 1e6, O: 0.5, mzT: 0, pick: 'kyuri', replant: 'pick',
+    kg: 1, cont: 0, C: 1e6, O: 0.5, mzT: 0, pick: 'kyuri', refill: 'same', off: {},
     slots: [], up: {}, auto: 'tabe',
     orders: [], orderCd: 3, orderN: 0,
     stats: { stirs: 0, harvests: 0, orders: 0, furu: 0, by: {}, earnedAll: 0, bestHarvest: 0 },
@@ -40,6 +40,7 @@
 
   /* ---- 効き目の計算 ---- */
   NK.lv = (s, id) => s.up[id] || 0;
+  NK.on = (s, id) => NK.lv(s, id) > 0 && !(s.off && s.off[id]);
   NK.kl = (s, id) => (s.pres.kaden[id] || 0);
   NK.households = (s) => 1 + s.tree.length;
   NK.recipBonus = (s) => {
@@ -69,7 +70,7 @@
     d.furu = 0.55 + 0.08 * L('kara');
     d.qBonus = 0.06 * L('sansho') + rb.quality + se.q;
     d.decay = 600 * (1 + 0.3 * L('togarashi')) / se.decay;
-    d.mazeboInt = L('mazebo') > 0 ? 45 / (1 + 0.6 * (L('mazebo') - 1)) / rb.mazebo : Infinity;
+    d.mazeboInt = NK.on(s, 'mazebo') ? 45 / (1 + 0.6 * (L('mazebo') - 1)) / rb.mazebo : Infinity;
     d.cost = rb.cost;
     d.offlineH = 8 + 6 * K('rusu') + rb.offline;
     d.spread = Math.pow(1.35, K('hirogari')) * rb.spread;
@@ -145,8 +146,9 @@
     if (sl.veg === 'nasu' && st === 'tabe' && NK.lv(s, 'tetsu') && !s.zukan.tetsunasu) { s.zukan.tetsunasu = true; res.newZukan = 'tetsunasu'; }
     const again = sl.veg;
     Object.assign(sl, { veg: null, p: 0, oAcc: 0, tAcc: 0 });
-    if (NK.lv(s, 'haitatsu') && auto !== 'noReplant') {
-      const want = s.replant === 'same' ? again : (s.pick || again);
+    if (NK.on(s, 'haitatsu') && auto !== 'noReplant') {
+      // 自分でさわって取り出したマスには、いま選んでいる野菜。ミナが取り出したマスは、決めたとおりに
+      const want = auto === true && s.refill !== 'pick' ? again : (s.pick || again);
       if (!NK.plant(s, i, want) && want !== again) NK.plant(s, i, again);
     }
     res.val = val;
@@ -253,7 +255,7 @@
     const pts = NK.presPoints(s);
     s.pres.count++; s.pres.points += pts; s.pres.recip.push(rid);
     s.tree.push({ id: ++s.treeSeq, name: r.name, recip: rid, parent: 0, depth: 1, at: now || Date.now(), acc: 0, kids: 0 });
-    const keep = { replant: s.replant, rep: s.rep, repMax: s.repMax, pres: s.pres, tree: s.tree, treeSeq: s.treeSeq, stats: s.stats, zukan: s.zukan, cards: s.cards, notes: s.notes, seen: s.seen, secret: s.secret, ended: s.ended, endAt: s.endAt, playMs: s.playMs, snd: s.snd, born: s.born, orderN: s.orderN, auto: s.auto };
+    const keep = { refill: s.refill, off: s.off, rep: s.rep, repMax: s.repMax, pres: s.pres, tree: s.tree, treeSeq: s.treeSeq, stats: s.stats, zukan: s.zukan, cards: s.cards, notes: s.notes, seen: s.seen, secret: s.secret, ended: s.ended, endAt: s.endAt, playMs: s.playMs, snd: s.snd, born: s.born, orderN: s.orderN, auto: s.auto };
     const f = NK.fresh(now);
     Object.assign(s, f, keep);
     const h = NK.kl(s, 'hajime');
@@ -320,7 +322,7 @@
     if (s.C > Cap) s.C = Cap;
     else s.C = Cap / (1 + (Cap / s.C - 1) * Math.exp(-r * dt));
     // 野菜
-    const auto = NK.lv(s, 'mina') > 0, tgt = NK.autoTarget(s, d);
+    const auto = NK.on(s, 'mina'), tgt = NK.autoTarget(s, d);
     for (let i = 0; i < s.slots.length; i++) {
       const sl = s.slots[i]; if (!sl.veg) continue;
       const v = VEG[VEGI[sl.veg]];

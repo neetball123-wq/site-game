@@ -104,6 +104,13 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .v-d { font-size: 11px; color: var(--ink2); line-height: 1.45; text-align: right; }
 .v-p { font-weight: 800; color: var(--shu); font-size: 14px; min-width: 64px; text-align: right; }
 .v-why { font-size: 11.5px; color: var(--ink2); }
+.help h3 { justify-content: space-between; }
+.h-all { font-family: var(--f-ui); font-size: 12px; letter-spacing: 0; padding: 4px 10px; min-height: 30px; border-radius: 999px; border: 1.5px solid var(--line); background: #fff; font-weight: 700; }
+.helps { list-style: none; margin: 0 0 4px; padding: 0; }
+.helps li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 2px; border-bottom: 1px dashed var(--line); }
+.helps b { font-size: 14px; display: block; } .helps small { font-size: 11.5px; color: var(--ink2); }
+.sw { min-width: 112px; min-height: 36px; padding: 5px 12px; border-radius: 999px; border: 1.5px solid #b8a88c; background: #efe6d4; color: var(--ink2); font-weight: 800; font-size: 13px; }
+.sw.on { background: var(--green); border-color: var(--green); color: #fff; }
 .swap { display: block; width: 100%; margin: 4px 0 4px; min-height: 42px; padding: 8px 12px; border-radius: 10px; border: 1.5px solid var(--ai); background: #eef3f8; color: var(--ai); font-weight: 800; font-size: 13.5px; }
 .seg { display: flex; gap: 4px; flex-wrap: wrap; margin: 0 0 8px; }
 .seg button { flex: 1; min-height: 36px; padding: 6px 10px; border-radius: 8px; border: 1.5px solid var(--line); background: #fffaf0; font-weight: 700; font-size: 13px; }
