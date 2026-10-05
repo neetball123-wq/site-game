@@ -178,7 +178,12 @@
       return;
     }
     const st = NK.stageOf(sl.p, d);
-    if (!st) { const v = VEG[VEGI[sl.veg]]; UI.float(pos.x, pos.y - 40, `あと${NK.fmtTime((0.5 - sl.p) * v.t / d.F)}`, 'info'); return; }
+    if (!st) {
+      const v = VEG[VEGI[sl.veg]], pk = S.pick || 'kyuri';
+      UI.float(pos.x, pos.y - 40, `あと${NK.fmtTime((0.5 - sl.p) * v.t / d.F)}`, 'info');
+      if (pk !== sl.veg) UI.toast(`${v.name}を抜いて、${VEG[VEGI[pk]].name}に入れかえる`, 'order', () => { const r = NK.swapSlot(S, i, pk); if (r && r.ok) NK.snd.plant(); else UI.toast('小銭がたりない', 'warn'); UI.veg(true); UI.header(); UI.dirty = true; });
+      return;
+    }
     const res = NK.harvest(S, i);
     if (res) UI.onHarvest(i, res, pos);
     UI.veg(true); UI.header(); UI.dirty = true;
@@ -324,7 +329,11 @@
       const c = NK.vegCost(S, v.id, d), tt = v.t / d.F, val = v.val * d.value * (v.id === 'nasu' && NK.lv(S, 'tetsu') ? 3 : 1);
       h += `<li><button type="button" class="vrow${(S.pick || 'kyuri') === v.id ? ' on' : ''}${S.coins < c ? ' poor' : ''}" data-pick="${v.id}"><span class="v-ic">${A.vegIcon(v.id, 0, NK.lv(S, 'tetsu'))}</span><span class="v-n">${v.name}</span><span class="v-d">仕入れ ${cost(c)}<br>食べごろまで ${NK.fmtTime(tt)}</span><span class="v-p">${cost(val)}</span></button></li>`;
     }
-    h += `</ul></div>`;
+    h += `</ul>`;
+    const pk = S.pick || 'kyuri', other = S.slots.filter((x) => x.veg && x.veg !== pk).length;
+    if (other) h += `<button type="button" class="swap" data-swap="1">いま選んでいる${VEG[VEGI[pk]].name}に、ぜんぶ入れかえる（${other}か所）</button><p class="hint">漬かっているものは取り出して売り、まだのものは仕入れ値の半分を返して抜く。</p>`;
+    h += `</div>`;
+    if (NK.lv(S, 'haitatsu')) h += `<div class="sec"><h3>八百屋の配達で漬けなおす野菜</h3><div class="seg">${[['pick', 'いま選んでいる野菜'], ['same', '取り出したのと同じ野菜']].map(([k, n]) => `<button type="button" class="${(S.replant || 'pick') === k ? 'on' : ''}" data-replant="${k}">${n}</button>`).join('')}</div></div>`;
     if (NK.lv(S, 'mina')) h += `<div class="sec"><h3>ミナが取り出すころあい</h3><div class="seg">${['asa', 'tabe', 'furu'].map((k) => `<button type="button" class="${S.auto === k ? 'on' : ''}" data-auto="${k}">${NK.STAGE[k].name}</button>`).join('')}</div><p class="hint">注文で、ちがう漬かり具合がほしいときは、自分で取り出そう。</p></div>`;
     const q = 0.85 + 0.3 * S.O + d.qBonus;
     h += `<div class="sec toko"><h3>床のようす</h3><dl class="kv">`
@@ -516,6 +525,14 @@
       if ((b = q('[data-tab]'))) { UI.tab = b.dataset.tab; UI.dirty = true; return; }
       if ((b = q('[data-pick]'))) { S.pick = b.dataset.pick; UI.dirty = true; UI.header(); return; }
       if ((b = q('[data-auto]'))) { S.auto = b.dataset.auto; UI.dirty = true; return; }
+      if ((b = q('[data-replant]'))) { S.replant = b.dataset.replant; UI.dirty = true; return; }
+      if ((b = q('[data-swap]'))) {
+        const pk = S.pick || 'kyuri', r = NK.swapAll(S, pk);
+        for (const [i, res] of r.out) if (res) UI.onHarvest(i, res);
+        NK.snd.plant();
+        UI.toast(r.n ? `${r.n}か所を${VEG[VEGI[pk]].name}に入れかえた` : '小銭がたりなくて、漬けられなかった', r.n ? 'good' : 'warn');
+        UI.veg(true); UI.header(); UI.dirty = true; save(); return;
+      }
       if ((b = q('[data-up]'))) { if (NK.buyUp(S, b.dataset.up)) { NK.snd.coin(); if (b.dataset.up === 'bran' && S.tut === 5) { S.tut = 6; } UI.tip(); UI.scene(true); save(); } else UI.toast('小銭がたりない', 'warn'); UI.dirty = true; return; }
       if ((b = q('[data-cont]'))) { if (NK.buyCont(S)) { NK.snd.bell(); UI.toast(`${NK.CONT[S.cont].name}にうつした`, 'good'); UI.scene(true); save(); } else UI.toast('まだ買えない', 'warn'); UI.dirty = true; return; }
       if ((b = q('[data-skip]'))) { NK.skipOrder(S, +b.dataset.skip); UI.dirty = true; return; }

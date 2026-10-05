@@ -49,7 +49,7 @@
     { id: 'kaki', name: '柿の皮', cat: 'yakumi', cost: 1.2e5, grow: 2.4, rep: 7000, desc: 'ほんのり甘みが出る。近所の人に、よろこばれる。', eff: (lv) => `注文のお礼 ×1.25` },
     { id: 'mazebo', name: 'まぜ棒', cat: 'tetsudai', cost: 1800, grow: 3.0, rep: 100, desc: 'ばあちゃん手作りの木べら。床にさしておくと、ときどき勝手にまぜてくれる（ような気がする）。', eff: (lv) => `自動でまぜる：${(45 / (1 + 0.6 * lv)).toFixed(0)}秒ごと` },
     { id: 'mina', name: 'いとこのミナ', cat: 'tetsudai', cost: 7000, grow: 1, max: 1, rep: 260, desc: '近所に住む、小学四年のいとこ。漬かった野菜を、決めたころあいで取り出してくれる。', eff: () => '自動で取り出す' },
-    { id: 'haitatsu', name: '八百屋の配達', cat: 'tetsudai', cost: 2.4e4, grow: 1, max: 1, rep: 600, desc: '八百屋の大将が、毎朝勝手口に野菜を置いていってくれる。取り出したあとに、同じ野菜を漬けなおす。', eff: () => '自動で漬けなおす' },
+    { id: 'haitatsu', name: '八百屋の配達', cat: 'tetsudai', cost: 2.4e4, grow: 1, max: 1, rep: 600, desc: '八百屋の大将が、毎朝勝手口に野菜を置いていってくれる。取り出したあとに、「いま漬ける」に選んでいる野菜を漬けなおす（「漬ける」で、同じ野菜にもできる）。', eff: () => '自動で漬けなおす' },
     { id: 'mise', name: '軒先の小さな店', cat: 'tetsudai', cost: 1.8e5, grow: 1, max: 1, rep: 1800, desc: '玄関先に台を出して、「ぬか漬けあります」の札をさげた。', eff: () => '売り値 ×1.5・注文がふえる' },
   ];
   NK.UPI = Object.fromEntries(NK.UP.map((u) => [u.id, u]));

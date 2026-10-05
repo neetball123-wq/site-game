@@ -7,7 +7,7 @@
   NK.fresh = (now) => ({
     v: 1, t: now || Date.now(), born: now || Date.now(),
     coins: 60, rep: 0, repMax: 0, earned: 0,
-    kg: 1, cont: 0, C: 1e6, O: 0.5, mzT: 0,
+    kg: 1, cont: 0, C: 1e6, O: 0.5, mzT: 0, pick: 'kyuri', replant: 'pick',
     slots: [], up: {}, auto: 'tabe',
     orders: [], orderCd: 3, orderN: 0,
     stats: { stirs: 0, harvests: 0, orders: 0, furu: 0, by: {}, earnedAll: 0, bestHarvest: 0 },
@@ -145,11 +145,39 @@
     if (sl.veg === 'nasu' && st === 'tabe' && NK.lv(s, 'tetsu') && !s.zukan.tetsunasu) { s.zukan.tetsunasu = true; res.newZukan = 'tetsunasu'; }
     const again = sl.veg;
     Object.assign(sl, { veg: null, p: 0, oAcc: 0, tAcc: 0 });
-    if (NK.lv(s, 'haitatsu') && auto !== 'noReplant') NK.plant(s, i, again);
+    if (NK.lv(s, 'haitatsu') && auto !== 'noReplant') {
+      const want = s.replant === 'same' ? again : (s.pick || again);
+      if (!NK.plant(s, i, want) && want !== again) NK.plant(s, i, again);
+    }
     res.val = val;
     return res;
   };
   NK.autoTarget = (s, d) => (s.auto === 'asa' ? 0.75 : s.auto === 'furu' ? d.tabeEnd + 0.15 : Math.min(d.tabeEnd - 0.05, 1.15));
+
+  /* ---- 入れかえる：漬かっていれば取り出し、まだなら仕入れ値の半分を返して抜く ---- */
+  NK.swapSlot = (s, i, id) => {
+    const d = NK.derive(s), sl = s.slots[i];
+    if (!sl) return null;
+    let res = null;
+    if (sl.veg) {
+      if (sl.veg === id) return null;
+      if (NK.stageOf(sl.p, d)) res = NK.harvest(s, i, 'noReplant');
+      else { s.coins += Math.floor(NK.vegCost(s, sl.veg, d) / 2); Object.assign(sl, { veg: null, p: 0, oAcc: 0, tAcc: 0 }); }
+    }
+    const ok = NK.plant(s, i, id);
+    return { res, ok };
+  };
+  NK.swapAll = (s, id) => {
+    let n = 0;
+    const out = [];
+    for (let i = 0; i < s.slots.length; i++) {
+      const sl = s.slots[i];
+      if (sl.veg === id) continue;
+      const r = NK.swapSlot(s, i, id);
+      if (r) { out.push([i, r.res]); if (r.ok) n++; }
+    }
+    return { n, out };
+  };
 
   /* ---- 道具 ---- */
   NK.upCost = (s, id, lv) => { const u = UPI[id]; const l = lv == null ? NK.lv(s, id) : lv; return Math.ceil(u.cost * Math.pow(u.grow, l)); };
@@ -225,7 +253,7 @@
     const pts = NK.presPoints(s);
     s.pres.count++; s.pres.points += pts; s.pres.recip.push(rid);
     s.tree.push({ id: ++s.treeSeq, name: r.name, recip: rid, parent: 0, depth: 1, at: now || Date.now(), acc: 0, kids: 0 });
-    const keep = { rep: s.rep, repMax: s.repMax, pres: s.pres, tree: s.tree, treeSeq: s.treeSeq, stats: s.stats, zukan: s.zukan, cards: s.cards, notes: s.notes, seen: s.seen, secret: s.secret, ended: s.ended, endAt: s.endAt, playMs: s.playMs, snd: s.snd, born: s.born, orderN: s.orderN, auto: s.auto };
+    const keep = { replant: s.replant, rep: s.rep, repMax: s.repMax, pres: s.pres, tree: s.tree, treeSeq: s.treeSeq, stats: s.stats, zukan: s.zukan, cards: s.cards, notes: s.notes, seen: s.seen, secret: s.secret, ended: s.ended, endAt: s.endAt, playMs: s.playMs, snd: s.snd, born: s.born, orderN: s.orderN, auto: s.auto };
     const f = NK.fresh(now);
     Object.assign(s, f, keep);
     const h = NK.kl(s, 'hajime');
