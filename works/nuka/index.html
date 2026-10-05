@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ぬか床、百年｜無料で遊べる放置ゲーム - ヨリミチ</title>
+<meta name="description" content="無料・登録なしで遊べる放置ゲーム（約60分）。旅に出たばあちゃんが置いていった、昭和元年から百年つづくぬか床。まぜて、漬けて、近所にくばって、のれん分けで町じゅうにひろげる。">
+<link rel="canonical" href="https://neetball123-wq.github.io/site-game/works/nuka/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ヨリミチ">
+<meta property="og:title" content="ぬか床、百年">
+<meta property="og:description" content="旅に出たばあちゃんが置いていった、百年もののぬか床。まぜて、漬けて、近所にくばって、のれん分けで町じゅうにひろげる放置ゲーム。">
+<meta property="og:url" content="https://neetball123-wq.github.io/site-game/works/nuka/">
+<meta property="og:image" content="https://neetball123-wq.github.io/site-game/works/nuka/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ぬか床、百年｜台所の、百年もののぬか床">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#2a1d14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Yusei+Magic&display=swap">
+<link rel="stylesheet" href="css/nuka.css?v=1">
+<!-- seo:ld -->
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"ぬか床、百年","url":"https://neetball123-wq.github.io/site-game/works/nuka/","description":"ばあちゃんが旅に出る前に、ぬか床を置いていった。昭和元年からつづいて、今年でちょうど百年。まぜて、漬けて、近所にくばって、のれん分けで町じゅうにひろげる。閉じているあいだも、ぬか床の時間は進む放置ゲーム。","image":"https://neetball123-wq.github.io/site-game/works/nuka/img/og.jpg","genre":["放置ゲーム","育成","ほのぼの"],"gamePlatform":["Web browser","PC","スマートフォン"],"applicationCategory":"Game","operatingSystem":"Any","inLanguage":"ja","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},"timeRequired":"PT60M","datePublished":"2026-10-05","isPartOf":{"@type":"WebSite","name":"ヨリミチ","url":"https://neetball123-wq.github.io/site-game/"}}</script>
+<!-- /seo:ld -->
+</head>
+<body>
+<div id="app" class="app">
+  <header class="hd">
+    <h1 class="logo"><span>ぬか床、</span><span>百年</span></h1>
+    <div class="st" aria-live="off">
+      <div class="st-i st-coin" title="小銭"><i aria-hidden="true">¥</i><b id="v-coins">60</b><small id="v-rate"></small></div>
+      <div class="st-i st-rep" title="町の評判"><i aria-hidden="true">評</i><b id="v-rep">0</b></div>
+      <div class="st-i st-mic" title="乳酸菌"><i aria-hidden="true">菌</i><b id="v-mic">100万</b></div>
+    </div>
+    <button type="button" class="hd-b" id="b-set" aria-label="設定">設定</button>
+  </header>
+  <main class="mn">
+    <section class="scene" aria-label="台所のぬか床">
+      <div class="sc-wrap">
+        <div class="sc-box" id="scbox">
+          <svg id="sc" class="sc-l" viewBox="0 0 800 600" aria-hidden="true"></svg>
+          <canvas id="sc-cv" class="sc-l"></canvas>
+          <svg id="sc-veg" class="sc-l" viewBox="0 0 800 600"></svg>
+          <div id="sc-fx" class="sc-l"></div>
+          <div class="genki" id="genki" title="まぜたての元気"><span>ぬかの元気</span><i><b id="genki-b"></b></i></div>
+          <div class="lens" id="lens" hidden><canvas id="lens-cv"></canvas><p id="lens-t"></p><button type="button" class="lens-x" id="lens-x" aria-label="とじる">とじる</button></div>
+        </div>
+      </div>
+      <div class="tip" id="tip" hidden></div>
+      <div class="toasts" id="toasts" aria-live="polite"></div>
+      <div class="sc-bar">
+        <button type="button" class="pick" id="pick"></button>
+        <div class="sc-tools">
+          <button type="button" class="sc-b" id="b-lens">虫めがね</button>
+          <button type="button" class="sc-b" id="b-fill">ぜんぶ漬ける</button>
+          <button type="button" class="sc-b" id="b-take">取り出す</button>
+        </div>
+      </div>
+    </section>
+    <section class="pn" aria-label="帳場">
+      <nav class="tabs" id="tabs" role="tablist"></nav>
+      <div class="pn-body" id="pn"></div>
+    </section>
+  </main>
+  <div class="modal" id="modal" hidden></div>
+</div>
+<script src="js/data.js?v=1"></script>
+<script src="js/core.js?v=1"></script>
+<script src="js/art.js?v=1"></script>
+<script src="js/snd.js?v=1"></script>
+<script src="js/ui.js?v=1"></script>
+<script src="js/main.js?v=1"></script>
+</body>
+</html>

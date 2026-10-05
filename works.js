@@ -13,6 +13,43 @@
    ========================================================= */
 window.WORKS = [
   {
+    id: 'nuka',
+    path: 'works/nuka/index.html',
+    title: 'ぬか床、百年',
+    place: 'ばあちゃんの留守の、台所のぬか床',
+    added: '2026-10-05',
+    genre: ['放置ゲーム', '育成', 'ほのぼの'],
+    minutes: 60,
+    difficulty: 1,
+    accent: '#c9502b',
+    catch: 'ばあちゃんが旅に出る前に、ぬか床を置いていった。昭和元年からつづいて、今年でちょうど百年。まぜて、漬けて、近所にくばって、のれん分けで町じゅうにひろげる。閉じているあいだも、ぬか床の時間は進む放置ゲーム。',
+    features: ['ぬか床を指でなぞって、まぜる', '浅漬け・食べごろ・古漬け。注文にはころあいがある', '菌がふえるほど早く漬かる。壺から甕、樽、蔵へ', 'のれん分けで、わけた家の味が力をかしてくれる'],
+    storageKey: 'nuka.v1',
+    progress(s) {
+      const H = 1 + (s.tree || []).length;
+      if (s.ended) return { pct: 100, label: `百年目の秋・${H}軒`, cleared: true };
+      const conts = ['ばあちゃんの壺', '大きな甕', '木の樽', '大樽', 'ぬか蔵', '町のぬか蔵'];
+      const pres = (s.pres && s.pres.count) || 0;
+      if (!s.stats || !s.stats.harvests) return { pct: s.playMs ? 1 : 0, label: s.playMs ? 'まだ漬けていない' : 'まだ壺のふたをあけていない', cleared: false };
+      return { pct: Math.min(99, Math.round(Math.max(H / 50, Math.min(0.4, (s.repMax || 0) / 1e4)) * 100)), label: pres ? `のれん分け${pres}回・${H}軒` : `${conts[s.cont || 0]}・評判${Math.floor(s.repMax || 0)}`, cleared: false };
+    },
+    cover: {
+      front: '<svg viewBox="0 0 400 250" aria-hidden="true"><defs><linearGradient id="nk-cw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3e9d2"/><stop offset="1" stop-color="#e6d6b4"/></linearGradient><linearGradient id="nk-cg" x1="0" x2="1"><stop offset="0" stop-color="#4a2a16"/><stop offset=".4" stop-color="#9a5e30"/><stop offset=".6" stop-color="#a5683a"/><stop offset="1" stop-color="#3e2312"/></linearGradient><radialGradient id="nk-cb" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#dcbb80"/><stop offset=".7" stop-color="#c49a5e"/><stop offset="1" stop-color="#9a7444"/></radialGradient></defs>'
+        + '<rect width="400" height="250" fill="url(#nk-cw)"/><rect y="170" width="400" height="80" fill="#7a5232"/>' + Array.from({ length: 10 }, (_, i) => `<path d="M${i * 42} 170v80" stroke="#5e3e22" stroke-width="2"/>`).join('')
+        + '<g transform="translate(36 30)"><rect width="96" height="80" fill="#5e3e22"/><rect x="5" y="5" width="86" height="70" fill="#a8c8e0"/><path d="M48 5v70M5 40h86" stroke="#5e3e22" stroke-width="3"/><path d="M60 14l6-6 2 6 6-2-4 5 4 5-6-2-2 6-4-6z" fill="#d9532c"/><circle cx="74" cy="34" r="6" fill="#e8742a"/></g>'
+        + '<g transform="translate(270 36)"><circle r="20" fill="#6e4a2a"/><circle r="16" fill="#fbf7ec"/><path d="M0 0v-11M0 0l8 3" stroke="#222" stroke-width="2"/></g>'
+        + '<ellipse cx="200" cy="236" rx="120" ry="10" fill="#000" opacity=".25"/><path d="M110 126q-26 54 -6 100q8 14 96 16q88-2 96-16q20-46-6-100z" fill="url(#nk-cg)"/><path d="M128 140q-12 40 -2 78" stroke="#c9905a" stroke-width="6" fill="none" opacity=".35"/>'
+        + '<ellipse cx="200" cy="126" rx="92" ry="25" fill="#5a3216"/><ellipse cx="200" cy="124" rx="88" ry="22" fill="url(#nk-cb)"/>'
+        + '<g transform="translate(160 118) rotate(-25)"><rect x="-7" y="-26" width="14" height="30" rx="7" fill="#4f8a3c"/><rect x="-5" y="-24" width="3" height="24" rx="1.5" fill="#fff" opacity=".35"/></g>'
+        + '<g transform="translate(206 112) rotate(15)"><path d="M0-30q12 8 10 22q-2 10-10 10q-8 0-10-10q-2-14 10-22z" fill="#2a2f6b"/><path d="M-7-27q7-6 14 0l-2 4h-10z" fill="#4a6a2a"/></g>'
+        + '<g transform="translate(246 124) rotate(-10)"><path d="M-7-22h14l-5 24h-4z" fill="#e0702e"/><path d="M-2-22q-6-10-4-16M2-22q4-10 2-16M0-22v-14" stroke="#5f9a3a" stroke-width="2.5" fill="none"/></g>'
+        + '<g transform="translate(186 134)"><ellipse cx="0" cy="-6" rx="12" ry="10" fill="#f2efe6"/><path d="M-2-14q-6-14-2-22M2-14q4-12 10-18" stroke="#6aa04a" stroke-width="3" fill="none"/></g>'
+        + '<path d="M170 92q4-10 0-20M200 86q4-10 0-20M230 92q4-10 0-20" stroke="#fff" stroke-width="3" fill="none" opacity=".6" stroke-linecap="round"/>'
+        + '<g transform="translate(310 196) rotate(-12)"><ellipse rx="44" ry="10" fill="#8a5f3b"/><rect x="-22" y="-4" width="44" height="9" rx="1" fill="#f3ead2"/><text y="3" text-anchor="middle" font-size="7" fill="#3a2a1a">昭和元年</text></g>'
+        + '<text x="372" y="40" text-anchor="end" font-family="\'Kaisei Opti\', serif" font-weight="700" font-size="30" letter-spacing="4" fill="#3a2a1c">ぬか床、</text><text x="372" y="78" text-anchor="end" font-family="\'Kaisei Opti\', serif" font-weight="700" font-size="34" letter-spacing="6" fill="#c9502b">百年</text></svg>',
+    },
+  },
+  {
     id: 'mado',
     path: 'works/mado/index.html',
     title: 'ふたつの窓',
